@@ -126,7 +126,7 @@ plugins=(
   ripgrep # alternative to grep / ag / ack
   rsync # rsync-copy / rsync-move / rsync-update / rsync-synchronize
   ruby # rb / gin / gun / gli
-  safe-paste
+#   safe-paste
   systemadmin # ping / mkdir / clr / path / pscpu / psmem...
   systemd # sc-xxxx
   thefuck
@@ -169,6 +169,7 @@ fi
 export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
+export EDITOR='vim'
 # if [[ -n $SSH_CONNECTION ]]; then
 #   export EDITOR='vim'
 # else
