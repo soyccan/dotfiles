@@ -18,6 +18,22 @@ fi
 
 base="$(pwd)/$(dirname $0)"
 
+function get_package_manager() {
+    source /etc/os-release
+    if [ "$NAME" = "CentOS Linux" ]; then
+        echo yum
+    elif [ "$NAME" = "Ubuntu" ]; then
+        echo apt
+    fi
+}
+pkgmgr=$(get_package_manager)
+
+
+## zsh
+echo Installing ZSH
+sudo $pkgmgr install zsh
+sudo usermod $USER -s /bin/zsh
+
 # oh-my-zsh
 echo Installing Oh My ZSH
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
@@ -32,7 +48,8 @@ git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting $ZSH/cu
 git clone --depth 1 https://github.com/zsh-users/zsh-history-substring-search $ZSH/custom/plugins/zsh-history-substring-search
 
 
-# oh-my-tmux
+
+## oh-my-tmux
 echo Installing Oh My TMUX
 git clone --depth 1 https://github.com/gpakosz/.tmux "$HOME/.tmux"
 ln -s "$HOME/.tmux/.tmux.conf" "$HOME/.tmux.conf"
@@ -40,7 +57,7 @@ ln -s "$base/tmux.conf.local" "$HOME/.tmux.conf.local"
 
 
 
-# vim
+## vim
 echo Installing VIM
 ln -s "$base/vim" "$HOME/.vim"
 ln -s "$base/vim" "$HOME/.config/nvim"
