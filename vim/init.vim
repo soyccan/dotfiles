@@ -164,6 +164,8 @@ Plug 'vim-airline/vim-airline'
 Plug 'Yggdroot/indentLine'
 " vim-signify: alternative of gitgutter
 Plug 'mhinz/vim-signify'
+" syntax
+Plug 'chr4/nginx.vim'
 
 "" editing
 Plug 'scrooloose/nerdcommenter'

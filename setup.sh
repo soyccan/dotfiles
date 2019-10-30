@@ -45,7 +45,6 @@ git clone --depth 1 https://github.com/Powerlevel9k/powerlevel9k $ZSH/custom/the
 git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions $ZSH/custom/plugins/zsh-autosuggestions
 git clone --depth 1 https://github.com/zsh-users/zsh-completions $ZSH/custom/plugins/zsh-completions
 git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting $ZSH/custom/plugins/zsh-syntax-highlighting
-git clone --depth 1 https://github.com/zsh-users/zsh-history-substring-search $ZSH/custom/plugins/zsh-history-substring-search
 
 
 
@@ -53,7 +52,7 @@ git clone --depth 1 https://github.com/zsh-users/zsh-history-substring-search $Z
 echo Installing Oh My TMUX
 git clone --depth 1 https://github.com/gpakosz/.tmux "$HOME/.tmux"
 ln -s "$HOME/.tmux/.tmux.conf" "$HOME/.tmux.conf"
-ln -s "$base/tmux.conf.local" "$HOME/.tmux.conf.local"
+ln -s "$base/tmux/tmux.conf.local" "$HOME/.tmux.conf.local"
 
 
 
