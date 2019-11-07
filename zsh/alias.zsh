@@ -3,9 +3,10 @@ _docker_alias() {
     alias dcon='docker container'
     alias dim='docker image'
     alias dps='docker ps'
-    alias dsta='docker start'
+    alias dpsa='docker ps -a'
+    alias dsta='docker start -ai'
     alias dsto='docker stop'
-    alias dex='docker exec'
+    alias dex='docker exec -it'
 }
 
 if [ "$(uname)" = 'Linux' ]; then
