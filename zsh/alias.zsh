@@ -14,8 +14,8 @@ if [ "$(uname)" = 'Linux' ]; then
     alias df="df --human-readable"
     alias du="du --human-readable --apparent-size"
     alias free="free --human"
-    alias gcc="gcc -Wall -Wextra -std=c11 -lm -g -Dsoyccan"
-    alias g++="g++ -Wall -Wextra -std=c++17 -g -Dsoyccan"
+    alias gcc="gcc -Wall -Wextra -Wconversion -std=c11   -g -Dsoyccan"
+    alias g++="g++ -Wall -Wextra -Wconversion -std=c++17 -g -Dsoyccan"
     alias less="less --RAW-CONTROL-CHARS" # color only
     alias ln="ln --symbolic"
     alias ls="ls --human-readable --color=auto"
@@ -34,8 +34,8 @@ elif [ "$(uname)" = 'FreeBSD' ] || [ "$(uname)" = 'Darwin' ]; then
     alias df="df -h"
     alias du="du -h" # -A connot be used in macOS
     alias free="free -h"
-    alias gcc="gcc -Wall -Wextra -std=c11 -g -Dsoyccan"
-    alias g++="g++ -Wall -Wextra -std=c++17 -g -Dsoyccan"
+    alias gcc="gcc -Wall -Wextra -Wconversion -std=c11   -g -Dsoyccan"
+    alias g++="g++ -Wall -Wextra -Wconversion -std=c++17 -g -Dsoyccan"
     alias less="less -R" # color only
     alias ln="ln -s"
     alias ls="ls -hG"
