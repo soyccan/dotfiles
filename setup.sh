@@ -11,15 +11,17 @@ if [ "$1" = 'clean' ]; then
                "$HOME/.tmux.conf" \
                "$HOME/.tmux.conf.local" \
                "$HOME/.vim" \
-               "$HOME/.config/nvim"
+               "$HOME/.config/nvim" \
+               "$HOME/.gdb" \
+               "$HOME/.gdbinit"
     fi
     exit
 fi
 
 base="$(pwd)/$(dirname $0)"
 
-function get_package_manager() {
-    source /etc/os-release
+get_package_manager() {
+    . /etc/os-release
     if [ "$NAME" = "CentOS Linux" ]; then
         echo yum
     elif [ "$NAME" = "Ubuntu" ]; then
@@ -58,8 +60,20 @@ ln -s "$base/tmux/tmux.conf.local" "$HOME/.tmux.conf.local"
 
 ## vim
 echo Installing VIM
-ln -s "$base/vim" "$HOME/.vim"
-ln -s "$base/vim" "$HOME/.config/nvim"
+ln -sf "$base/vim" "$HOME/.vim"
+ln -sf "$base/vim" "$HOME/.config/nvim"
+
+
+## gdb
+echo Setup GDB
+mkdir "$HOME/.gdb"
+git clone --depth 1 https://github.com/longld/peda "$HOME/.gdb/peda"
+git clone --depth 1 https://github.com/pwndbg/pwndbg "$HOME/.gdb/pwndbg"
+ln -sf "$base/gdb/gdbinit" "$HOME/.gdbinit"
+printf '#!/bin/sh\nexec gdb -q -ex init-peda "$@"'   | sudo tee /usr/local/bin/peda   >/dev/null
+printf '#!/bin/sh\nexec gdb -q -ex init-pwndbg "$@"' | sudo tee /usr/local/bin/pwndbg >/dev/null
+sudo chmod +x /usr/local/bin/peda
+sudo chmod +x /usr/local/bin/pwndbg
 
 
 

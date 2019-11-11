@@ -30,25 +30,32 @@ imap <F4> <ESC>4
 
 " F5
 " compile
-autocmd FileType vim map <buffer> 5 :w<CR>:source %<CR>
-autocmd FileType c   map <buffer> 5 :w<CR>:AsyncRun gcc "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" -std=c11 -Wall -Wextra -Dsoyccan -g<CR>
-autocmd FileType cpp map <buffer> 5 :w<CR>:AsyncRun g++ "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" -std=c++17 -Wall -Wextra -Dsoyccan -g<CR>
-map 5 :wa<CR>:AsyncRun -cwd=$(VIM_ROOT) make<CR>
+" command is set in: after/compiler/xxx.vim
+"
+autocmd FileType vim map <buffer> 5 :w \| source %<CR>
+autocmd FileType c   map <buffer> 5 :w \| cclose \| copen \| wincmd p \| AsyncRun gcc "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" -Wall -Wextra -Wconversion -Dsoyccan -g -std=c11<CR>
+autocmd FileType cpp map <buffer> 5 :w \| cclose \| copen \| wincmd p \| AsyncRun g++ "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" -Wall -Wextra -Wconversion -Dsoyccan -g -std=c++17<CR>
+map 5 :wa \| cclose \| copen \| wincmd p \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
+" blocking compilation:
+" map <silent> 5 :wa \| silent! make \| cwindow \| wincmd p<CR>
 imap <F5> <ESC>5
 
 " F6
 " run
 autocmd FileType vim    map <buffer> 6 :w<CR>:source %<CR>
-autocmd FileType python map <buffer> 6 :w<CR>:AsyncRun python "$(VIM_FILEPATH)"<CR>
-autocmd FileType ruby   map <buffer> 6 :w<CR>:AsyncRun ruby "$(VIM_FILEPATH)"<CR>
-autocmd FileType sh     map <buffer> 6 :w<CR>:AsyncRun "$(VIM_FILEPATH)"<CR>
-map 6 :AsyncRun -raw -cwd=$(VIM_FILEDIR) "$(VIM_FILEDIR)/$(VIM_FILENOEXT)"<CR>
+autocmd FileType python map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw python "$(VIM_FILEPATH)"<CR>
+autocmd FileType ruby   map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw ruby   "$(VIM_FILEPATH)"<CR>
+autocmd FileType sh     map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw sh     "$(VIM_FILEPATH)"<CR>
+map 6 :cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw -cwd=$(VIM_FILEDIR) "$(VIM_FILEDIR)/$(VIM_FILENOEXT)"<CR>
+" blocking run:
+" map <silent> 6 :cexpr system(shellescape(expand("%:p:r"))) \| vertical botright copen 50 \| wincmd p<CR>
 imap <F6> <ESC>6
 
 " F7
 " compile && run
-map 7 56
-imap <F7> <ESC>7
+" TODO: make it work well with AsyncRun
+" map 7 56
+" imap <F7> <ESC>7
 
 " quickfix
 " map <F7> :cc<CR>
@@ -62,9 +69,10 @@ noremap k l
 
 " move whole line down/up
 nnoremap Q ddp
-vnoremap Q V:'<,'>m +2<CR>gv
 nnoremap J ddkP
-vnoremap J V:'<,'>m -2<CR>gv
+" TODO: move of multiple lines doesn't work well
+" vnoremap Q V:'<,'>m +2<CR>gv
+" vnoremap J V:'<,'>m -2<CR>gv
 
 " re-map join lines command
 noremap <C-j> J
@@ -93,6 +101,9 @@ inoremap ` <ESC>
 " command line Home key
 cnoremap <C-A> <Home>
 
+" happy pasting
+xnoremap p pgvy
+
 
 " press 0 for HOME / (non-blank) HOME / END, alternatively
 function! s:AlternateHomeEnd()
@@ -105,6 +116,7 @@ function! s:AlternateHomeEnd()
         norm! $
     endif
 endfunction
+" [DISABLED]
 " map <silent> 0 :call <SID>AlternateHomeEnd()<CR>
 
 

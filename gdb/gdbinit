@@ -1,0 +1,22 @@
+set startup-with-shell off
+set disassembly-flavor intel
+
+define init-peda
+source ~/.gdb/peda/peda.py
+end
+document init-peda
+Initializes the PEDA (Python Exploit Development Assistant for GDB) framework
+end
+
+define init-pwndbg
+source ~/.gdb/pwndbg/gdbinit.py
+end
+document init-pwndbg
+Initializes PwnDBG
+end
+
+define init-gef
+end
+document init-gef
+Initializes GEF (GDB Enhanced Features)
+end

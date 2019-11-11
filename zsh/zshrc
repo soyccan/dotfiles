@@ -52,7 +52,7 @@ POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs command_execution_tim
 # DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
-ENABLE_CORRECTION="true"
+# ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 # COMPLETION_WAITING_DOTS="true"
@@ -113,7 +113,7 @@ plugins=(
   gem
   globalias # press <space> to expand alias, subcommand, glob expr
   git
-  github # empty_gh / new_gh / exist_gh / git.io
+  #github # empty_gh / new_gh / exist_gh / git.io; NOTE: this breaks git's command completion
   git-auto-fetch
   osx
   pep8
