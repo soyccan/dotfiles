@@ -206,6 +206,7 @@ call plug#end()
 
 """ end vim-plug
 
+packadd! termdebug
 " runtime compilers.vim
 " runtime cscope_maps.vim
 runtime mapping.vim
