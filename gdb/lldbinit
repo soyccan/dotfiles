@@ -1,0 +1,4 @@
+settings set target.x86-disassembly-flavor intel
+command alias start process launch --stop-at-entry
+command alias d breakpoint delete
+command alias ib breakpoint list

@@ -75,6 +75,8 @@ printf '#!/bin/sh\nexec gdb -q -ex init-pwndbg "$@"' | sudo tee /usr/local/bin/p
 sudo chmod +x /usr/local/bin/peda
 sudo chmod +x /usr/local/bin/pwndbg
 
+ln -sf "$base/gdb/lldbinit" "$HOME/.lldbinit"
+
 
 
 echo Voila! Setup Finished!
