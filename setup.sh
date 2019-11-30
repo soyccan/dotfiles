@@ -20,14 +20,14 @@ fi
 
 base="$(pwd)/$(dirname $0)"
 
-get_package_manager() {
+get_package_manager() (
     . /etc/os-release
     if [ "$NAME" = "CentOS Linux" ]; then
         echo yum
     elif [ "$NAME" = "Ubuntu" ]; then
         echo apt
     fi
-}
+)
 pkgmgr=$(get_package_manager)
 
 
