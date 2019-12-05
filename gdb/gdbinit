@@ -1,5 +1,7 @@
-set startup-with-shell off
+set startup-with-shell on
 set disassembly-flavor intel
+set debug-file-directory /usr/lib/debug/
+set follow-fork-mode child
 
 define init-peda
 source ~/.gdb/peda/peda.py
