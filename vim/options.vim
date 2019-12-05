@@ -49,3 +49,7 @@ autocmd FileType qf set wrap nonumber foldcolumn=0 | SignifyDisable
 
 autocmd FileType c   compiler gcc
 autocmd FileType cpp compiler g++
+
+
+let g:python_host_prog = '/System/Library/Frameworks/Python.framework/Versions/2.7/bin/python2.7'
+let $PYTHONPATH .= ':/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Resources/Python'

@@ -199,6 +199,7 @@ Plug 'Yggdroot/LeaderF',  { 'do': './install.sh' }
 
 "" others
 Plug 'skywind3000/asyncrun.vim'
+Plug 'dbgx/lldb.nvim'
 "Plug 'LucHermitte/lh-vim-lib'
 "Plug 'LucHermitte/local_vimrc'
 
