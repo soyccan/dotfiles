@@ -39,7 +39,6 @@ sudo usermod $USER -s /bin/zsh
 # oh-my-zsh
 echo Installing Oh My ZSH
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-ln -s "$base/zsh/alias.zsh" "$HOME/.oh-my-zsh/custom/alias.zsh"
 ln -sf "$base/zsh/zshrc" "$HOME/.zshrc"
 
 # download third-party plugins
