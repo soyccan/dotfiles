@@ -14,12 +14,27 @@ set disassembly-flavor intel
 set debug-file-directory /usr/lib/debug/
 set follow-fork-mode child
 
+
+define hook-run
+python
+import angelheap
+angelheap.init_angelheap()
+end
+end
+
+
 define init-peda
 source ~/.gdb/peda/peda.py
+
+# heapinfo and some command
+source ~/.gdb/Pwngdb/pwngdb.py
+source ~/.gdb/Pwngdb/angelheap/gdbinit.py
+
 end
 document init-peda
 Initializes the PEDA (Python Exploit Development Assistant for GDB) framework
 end
+
 
 define init-pwndbg
 source ~/.gdb/pwndbg/gdbinit.py
@@ -27,6 +42,7 @@ end
 document init-pwndbg
 Initializes PwnDBG
 end
+
 
 define init-gef
 end
