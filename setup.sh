@@ -42,10 +42,10 @@ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/i
 ln -sf "$base/zsh/zshrc" "$HOME/.zshrc"
 
 # download third-party plugins
-git clone --depth 1 https://github.com/Powerlevel9k/powerlevel9k $ZSH/custom/themes/powerlevel9k
-git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions $ZSH/custom/plugins/zsh-autosuggestions
-git clone --depth 1 https://github.com/zsh-users/zsh-completions $ZSH/custom/plugins/zsh-completions
-git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting $ZSH/custom/plugins/zsh-syntax-highlighting
+git clone --depth 1 https://github.com/Powerlevel9k/powerlevel9k $HOME/.oh-my-zsh/custom/themes/powerlevel9k
+git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+git clone --depth 1 https://github.com/zsh-users/zsh-completions $HOME/.oh-my-zsh/custom/plugins/zsh-completions
+git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 
 
 
