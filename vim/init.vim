@@ -156,6 +156,7 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 " bfrg/vim-cpp-modern
 
 "" looking
+Plug 'jacoborus/tender.vim'
 Plug 'sickill/vim-monokai'
 Plug 'dikiaap/minimalist'
 Plug 'NLKNguyen/papercolor-theme'
@@ -191,8 +192,8 @@ Plug 'sgur/vim-textobj-parameter'
 
 "" navigating
 " gtags: alternative of ctags and cscope
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'skywind3000/gutentags_plus'
+" Plug 'ludovicchabant/vim-gutentags'
+" Plug 'skywind3000/gutentags_plus'
 Plug 'skywind3000/vim-preview'
 " fuzzy search function, alternative of tagbar
 Plug 'Yggdroot/LeaderF',  { 'do': './install.sh' }
@@ -213,6 +214,7 @@ packadd! termdebug
 runtime mapping.vim
 runtime options.vim
 runtime looking.vim
+runtime filetype.vim
 runtime pluginconf/vim-instant-markdown.vim
 runtime pluginconf/vim-markdown.vim
 runtime pluginconf/nerdcommenter.vim

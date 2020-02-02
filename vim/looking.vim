@@ -9,7 +9,8 @@ set guifont=Consolas:h12
 syntax on
 set t_Co=256
 
-colorscheme minimalist
+colorscheme tender
+" colorscheme minimalist
 " colorscheme material-theme
 " colorscheme PaperColor
 " colorscheme monokai
