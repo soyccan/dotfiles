@@ -4,48 +4,85 @@ set disassemble-next-line on
 set breakpoint pending on
 set stop-on-solib-events 0
 show stop-on-solib-events
-b sigaction
-b __pthread_start
-break JNI_OnLoad
-
+# b sigaction
+# b __pthread_start
+# break JNI_OnLoad
 
 set startup-with-shell on
 set disassembly-flavor intel
-set debug-file-directory /usr/lib/debug/
 set follow-fork-mode child
+set debug-file-directory /usr/lib/debug
+directory ~/Documents/glibc-src/glibc-2.27:$cdir:$cwd
+
+# note the conflict with peda and pwndbg
+# python from libheap import *
 
 
-define hook-run
-python
-import angelheap
-angelheap.init_angelheap()
+
+# tmp
+# target remote 0:2222
+# file nonono
+# b main
+# b *(new+0x95)
+# b *(new+276)
+# b *(_IO_getline+85)
+# disable breakpoints 1
+# disable breakpoints 2
+# b *(Remove+0x63)
+# b *(show+0x84)
+# b *(take_flag+0x3f)
+
+file EasyROP
+# main
+# b *0x80486bf
+# until read
+b *0x80486f2
+# until memset
+b *0x8048763
+r < hi
+
+
+
+
+define xx
+#     x/60gx $arg0
+    x/120wx $arg0
 end
-end
-
 
 define init-peda
-source ~/.gdb/peda/peda.py
+    set disassemble-next-line off
 
-# heapinfo and some command
-source ~/.gdb/Pwngdb/pwngdb.py
-source ~/.gdb/Pwngdb/angelheap/gdbinit.py
+    source ~/.gdb/peda/peda.py
 
+    # heapinfo and some command
+    source ~/.gdb/Pwngdb/pwngdb.py
+    source ~/.gdb/Pwngdb/angelheap/gdbinit.py
+    # define hook-run
+    python
+import angelheap
+angelheap.init_angelheap()
+    end
+    # end
 end
 document init-peda
-Initializes the PEDA (Python Exploit Development Assistant for GDB) framework
+    Initializes the PEDA (Python Exploit Development Assistant for GDB) framework
 end
 
 
 define init-pwndbg
-source ~/.gdb/pwndbg/gdbinit.py
+    source ~/.gdb/pwndbg/gdbinit.py
+    set disassemble-next-line off
 end
 document init-pwndbg
-Initializes PwnDBG
+    Initializes PwnDBG
 end
 
 
 define init-gef
 end
 document init-gef
-Initializes GEF (GDB Enhanced Features)
+    Initializes GEF (GDB Enhanced Features)
 end
+
+# gdb ghidra
+# source ~/Documents/gdbghidra/data/gdb_ghidra_bridge_client.py

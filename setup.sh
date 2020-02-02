@@ -69,6 +69,7 @@ mkdir "$HOME/.gdb"
 git clone --depth 1 https://github.com/longld/peda "$HOME/.gdb/peda"
 git clone --depth 1 https://github.com/pwndbg/pwndbg "$HOME/.gdb/pwndbg"
 git clone --depth 1 https://github.com/scwuaptx/Pwngdb "$HOME/.gdb/Pwngdb"
+git clone --depth 1 https://github.com/cloudburst/libheap "$HOME/.gdb/libheap"
 ln -sf "$base/gdb/gdbinit" "$HOME/.gdbinit"
 printf '#!/bin/sh\nexec gdb -q -ex init-peda "$@"'   | sudo tee /usr/local/bin/peda   >/dev/null
 printf '#!/bin/sh\nexec gdb -q -ex init-pwndbg "$@"' | sudo tee /usr/local/bin/pwndbg >/dev/null

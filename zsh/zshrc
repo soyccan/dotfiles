@@ -1,9 +1,9 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 # for Ubuntu snap
-export PATH=/snap/bin/:$PATH
+export PATH=/var/lib/snapd/snap/bin:$PATH
 # for MacPorts
-export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+# export PATH=/opt/local/bin:/opt/local/sbin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -114,7 +114,7 @@ plugins=(
   globalias # press <space> to expand alias, subcommand, glob expr
   git
   #github # empty_gh / new_gh / exist_gh / git.io; NOTE: this breaks git's command completion
-  git-auto-fetch
+  #git-auto-fetch
   osx
   pep8
   pip
@@ -207,8 +207,8 @@ alias ln='ln -s' # --symbolic'
 alias wget='wget --timestamping -c' # --continue
 alias hd='hexdump -C' # hex+ascii
 
-alias gcc='gcc -Wall -Wextra -Wconversion -std=c18   -g -Dsoyccan'
-alias g++='g++ -Wall -Wextra -Wconversion -std=c++17 -g -Dsoyccan'
+alias gcc='clang   -Wall -Wextra -Wconversion -std=c18   -g -Dsoyccan'
+alias g++='clang++ -Wall -Wextra -Wconversion -std=c++17 -g -Dsoyccan'
 
 if [ "$(uname)" = 'Darwin' ]; then
     alias objdump='objdump -x86-asm-syntax=intel'
@@ -320,3 +320,6 @@ alias -g NUL="> /dev/null 2>&1"
 
 # Make zsh know about hosts already accessed by SSH
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
