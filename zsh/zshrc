@@ -1,7 +1,7 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 # for Ubuntu snap
-export PATH=/var/lib/snapd/snap/bin:$PATH
+export PATH=/snap/bin:$PATH
 # for MacPorts
 # export PATH=/opt/local/bin:/opt/local/sbin:$PATH
 
@@ -215,6 +215,9 @@ if [ "$(uname)" = 'Darwin' ]; then
 else
     alias objdump='objdump -M intel'
 fi
+
+alias gcll='git clone --recurse-submodules --depth 1'
+alias pip='sudo pip'
 
 # docker
 alias dat='docker attach'

@@ -12,7 +12,8 @@ set startup-with-shell on
 set disassembly-flavor intel
 set follow-fork-mode child
 set debug-file-directory /usr/lib/debug
-directory ~/Documents/glibc-src/glibc-2.27:$cdir:$cwd
+directory ~/Documents/glibc-src/glibc-2.27/libio
+directory ~/Documents/glibc-src/glibc-2.27/stdio-common
 
 # note the conflict with peda and pwndbg
 # python from libheap import *
@@ -21,32 +22,22 @@ directory ~/Documents/glibc-src/glibc-2.27:$cdir:$cwd
 
 # tmp
 # target remote 0:2222
-# file nonono
-# b main
-# b *(new+0x95)
-# b *(new+276)
-# b *(_IO_getline+85)
-# disable breakpoints 1
-# disable breakpoints 2
-# b *(Remove+0x63)
-# b *(show+0x84)
-# b *(take_flag+0x3f)
 
-file EasyROP
-# main
-# b *0x80486bf
-# until read
-b *0x80486f2
-# until memset
-b *0x8048763
-r < hi
+# b *0x400a9d
+# b *0x400c4f
+# b *0x400bf0
+# b *0x400c1d
+# b *dlsym+160
+
+define setbreak
+end
 
 
 
 
 define xx
-#     x/60gx $arg0
-    x/120wx $arg0
+    x/60gx $arg0
+#     x/120wx $arg0
 end
 
 define init-peda
