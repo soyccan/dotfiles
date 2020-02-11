@@ -8,7 +8,7 @@ show stop-on-solib-events
 # b __pthread_start
 # break JNI_OnLoad
 
-set startup-with-shell on
+set startup-with-shell off
 set disassembly-flavor intel
 set follow-fork-mode child
 set debug-file-directory /usr/lib/debug
