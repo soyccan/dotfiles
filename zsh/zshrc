@@ -81,63 +81,54 @@ POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs command_execution_tim
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  # third-party plugins
+  # third-party plugins, require clone from git+https://github.com/zsh-users/...
   zsh-autosuggestions
   zsh-completions
   zsh-syntax-highlighting
 
-  # zsh plugins
-  alias-finder
-  autopep8
-  autoenv
-  branch
-  brew
-  colored-man-pages
-  colorize
-  command-not-found
-  #common-aliases
-  cp # cpv
+  # completions
   django
   docker
-  docker-compose
-  emoji # echo $emoji[mouse_face] / random_emoji
-  emotty
-  encode64 # e64 / d64
-  extract # extract
   fd
-  firewalld # fw / fwr / fwp / fwrp / fwl
   heroku
   httpie # coloured curl
-  jsontools # pp_json / is_json / urlencode_json / urldecode_json
-  mix-fast
-  nmap # nmap_open_ports ...
-  geeknote # gn
-  gem
-  globalias # press <space> to expand alias, subcommand, glob expr
-  git
-  #github # empty_gh / new_gh / exist_gh / git.io; NOTE: this breaks git's command completion
-  #git-auto-fetch
-  osx
-  pep8
   pip
-  pipenv
-  pj # PROJECT_PATHS=(~/code ~/work); pj code
-  pylint
-  python
-  rails # rc / rs ...
   ripgrep # alternative to grep / ag / ack
+
+  # aliases
+  brew # bubu = brew update|outdated|upgrade|cleanup
+  docker-compose # dcb, dcup
+  firewalld # fw / fwr / fwp / fwrp / fwl
+  nmap # nmap_open_ports ...
+  git # ga, gc, gcl, gl, gp, ...
+  pipenv # pi = pipenv install
+  pylint # pylint-quick
+  rails # rc / rs ...
   rsync # rsync-copy / rsync-move / rsync-update / rsync-synchronize
-  ruby # rb / gin / gun / gli
-  #safe-paste # NOTE: this breaks history substring search
-  systemadmin # ping / mkdir / clr / path / pscpu / psmem...
   systemd # sc-xxxx
-  thefuck
-  transfer # transfer.sh
+
+  # functions
+  cp # cpv = rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress
+  encode64 # e64 / d64
+  extract # extract or x
+  colorize # ccat
+  jsontools # pp_json / is_json / urlencode_json / urldecode_json
+  systemadmin # ping / mkdir / clr / path / pscpu / psmem...
   urltools # urlencode / urldecode
-  web-search # google
-  xcode # xcb
+  vscode
+#   osx
+#   xcode # xcb
+
+  # plugins
+  autoenv
+  colored-man-pages
+  globalias # press <space> to expand alias, subcommand, glob expr
+  transfer # transfer.sh
   zsh_reload # src
 
+  # disabled due to heavy start-up impact
+#   command-not-found
+#   thefuck
 )
 
 
@@ -194,32 +185,36 @@ export EDITOR='vim'
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #
 alias cp='cp -irv' # --interactive --recursive --verbose
-alias mv='mv -i' # --interactive
+alias mv='mv -iv' # --interactive --verbose
 alias rm='rm -i' # --interactive=always
 
 alias df='df -h' # --human-readable
 alias du='du -h'  # --human-readable --apparent-size(-A) ; -A connot be used in macOS
 alias free='free -h' # --human
 
-alias tar='tar -v' # --verbose'
-alias untar='tar -vxf'
+alias ctar='tar -vcf' # create tarball
+alias ltar='tar -vtf' # list files
+alias untar='tar -vxf' # extract
+alias lzip='unzip -l'
+alias lrar='unrar l'
 
 alias less='less -R' # --RAW-CONTROL-CHARS ; color only
-alias ln='ln -s' # --symbolic'
-alias wget='wget --timestamping -c' # --continue
+alias ln='ln -s' # --symbolic
+alias wget='wget -c' # --continue; (--timestamping)
 alias hd='hexdump -C' # hex+ascii
+alias gcll='git clone --recurse-submodules --depth 1' # together with 'git' plugin
+alias rg='rg -i' # ignore case
 
-alias gcc='clang   -Wall -Wextra -Wconversion -std=c18   -g -Dsoyccan'
-alias g++='clang++ -Wall -Wextra -Wconversion -std=c++17 -g -Dsoyccan'
+alias c='clang -Wall -Wextra -Wconversion -std=c18 -g -Dsoyccan'
+alias cpp='clang++ -Wall -Wextra -Wconversion -std=c++17 -g -Dsoyccan'
 
 if [ "$(uname)" = 'Darwin' ]; then
     alias objdump='objdump -x86-asm-syntax=intel'
+    alias gobjdump='gobjdump -M intel'
 else
     alias objdump='objdump -M intel'
 fi
 
-alias gcll='git clone --recurse-submodules --depth 1'
-alias pip='sudo pip'
 
 # docker
 alias dat='docker attach'
@@ -253,36 +248,36 @@ alias dex='docker exec -it'
 
 alias zshrc='${=EDITOR} ~/.zshrc' # Quick access to the ~/.zshrc file
 
-# alias grep='grep --color'
-# alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
+alias grep='grep --color=auto'
+alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
 
-# alias t='tail -f'
+alias t='tail -f'
 
 # Command line head / tail shortcuts
 alias -g X='| xargs'
 alias -g H='| head'
 alias -g T='| tail'
 alias -g G='| grep'
-which ag &>/dev/null && alias -g G='| ag'
+which rg &>/dev/null && alias -g G='| rg'
 alias -g L="| less"
 alias -g M="| most"
-# alias -g LL="2>&1 | less"
-# alias -g CA="2>&1 | cat -A"
+alias -g LL="2>&1 | less"
+alias -g CA="2>&1 | cat -A"
 alias -g NE="2> /dev/null"
 alias -g NUL="> /dev/null 2>&1"
-# alias -g P="2>&1| pygmentize -l pytb"
+alias -g P="2>&1| pygmentize -l pytb"
 
-# alias dud='du -d 1 -h'
-# alias duf='du -sh *'
-# alias fd='find . -type d -name'
-# alias ff='find . -type f -name'
+alias dud='du -d 1 -h'
+alias duf='du -sh *'
+# alias fd='find . -type d -name' # another tool named 'fd' exists
+alias ff='find . -type f'
 
-# alias h='history'
-# alias hgrep="fc -El 0 | grep"
-# alias help='man'
-# alias p='ps -f'
-# alias sortnr='sort -n -r'
-# alias unexport='unset'
+alias h='history'
+alias hgrep="fc -El 0 | grep"
+alias help='man'
+alias p='ps -f'
+alias sortnr='sort -n -r'
+alias unexport='unset'
 
 # alias rm='rm -i'
 # alias cp='cp -i'
@@ -327,4 +322,4 @@ alias -g NUL="> /dev/null 2>&1"
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
+# export PATH="$PATH:$HOME/.rvm/bin"
