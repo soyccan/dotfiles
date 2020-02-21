@@ -16,15 +16,7 @@
 "     S{ : surrond with {
 """
 """ CHEATSHEET: vim-gutentags
-"   noremap <silent> <leader>cs :GscopeFind s <C-R><C-W><cr>
-"   noremap <silent> <leader>cg :GscopeFind g <C-R><C-W><cr>
-"   noremap <silent> <leader>cc :GscopeFind c <C-R><C-W><cr>
-"   noremap <silent> <leader>ct :GscopeFind t <C-R><C-W><cr>
-"   noremap <silent> <leader>ce :GscopeFind e <C-R><C-W><cr>
-"   noremap <silent> <leader>cf :GscopeFind f <C-R>=expand("<cfile>")<cr><cr>
-"   noremap <silent> <leader>ci :GscopeFind i <C-R>=expand("<cfile>")<cr><cr>
-"   noremap <silent> <leader>cd :GscopeFind d <C-R><C-W><cr>
-"   noremap <silent> <leader>ca :GscopeFind a <C-R><C-W><cr>
+" :GscopeFind {querytype} {name}
 "   0 or s: Find this symbol
 "   1 or g: Find this definition
 "   2 or d: Find functions called by this function
@@ -34,11 +26,15 @@
 "   7 or f: Find this file
 "   8 or i: Find files #including this file
 "   9 or a: Find places where this symbol is assigned a value
-" <leader>cg - 查看光标下符号的定义
-" <leader>cs - 查看光标下符号的引用
-" <leader>cc - 查看有哪些函数调用了该函数
-" <leader>cf- 查找光标下的文件
-" <leader>ci- 查找哪些文件 include 了本文件
+" <leader>cs 	Find symbol (reference) under cursor
+" <leader>cg 	Find symbol definition under cursor
+" <leader>cd 	Functions called by this function
+" <leader>cc 	Functions calling this function
+" <leader>ct 	Find text string under cursor
+" <leader>ce 	Find egrep pattern under cursor
+" <leader>cf 	Find file name under cursor
+" <leader>ci 	Find files #including the file name under cursor
+" <leader>ca 	Find places where current symbol is assigned
 " 查找到索引后跳到弹出的 quikfix 窗口，停留在想查看索引行上，按 小P直接打开预览窗口，大P关闭预览，\d 和 \u 向上向下滚动预览窗口。
 """
 """ CHEATSHEET: extended text object
@@ -119,16 +115,11 @@ endif
 """ Plugins
 "" disabled
 "Plug 'vim-scripts/Conque-Shell'
-"Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
 "Plug 'tpope/vim-unimpaired'
 " Plug 'Lokaltog/vim-powerline'
 " Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 " Plug 'godlygeek/tabular'
 " Plug 'jiangmiao/auto-pairs'
-" denite: alternative of CtrlP
-" Plug 'Shougo/denite.nvim'
-" Plug 'roxma/nvim-yarp'
-" Plug 'roxma/vim-hug-neovim-rpc'
 " Plug 'vim-scripts/STL-improved'
 
 "" someone's vimrc:
@@ -171,7 +162,7 @@ Plug 'chr4/nginx.vim'
 "" editing
 Plug 'scrooloose/nerdcommenter'
 Plug 'Raimondi/delimitMate'
-Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clang-completer --clangd-completer --go-completer --ts-completer --rust-completer' }
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py --all --clangd-completer' }
 Plug 'Shougo/echodoc.vim'
 Plug 'tpope/vim-surround'
 Plug 'junegunn/vim-easy-align'
@@ -192,11 +183,20 @@ Plug 'sgur/vim-textobj-parameter'
 
 "" navigating
 " gtags: alternative of ctags and cscope
-" Plug 'ludovicchabant/vim-gutentags'
-" Plug 'skywind3000/gutentags_plus'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'skywind3000/gutentags_plus'
 Plug 'skywind3000/vim-preview'
-" fuzzy search function, alternative of tagbar
+Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
+" fuzzy search function
 Plug 'Yggdroot/LeaderF',  { 'do': './install.sh' }
+" fuzzy search many things
+if has('nvim')
+  Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/denite.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
 
 "" others
 Plug 'skywind3000/asyncrun.vim'
@@ -230,9 +230,9 @@ runtime pluginconf/indentline.vim
 runtime pluginconf/airline.vim
 runtime pluginconf/ultisnips.vim
 runtime pluginconf/delimitMate.vim
+runtime pluginconf/tagbar.vim
 " runtime pluginconf/auto-pairs.vim
 " runtime pluginconf/nerdtree.vim
-" runtime pluginconf/tagbar.vim
 " runtime pluginconf/syntastic.vim
 " runtime pluginconf/ctrlp.vim
 " runtime options/gvim.vim

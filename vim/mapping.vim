@@ -33,8 +33,8 @@ imap <F4> <ESC>4
 " command is set in: after/compiler/xxx.vim
 "
 autocmd FileType vim map <buffer> 5 :w \| source %<CR>
-autocmd FileType c   map <buffer> 5 :w \| cclose \| copen \| wincmd p \| AsyncRun gcc "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" -Wall -Wextra -Wconversion -Dsoyccan -g -std=c11<CR>
-autocmd FileType cpp map <buffer> 5 :w \| cclose \| copen \| wincmd p \| AsyncRun g++ "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" -Wall -Wextra -Wconversion -Dsoyccan -g -std=c++17<CR>
+autocmd FileType c   map <buffer> 5 :w \| cclose \| copen \| wincmd p \| AsyncRun clang   "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" -Wall -Wextra -Wconversion -Dsoyccan -g -std=c18<CR>
+autocmd FileType cpp map <buffer> 5 :w \| cclose \| copen \| wincmd p \| AsyncRun clang++ "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" -Wall -Wextra -Wconversion -Dsoyccan -g -std=c++17<CR>
 map 5 :wa \| cclose \| copen \| wincmd p \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
 " blocking compilation:
 " map <silent> 5 :wa \| silent! make \| cwindow \| wincmd p<CR>
@@ -131,12 +131,19 @@ nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
 nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
+
 """ Section: LeaderF
 let g:Lf_ShortcutF = '<C-p>'
 let g:Lf_ShortcutB = '<leader>fb'
-noremap <leader>fm :LeaderfMru<CR>
+" find recent
+noremap <leader>fr :LeaderfMru<CR>
+" find function
 noremap <leader>ff :LeaderfFunction<CR>
-" noremap <leader>ff :LeaderfFunction!<CR>
-" noremap <leader>fF :LeaderfFunction<CR>
+" find buffer
 noremap <leader>fb :LeaderfBuffer<CR>
+" find tag
 noremap <leader>ft :LeaderfTag<CR>
+
+
+""" Section: TagBar
+map <leader>t :TagbarToggle<CR>
