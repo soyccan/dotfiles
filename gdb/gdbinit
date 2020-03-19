@@ -1,3 +1,4 @@
+define global-settings
 # https://blog.csdn.net/keial/article/details/78881533
 set pagination off
 set disassemble-next-line on
@@ -10,17 +11,23 @@ show stop-on-solib-events
 
 set startup-with-shell off
 set disassembly-flavor intel
-set follow-fork-mode child
+set follow-fork-mode parent
+set detach-on-fork off
 set debug-file-directory /usr/lib/debug
 directory ~/Documents/glibc-src/glibc-2.27/libio
 directory ~/Documents/glibc-src/glibc-2.27/stdio-common
 
+tmp
+
 # note the conflict with peda and pwndbg
 # python from libheap import *
 
+# gdb ghidra
+# source ~/Documents/gdbghidra/data/gdb_ghidra_bridge_client.py
+end
 
 
-# tmp
+define tmp
 # target remote 0:2222
 
 # b *0x400a9d
@@ -29,10 +36,22 @@ directory ~/Documents/glibc-src/glibc-2.27/stdio-common
 # b *0x400c1d
 # b *dlsym+160
 
-define setbreak
+# file a2b
+# b main
+
+# file pwnie
+# b *0x8048668
+
+# file easierROP
+# b *0x400a9d
+# b *0x400b2e
+# b *0x400bc7
+# set $buf=0x6020e0
 end
 
 
+define setbreak
+end
 
 
 define xx
@@ -40,20 +59,20 @@ define xx
 #     x/120wx $arg0
 end
 
+
 define init-peda
-    set disassemble-next-line off
+source ~/.gdb/peda/peda.py
 
-    source ~/.gdb/peda/peda.py
-
-    # heapinfo and some command
-    source ~/.gdb/Pwngdb/pwngdb.py
-    source ~/.gdb/Pwngdb/angelheap/gdbinit.py
-    # define hook-run
-    python
+# heapinfo and some command
+source ~/.gdb/Pwngdb/pwngdb.py
+source ~/.gdb/Pwngdb/angelheap/gdbinit.py
+python
 import angelheap
 angelheap.init_angelheap()
-    end
-    # end
+end
+
+set disassemble-next-line off
+global-settings
 end
 document init-peda
     Initializes the PEDA (Python Exploit Development Assistant for GDB) framework
@@ -61,8 +80,9 @@ end
 
 
 define init-pwndbg
-    source ~/.gdb/pwndbg/gdbinit.py
-    set disassemble-next-line off
+source ~/.gdb/pwndbg/gdbinit.py
+set disassemble-next-line off
+global-settings
 end
 document init-pwndbg
     Initializes PwnDBG
@@ -74,6 +94,3 @@ end
 document init-gef
     Initializes GEF (GDB Enhanced Features)
 end
-
-# gdb ghidra
-# source ~/Documents/gdbghidra/data/gdb_ghidra_bridge_client.py
