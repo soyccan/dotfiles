@@ -62,14 +62,14 @@ imap <F6> <ESC>6
 " map <S-F7> :cp<CR>
 
 " left down up right
-noremap ; h
-noremap q j
-noremap j k
-noremap k l
+" noremap ; h
+" noremap q j
+" noremap j k
+" noremap k l
 
 " move whole line down/up
-nnoremap Q ddp
-nnoremap J ddkP
+nnoremap J ddp
+nnoremap K ddkP
 " TODO: move of multiple lines doesn't work well
 " vnoremap Q V:'<,'>m +2<CR>gv
 " vnoremap J V:'<,'>m -2<CR>gv
