@@ -115,6 +115,7 @@ plugins=(
   jsontools # pp_json / is_json / urlencode_json / urldecode_json
   systemadmin # ping / mkdir / clr / path / pscpu / psmem...
   vscode
+  urlencode # should use the one in custom/
 #   osx
 #   xcode # xcb
 
