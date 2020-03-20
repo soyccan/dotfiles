@@ -49,7 +49,7 @@ git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting $HOME/.
 
 # install my plugin
 mkdir -pv $HOME/.oh-my-zsh/custom/plugins/urlencode
-ln -s $base/zsh/urlencode.sh $HOME/.oh-my-zsh/custom/plugins/urlencode/
+ln -s $base/zsh/urlencode.sh $HOME/.oh-my-zsh/custom/plugins/urlencode/urlencode.plugin.zsh
 
 
 
