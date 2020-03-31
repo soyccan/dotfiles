@@ -237,3 +237,8 @@ runtime pluginconf/tagbar.vim
 " runtime pluginconf/ctrlp.vim
 " runtime options/gvim.vim
 " runtime options/netrw.vim
+
+" an configuration example
+" https://github.com/changemewtf/no_plugins
+" https://www.youtube.com/watch?v=XA2WjJbmmoM
+" runtime no_plugins.git/no_plugins.vim

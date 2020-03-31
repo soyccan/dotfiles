@@ -114,8 +114,8 @@ plugins=(
   colorize # ccat
   jsontools # pp_json / is_json / urlencode_json / urldecode_json
   systemadmin # ping / mkdir / clr / path / pscpu / psmem...
-  urltools # urlencode / urldecode
   vscode
+  urlencode # should use the one in custom/
 #   osx
 #   xcode # xcb
 
@@ -181,6 +181,9 @@ export EDITOR='vim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
+
+# faster homebrew bottle repo
+# export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
