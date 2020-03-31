@@ -30,9 +30,9 @@ let g:ale_python_pylint_options = '--jobs=4'
 " let g:ale_sign_error = ">>"
 " let g:ale_sign_warning = "--"
 
-" hi! clear SpellBad
-" hi! clear SpellCap
-" hi! clear SpellRare
-" hi! SpellBad gui=undercurl guisp=red
-" hi! SpellCap gui=undercurl guisp=blue
-" hi! SpellRare gui=undercurl guisp=magenta
+hi! clear SpellBad
+hi! clear SpellCap
+hi! clear SpellRare
+hi! SpellBad gui=undercurl guisp=red
+hi! SpellCap gui=undercurl guisp=blue
+hi! SpellRare gui=undercurl guisp=magenta
