@@ -122,7 +122,6 @@ plugins=(
   # plugins
   autoenv
   colored-man-pages
-  globalias # press <space> to expand alias, subcommand, glob expr
   transfer # transfer.sh
   zsh_reload # src
 
@@ -136,6 +135,14 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 export TERM="xterm-256color"
+
+# copy from globalias.plugin.zsh
+globalias() {
+    zle _expand_alias
+    #zle expand-word
+    zle self-insert
+}
+zle -N globalias
 
 # launch tmux at start
 # if [[ -z "$TMUX" ]]; then
