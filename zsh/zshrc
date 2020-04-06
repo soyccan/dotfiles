@@ -153,14 +153,14 @@ bindkey -M viins "^ " magic-space
 bindkey -M isearch " " magic-space
 
 # launch tmux at start
-# if [[ -z "$TMUX" ]]; then
-#     tmux list-sessions
-#     if [[ "$?" = "0" ]]; then
-#         tmux a
-#     else
-#         tmux
-#     fi
-# fi
+if [ -z "$TMUX" ] && [ "$(hostname)" != 'soyccanmac.local' ]; then
+    tmux list-sessions
+    if [ $? = 0 ]; then
+        tmux a
+    else
+        tmux
+    fi
+fi
 
 # ^N and ^P is originally bind to {up,down}-line-or-history
 bindkey "^P" history-search-backward
@@ -180,7 +180,9 @@ bindkey "^N" history-search-forward
 export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-export EDITOR='vim'
+export EDITOR='vi'
+which vim >/dev/null && export EDITOR='vim'
+which nvim >/dev/null && export EDITOR='nvim'
 # if [[ -n $SSH_CONNECTION ]]; then
 #   export EDITOR='vim'
 # else
@@ -233,6 +235,12 @@ else
     alias objdump='objdump -M intel'
 fi
 
+if which nvim >/dev/null; then
+    alias vi='nvim'
+    alias vim='nvim'
+    alias vimdiff='nvim -d'
+fi
+
 
 # docker
 alias dat='docker attach'
@@ -276,7 +284,7 @@ alias -g X='| xargs'
 alias -g H='| head'
 alias -g T='| tail'
 alias -g G='| grep'
-which rg &>/dev/null && alias -g G='| rg'
+which ag &>/dev/null && alias -g G='| ag'
 alias -g L="| less"
 alias -g M="| most"
 alias -g LL="2>&1 | less"
