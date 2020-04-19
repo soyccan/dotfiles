@@ -154,13 +154,8 @@ bindkey -M viins "^ " magic-space
 bindkey -M isearch " " magic-space
 
 # launch tmux at start
-if [ -z "$TMUX" ] && [ "$(hostname)" != 'soyccanmac.local' ]; then
-    tmux list-sessions
-    if [ $? = 0 ]; then
-        tmux a
-    else
-        tmux
-    fi
+if [ -z "$TMUX" ]; then
+    tmux a
 fi
 
 # ^N and ^P is originally bind to {up,down}-line-or-history
