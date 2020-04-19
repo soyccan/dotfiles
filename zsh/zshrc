@@ -124,6 +124,7 @@ plugins=(
   colored-man-pages
   transfer # transfer.sh
   zsh_reload # src
+  z # easy jump
 
   # disabled due to heavy start-up impact
 #   command-not-found
