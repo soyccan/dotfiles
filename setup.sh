@@ -18,7 +18,16 @@ if [ "$1" = 'clean' ]; then
     exit
 fi
 
-base="$(pwd)/$(dirname $0)"
+ln_confirm() {
+    src="$1"
+    link="$2"
+    if [ -L "$link" ]; then
+        ln -svf "$src" "$link"
+    else
+        ln -svi "$src" "$link"
+    fi
+}
+
 
 get_package_manager() (
     . /etc/os-release
@@ -31,57 +40,81 @@ get_package_manager() (
 pkgmgr=$(get_package_manager)
 
 
-## zsh
-echo Installing ZSH
-sudo $pkgmgr install zsh
-sudo usermod $USER -s /bin/zsh
+dotfiles="$(pwd)/$(dirname $0)"
+
+
+#######
+# zsh #
+#######
+
+# zsh
+if ! which zsh >/dev/null; then
+    echo Installing ZSH
+    sudo $pkgmgr install zsh
+    sudo usermod $USER -s /bin/zsh
+fi
 
 # oh-my-zsh
 echo Installing Oh My ZSH
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-ln -sf "$base/zsh/zshrc" "$HOME/.zshrc"
+ln_confirm "$dotfiles/zsh/zshrc" "$HOME/.zshrc"
 
 # download third-party plugins
-git clone --depth 1 https://github.com/Powerlevel9k/powerlevel9k $HOME/.oh-my-zsh/custom/themes/powerlevel9k
-git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-git clone --depth 1 https://github.com/zsh-users/zsh-completions $HOME/.oh-my-zsh/custom/plugins/zsh-completions
-git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+git clone --depth 1 https://github.com/Powerlevel9k/powerlevel9k "$HOME/.oh-my-zsh/custom/themes/powerlevel9k"
+git clone --depth 1 https://github.com/romkatv/powerlevel10k "$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
+git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+git clone --depth 1 https://github.com/zsh-users/zsh-completions "$HOME/.oh-my-zsh/custom/plugins/zsh-completions"
+git clone --depth 1 https://github.com/zsh-users/zsh-history-substring-search "$HOME/.oh-my-zsh/custom/plugins/zsh-history-substring-search"
+git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+
+# powerlever10k
+ln_confirm "$dotfiles/zsh/p10k.zsh" "$HOME/.p10k.zsh"
 
 # install my plugin
-mkdir -pv $HOME/.oh-my-zsh/custom/plugins/urlencode
-ln -s $base/zsh/urlencode.sh $HOME/.oh-my-zsh/custom/plugins/urlencode/urlencode.plugin.zsh
+mkdir -pv "$HOME/.oh-my-zsh/custom/plugins/urlencode"
+ln_confirm "$dotfiles/zsh/urlencode.sh" "$HOME/.oh-my-zsh/custom/plugins/urlencode/urlencode.plugin.zsh"
 
 
+########
+# tmux #
+########
 
-## oh-my-tmux
+# oh-my-tmux
 echo Installing Oh My TMUX
 git clone --depth 1 https://github.com/gpakosz/.tmux "$HOME/.tmux"
-ln -s "$HOME/.tmux/.tmux.conf" "$HOME/.tmux.conf"
-ln -s "$base/tmux/tmux.conf.local" "$HOME/.tmux.conf.local"
+ln_confirm "$HOME/.tmux/.tmux.conf" "$HOME/.tmux.conf"
+ln_confirm "$dotfiles/tmux/tmux.conf.local" "$HOME/.tmux.conf.local"
 
 
+#######
+# vim #
+#######
 
-## vim
 echo Installing VIM
-ln -sf "$base/vim" "$HOME/.vim"
-ln -sf "$base/vim" "$HOME/.config/nvim"
+ln_confirm "$dotfiles/vim" "$HOME/.vim"
+ln_confirm "$dotfiles/vim" "$HOME/.config/nvim"
+ln_confirm "$dotfiles/vim/init.vim" "$HOME/.vimrc"
+ln_confirm "$dotfiles/vim/init.vim" "$HOME/.vimrc"
 
 
-## gdb
+#######
+# gdb #
+#######
+
 echo Setup GDB
 mkdir "$HOME/.gdb"
 git clone --depth 1 https://github.com/longld/peda "$HOME/.gdb/peda"
 git clone --depth 1 https://github.com/pwndbg/pwndbg "$HOME/.gdb/pwndbg"
 git clone --depth 1 https://github.com/scwuaptx/Pwngdb "$HOME/.gdb/Pwngdb"
 git clone --depth 1 https://github.com/cloudburst/libheap "$HOME/.gdb/libheap"
-ln -sf "$base/gdb/gdbinit" "$HOME/.gdbinit"
-printf '#!/bin/sh\nexec gdb -q -ex init-peda "$@"'   | sudo tee /usr/local/bin/peda   >/dev/null
-printf '#!/bin/sh\nexec gdb -q -ex init-pwndbg "$@"' | sudo tee /usr/local/bin/pwndbg >/dev/null
-sudo chmod +x /usr/local/bin/peda
-sudo chmod +x /usr/local/bin/pwndbg
+ln_confirm "$dotfiles/gdb/gdbinit" "$HOME/.gdbinit"
 
-ln -sf "$base/gdb/lldbinit" "$HOME/.lldbinit"
+# lldb
+ln_confirm "$dotfiles/gdb/lldbinit" "$HOME/.lldbinit"
 
 
+########
+# Done #
+########
 
 echo Voila! Setup Finished!
