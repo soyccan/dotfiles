@@ -201,6 +201,10 @@ alias wget='wget -c' # --continue; (--timestamping)
 alias hd='hexdump -C' # hex+ascii
 alias gcll='git clone --recurse-submodules --depth 1' # together with 'git' plugin
 
+alias py='python3'
+alias cl='clang'
+alias cll='clang++'
+
 if [ "$(uname)" = 'Darwin' ]; then
     alias objdump='objdump -x86-asm-syntax=intel'
     alias gobjdump='gobjdump -M intel'
