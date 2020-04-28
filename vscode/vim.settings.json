@@ -1,12 +1,9 @@
 {
     "vim.enableNeovim": true,
-    "vim.neovimPath": "/usr/local/bin/nvim",
-    "vim.easymotion": true,
-    "vim.sneak": true,
+    "vim.neovimPath": "/usr/bin/nvim",
     "vim.incsearch": true,
-    "vim.useSystemClipboard": true,
-    "vim.useCtrlKeys": true,
     "vim.hlsearch": true,
+    "vim.useCtrlKeys": true,
     "vim.insertModeKeyBindingsNonRecursive": [
         {
             "before": [
@@ -120,6 +117,38 @@
                 "editor.action.peekReference"
             ]
         },
+        {
+            "before": [
+                "<c-f>"
+            ],
+            "after": [
+                "<c-u>"
+            ]
+        },
+        {
+            "before": [
+                "<c-h>"
+            ],
+            "after": [
+                "<c-d>"
+            ]
+        },
+        {
+            "before": [
+                "<c-.>"
+            ],
+            "after": [
+                "<c-v>"
+            ]
+        },
+        {
+            "before": [
+                "<c-o>"
+            ],
+            "after": [
+                "<c-r>"
+            ]
+        },
     ],
     "vim.visualModeKeyBindingsNonRecursive": [
         {
@@ -165,7 +194,7 @@
     "vim.leader": "<space>",
     "vim.handleKeys": {
         "<C-a>": false,
-        "<C-f>": false
+        "<C-/>": false,
     },
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
