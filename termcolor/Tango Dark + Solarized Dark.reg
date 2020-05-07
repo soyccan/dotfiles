@@ -1,0 +1,39 @@
+Windows Registry Editor Version 5.00
+
+
+; Builtin Tango Dark:
+;     https://github.com/mbadolato/iTerm2-Color-Schemes/blob/master/putty/Builtin%20Tango%20Dark.reg
+; Solarized Dark:
+;     https://github.com/mbadolato/iTerm2-Color-Schemes/blob/master/putty/Solarized%20Dark%20-%20Patched.reg
+; Green Foreground:
+;     (0,255,0)
+
+
+[HKEY_CURRENT_USER\Software\SimonTatham\PuTTY\Sessions\Tango Dark + Solarized Dark]
+"Font"="MesloLGS NF"
+"BoldFont"="MesloLGS NF"
+"BoldFontIsBold"=dword:00000001
+"BoldAsColour"=dword:00000002
+"BlinkCur"=dword:00000001
+"Colour0"="0,255,0"
+"Colour1"="0,255,0"
+"Colour2"="0,30,39"
+"Colour3"="0,30,39"
+"Colour4"="0,40,49"
+"Colour5"="112,130,132"
+"Colour6"="0,40,49"
+"Colour7"="85,87,83"
+"Colour8"="204,0,0"
+"Colour9"="239,41,41"
+"Colour10"="78,154,6"
+"Colour11"="138,226,52"
+"Colour12"="196,160,0"
+"Colour14"="52,101,164"
+"Colour13"="252,233,79"
+"Colour15"="114,159,207"
+"Colour16"="117,80,123"
+"Colour17"="173,127,168"
+"Colour18"="6,152,154"
+"Colour19"="52,226,226"
+"Colour20"="211,215,207"
+"Colour21"="238,238,236"
