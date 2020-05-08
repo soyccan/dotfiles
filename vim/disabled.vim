@@ -57,6 +57,10 @@ Plug 'kana/vim-textobj-function', { 'for': ['c', 'cpp', 'vim', 'java'] }
 Plug 'sgur/vim-textobj-parameter'
 
 "" navigating
+" browse files in project
+Plug 'preservim/nerdtree'
+" NerdTree Git support
+Plug 'Xuyuanp/nerdtree-git-plugin'
 " gtags: alternative of ctags and cscope
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'skywind3000/gutentags_plus'
@@ -94,6 +98,7 @@ runtime pluginconf/airline.vim
 runtime pluginconf/ultisnips.vim
 runtime pluginconf/delimitMate.vim
 runtime pluginconf/tagbar.vim
+runtime pluginconf/nerdtree.vim
 " runtime pluginconf/vim-autoformat.vim
 " runtime pluginconf/auto-pairs.vim
 " runtime pluginconf/nerdtree.vim

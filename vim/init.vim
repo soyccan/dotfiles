@@ -15,11 +15,18 @@ Plug 'preservim/nerdcommenter'
 Plug 'tpope/vim-surround'
 " auto finish bracket pair
 Plug 'Raimondi/delimitMate'
+" Defines a new text object representing lines of code at the same indent level.
+" Useful for python/vim scripts
+" <count>ai 	An Indentation level and line above.
+" <count>ii 	Inner Indentation level (no line above).
+Plug 'michaeljsmith/vim-indent-object'
 
 
 "" Navigation
-" symbol list sidebar
+" symbol list
 Plug 'majutsushi/tagbar'
+" fuzzy search
+Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 
 
 "" Looking
@@ -84,6 +91,7 @@ runtime pluginconf/indentLine.vim
 runtime pluginconf/ale.vim
 runtime pluginconf/deoplete.vim
 runtime pluginconf/delimitMate.vim
+runtime pluginconf/leaderf.vim
 
 
 

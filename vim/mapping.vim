@@ -1,37 +1,43 @@
 let mapleader = ' '
 
-" 2/F2: save
-map 2 :w<CR>
-imap <F2> <ESC>2
+" w : Save
+" upper W is still words forward
+" or e can be replacement
+nmap w :w<CR>
+vmap w :w<CR>
+" save and load config
+autocmd FileType vim nmap w :w \| source %<CR>| vmap w :w \| source %<CR>
 
-" 3/F3: new tab
-" <Tab>/<S-Tab>: switch tab
-map 3 :tabnew .<CR>
-imap <F3> <ESC>3
-noremap <Tab> gt
-noremap <S-Tab> gT
+" Z : Close buffer
+" Q : Close window
+" gQ is still entering Ex mode
+" Notice: this overrides ZZ and ZQ
+map Z :bdelete<CR>
+map Q :q<CR>
 
-" 4/F4: quit
-map 4 :q<CR>
-imap <F4> <ESC>4
+" <Tab>/<S-Tab>: Switch buffer
+" DO NOT mistake tabs' use:
+" http://stackoverflow.com/questions/102384/using-vims-tabs-like-buffers
+noremap <Tab> :bnext<CR>
+noremap <S-Tab> :bprev<CR>
 
-" 5/F5: compile
+" 5/F5: [disabled] compile
 " command is set in: after/compiler/xxx.vim
-autocmd FileType vim map <buffer> 5 :w \| source %<CR>
-map 5 :wa \| cclose \| copen \| wincmd p \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
+" autocmd FileType vim map <buffer> 5 :w \| source %<CR>
+" map 5 :wa \| cclose \| copen \| wincmd p \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
 " blocking compilation:
 " map <silent> 5 :wa \| silent! make \| cwindow \| wincmd p<CR>
-imap <F5> <ESC>5
+" imap <F5> <ESC>5
 
-" 6/F6: run
-autocmd FileType vim    map <buffer> 6 :w<CR>:source %<CR>
-autocmd FileType python map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw python "$(VIM_FILEPATH)"<CR>
-autocmd FileType ruby   map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw ruby   "$(VIM_FILEPATH)"<CR>
-autocmd FileType sh     map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw sh     "$(VIM_FILEPATH)"<CR>
-map 6 :cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw -cwd=$(VIM_FILEDIR) "$(VIM_FILEDIR)/$(VIM_FILENOEXT)"<CR>
+" 6/F6: [disabled] run
+" autocmd FileType vim    map <buffer> 6 :w<CR>:source %<CR>
+" autocmd FileType python map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw python "$(VIM_FILEPATH)"<CR>
+" autocmd FileType ruby   map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw ruby   "$(VIM_FILEPATH)"<CR>
+" autocmd FileType sh     map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw sh     "$(VIM_FILEPATH)"<CR>
+" map 6 :cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw -cwd=$(VIM_FILEDIR) "$(VIM_FILEDIR)/$(VIM_FILENOEXT)"<CR>
 " blocking run:
 " map <silent> 6 :cexpr system(shellescape(expand("%:p:r"))) \| vertical botright copen 50 \| wincmd p<CR>
-imap <F6> <ESC>6
+" imap <F6> <ESC>6
 
 " F7
 " compile && run
@@ -106,6 +112,7 @@ map <leader>cp :cprev<CR>
 """""""""""""
 " Bookmarks "
 """""""""""""
+" show bookmarks
 map <leader>m :marks<CR>
 
 
@@ -117,26 +124,34 @@ map <leader>m :marks<CR>
 map <leader>/ <Plug>NERDCommenterToggle
 
 
-""""""""""
-" Tagbar "
-""""""""""
-map <leader>t :TagbarToggle<CR>
+"""""""""""""""""""""
+" Tagbar / NerdTree "
+"""""""""""""""""""""
+map <leader>tt :TagbarToggle<CR>
+map <leader>tn :NerdTreeToggle<CR>
+
+
+"""""""""""
+" LeaderF "
+"""""""""""
+" g:Lf_ShortcutF                                  *g:Lf_ShortcutF*
+"     Use this option to set the mapping of searching files command.
+"     e.g. let g:Lf_ShortcutF = '<C-P>'
+"     Default value is '<leader>f'.
+let g:Lf_ShortcutF = '<leader>ff'
+" g:Lf_ShortcutB                                  *g:Lf_ShortcutB*
+"     Use this option to set the mapping of searching buffers command.
+"     Default value is '<leader>b'.
+let g:Lf_ShortcutB = '<leader>fb'
+" find functions (symbols)
+noremap <leader>fs :LeaderfFunction<CR>
+" find recently used
+noremap <leader>fr :LeaderfMru<CR>
+" find tags
+noremap <leader>ft :LeaderfTag<CR>
 
 
 """ Section: YouCompleteMe
 " nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
 " nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
 " nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
-
-
-""" Section: LeaderF
-" let g:Lf_ShortcutF = '<C-p>'
-" let g:Lf_ShortcutB = '<leader>fb'
-" " find recent
-" noremap <leader>fr :LeaderfMru<CR>
-" " find function
-" noremap <leader>ff :LeaderfFunction<CR>
-" " find buffer
-" noremap <leader>fb :LeaderfBuffer<CR>
-" " find tag
-" noremap <leader>ft :LeaderfTag<CR>

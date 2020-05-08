@@ -32,6 +32,10 @@ set expandtab " Ctrl-V + Tab to enter real tab
 " set tags=./.tags;,.tags
 set cscopetag
 
+"" Buffers
+" allow buffer to be hidden without being saved
+set hidden
+
 " syntax
 let g:c_space_errors = 1
 let g:c_curly_error = 1
