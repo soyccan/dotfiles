@@ -14,7 +14,7 @@ set noshowmode
 " set statusline+=%{gutentags#statusline()}
 
 set list
-set listchars=tab:┊\ ,nbsp:-,extends:>,precedes:<
+set listchars=tab:┊\ ,trail:-,nbsp:+,extends:>,precedes:<
 
 set autochdir
 set autoread " auto reload when changed
@@ -38,18 +38,19 @@ let g:c_curly_error = 1
 let g:c_comment_strings = 1
 let g:is_bash = 1
 
+" mouse
+" set mouse=a
+" set ttymouse=xterm
+
 " DANGEROUS!!!
 " load local .exrc for configuration
 " set exrc
 
 
-" compiling and QuickFix options
+" QuickFix window options
 autocmd FileType qf set wrap nonumber foldcolumn=0 | SignifyDisable
 " autocmd QuickFixCmdPost * vertical botright copen 50
 
-autocmd FileType c   compiler gcc
-autocmd FileType cpp compiler g++
 
-
-let g:python_host_prog = '/System/Library/Frameworks/Python.framework/Versions/2.7/bin/python2.7'
-let $PYTHONPATH .= ':/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Resources/Python'
+let g:python_host_prog = trim(system('which python'))
+let g:python3_host_prog = trim(system('which python3'))

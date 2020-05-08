@@ -1,47 +1,29 @@
-" TODO: add spaces around any operator
-"
 let mapleader = ' '
 
-" switch buffers
-" replaced by tab: gt / gT
-"map <C-n> :bnext<CR>
-"map <C-p> :bprevious<CR>
-
-" list buffers
-"map <F2> :ls<CR>
-"imap <F2> <ESC><F2>
-
-" F2
-" save
+" 2/F2: save
 map 2 :w<CR>
 imap <F2> <ESC>2
 
-" F3 and Tab
-" tab; new / next / previous
+" 3/F3: new tab
+" <Tab>/<S-Tab>: switch tab
 map 3 :tabnew .<CR>
 imap <F3> <ESC>3
 noremap <Tab> gt
 noremap <S-Tab> gT
 
-" F4
-" quit
+" 4/F4: quit
 map 4 :q<CR>
 imap <F4> <ESC>4
 
-" F5
-" compile
+" 5/F5: compile
 " command is set in: after/compiler/xxx.vim
-"
 autocmd FileType vim map <buffer> 5 :w \| source %<CR>
-autocmd FileType c   map <buffer> 5 :w \| cclose \| copen \| wincmd p \| AsyncRun clang   "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" -Wall -Wextra -Wconversion -Dsoyccan -g -std=c18<CR>
-autocmd FileType cpp map <buffer> 5 :w \| cclose \| copen \| wincmd p \| AsyncRun clang++ "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" -Wall -Wextra -Wconversion -Dsoyccan -g -std=c++17<CR>
 map 5 :wa \| cclose \| copen \| wincmd p \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
 " blocking compilation:
 " map <silent> 5 :wa \| silent! make \| cwindow \| wincmd p<CR>
 imap <F5> <ESC>5
 
-" F6
-" run
+" 6/F6: run
 autocmd FileType vim    map <buffer> 6 :w<CR>:source %<CR>
 autocmd FileType python map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw python "$(VIM_FILEPATH)"<CR>
 autocmd FileType ruby   map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw ruby   "$(VIM_FILEPATH)"<CR>
@@ -57,16 +39,6 @@ imap <F6> <ESC>6
 " map 7 56
 " imap <F7> <ESC>7
 
-" quickfix
-" map <F7> :cc<CR>
-" map <S-F7> :cp<CR>
-
-" left down up right
-" noremap ; h
-" noremap q j
-" noremap j k
-" noremap k l
-
 " move whole line down/up
 nnoremap J ddp
 nnoremap K ddkP
@@ -81,19 +53,16 @@ noremap <C-j> J
 vnoremap > >gv
 vnoremap < <gv
 
-" Enter / Return
-" create vertical space
+" Enter / Return: create vertical space
 " in help: jump to tag at current cursor
 autocmd FileType help nnoremap <buffer> <Enter> <C-]>
 autocmd FileType qf nnoremap <buffer> <Enter> <CR>
 nnoremap <Enter> o<ESC>
 
-" Backspace
-" jump back
+" Backspace: jump back
 nnoremap <BS> <C-o>
 
-" `
-" move ESCAPE next to key 1
+" backquote ` (the key next to number 1): ESC
 " to enter real ` : <C-v> + `
 vnoremap ` <ESC>
 inoremap ` <ESC>
@@ -101,49 +70,73 @@ inoremap ` <ESC>
 " command line Home key
 cnoremap <C-A> <Home>
 
-" happy pasting
+" paste again and again and again...
 xnoremap p pgvy
 
 
-" press 0 for HOME / (non-blank) HOME / END, alternatively
-function! s:AlternateHomeEnd()
-    " TODO; this function cause 'd0' to behave wrongly
-    if col('.') == len(getline('.'))
-        norm! 0
-    elseif col('.') == 1 && (getline('.')[0] == ' ' || getline('.')[0] == '\t')
-        norm! ^
-    else
-        norm! $
-    endif
-endfunction
-" [DISABLED]
+" [DISABLED] press 0 for HOME / (non-blank) HOME / END, alternatively
+" function! s:AlternateHomeEnd()
+"     " TODO; this function cause 'd0' to behave wrongly
+"     if col('.') == len(getline('.'))
+"         norm! 0
+"     elseif col('.') == 1 && (getline('.')[0] == ' ' || getline('.')[0] == '\t')
+"         norm! ^
+"     else
+"         norm! $
+"     endif
+" endfunction
 " map <silent> 0 :call <SID>AlternateHomeEnd()<CR>
 
 
-""" Section: NERDCommenter
+
+""""""""""""""""""""""""""""
+" Location List / QuickFix "
+""""""""""""""""""""""""""""
+map <leader>lo :lopen<CR>
+map <leader>lx :lclose<CR>
+map <leader>ln :lnext<CR>
+map <leader>lp :lprev<CR>
+
+map <leader>co :copen<CR>
+map <leader>cx :cclose<CR>
+map <leader>cn :cnext<CR>
+map <leader>cp :cprev<CR>
+
+
+"""""""""""""
+" Bookmarks "
+"""""""""""""
+map <leader>m :marks<CR>
+
+
+"""""""""""""""""
+" NERDCommenter "
+"""""""""""""""""
 " <C-_> means Ctrl + / in terminal
 " but Ctrl + / is not recoginzed in gVim
 map <leader>/ <Plug>NERDCommenterToggle
 
 
+""""""""""
+" Tagbar "
+""""""""""
+map <leader>t :TagbarToggle<CR>
+
+
 """ Section: YouCompleteMe
-nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
-nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
-nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
+" nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
+" nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
+" nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 
 """ Section: LeaderF
-let g:Lf_ShortcutF = '<C-p>'
-let g:Lf_ShortcutB = '<leader>fb'
-" find recent
-noremap <leader>fr :LeaderfMru<CR>
-" find function
-noremap <leader>ff :LeaderfFunction<CR>
-" find buffer
-noremap <leader>fb :LeaderfBuffer<CR>
-" find tag
-noremap <leader>ft :LeaderfTag<CR>
-
-
-""" Section: TagBar
-map <leader>t :TagbarToggle<CR>
+" let g:Lf_ShortcutF = '<C-p>'
+" let g:Lf_ShortcutB = '<leader>fb'
+" " find recent
+" noremap <leader>fr :LeaderfMru<CR>
+" " find function
+" noremap <leader>ff :LeaderfFunction<CR>
+" " find buffer
+" noremap <leader>fb :LeaderfBuffer<CR>
+" " find tag
+" noremap <leader>ft :LeaderfTag<CR>

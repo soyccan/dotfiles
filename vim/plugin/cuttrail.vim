@@ -12,4 +12,4 @@ function! s:CutTrail()
     endfor
 endfunction
 
-autocmd BufWrite * call <SID>CutTrail()
+" autocmd BufWrite * call <SID>CutTrail()
