@@ -118,20 +118,21 @@ plugins=(
   systemadmin # ping / mkdir / clr / path / pscpu / psmem...
   vscode
   urlencode # this should be using my own one in custom/
-#   osx
-#   xcode # xcb
+  # osx
+  # xcode # xcb
 
   # plugins
-  autoenv
-  globalias # expand alias to original commands
+  # autoenv
   colored-man-pages
+  globalias # expand alias to original commands
+  pyenv # auto setup environment for pyenv
   transfer # transfer.sh
   zsh_reload # src
   z # easy jump
 
   # disabled due to heavy start-up impact
-#   command-not-found
-#   thefuck
+  # command-not-found
+  # thefuck
 )
 
 source $ZSH/oh-my-zsh.sh
