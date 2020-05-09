@@ -151,6 +151,13 @@ noremap <leader>fr :LeaderfMru<CR>
 noremap <leader>ft :LeaderfTag<CR>
 
 
+"""""""
+" ALE "
+"""""""
+noremap <leader>gd :ALEGoToDefinition<CR>
+noremap <leader>gt :ALEGoToTypeDefinition<CR>
+
+
 """ Section: YouCompleteMe
 " nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
 " nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>

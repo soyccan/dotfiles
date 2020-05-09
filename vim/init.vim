@@ -47,7 +47,7 @@ Plug 'chr4/nginx.vim'
 
 
 "" Syntax Checking
-" async syntax checking, auto formatting
+" async syntax checking, auto formatting, go-to-definiton
 " (ALE's completion feature is disabled)
 Plug 'dense-analysis/ale'
 

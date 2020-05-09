@@ -195,11 +195,16 @@ let g:ale_hover_to_preview = 1
 " \}
 " ```
 let g:ale_linters = {
-\   'c': ['cppcheck'],
-\   'cpp': ['cppcheck'],
+\   'c': ['cppcheck', 'clangd'],
+\   'cpp': ['cppcheck', 'clangd'],
 \   'python': ['pylint'],
 \   'sh': ['shellcheck'],
 \}
+if !executable('clangd')
+    " the path installed by Homebrew
+    let g:ale_c_clangd_executable = '/usr/local/opt/llvm/bin/clangd'
+    let g:ale_cpp_clangd_executable = '/usr/local/opt/llvm/bin/clangd'
+endif
 " Note: pylint scans across files, being more complete,
 "       while flake8 is faster
 "
@@ -634,19 +639,6 @@ let g:ale_keep_list_window_open = 0
 " ```vim
 " :ALEInfo
 " ```
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 " let g:ale_linters_explicit = 1
