@@ -3,17 +3,17 @@ let mapleader = ' '
 " w : Save
 " upper W is still words forward
 " or e can be replacement
-nmap w :w<CR>
-vmap w :w<CR>
+nnoremap w :w<CR>
+vnoremap w <ESC>:w<CR>
 " save and load config
-autocmd FileType vim nmap w :w \| source %<CR>| vmap w :w \| source %<CR>
+autocmd FileType vim nmap <buffer> w :w \| source %<CR>| vmap w :w \| source %<CR>
 
 " Z : Close buffer
 " Q : Close window
 " gQ is still entering Ex mode
 " Notice: this overrides ZZ and ZQ
-map Z :bdelete<CR>
-map Q :q<CR>
+noremap Z :bdelete<CR>
+noremap Q :q<CR>
 
 " <Tab>/<S-Tab>: Switch buffer
 " DO NOT mistake tabs' use:
@@ -45,9 +45,11 @@ noremap <S-Tab> :bprev<CR>
 " map 7 56
 " imap <F7> <ESC>7
 
-" move whole line down/up
+" move whole line(s) down/up
 nnoremap J ddp
+vnoremap <expr> J 'dp`[' . strgetchar(getregtype(), 0) . '`]'
 nnoremap K ddkP
+vnoremap <expr> K 'dkP`[' . strgetchar(getregtype(), 0) . '`]'
 " TODO: move of multiple lines doesn't work well
 " vnoremap Q V:'<,'>m +2<CR>gv
 " vnoremap J V:'<,'>m -2<CR>gv
@@ -66,18 +68,20 @@ autocmd FileType qf nnoremap <buffer> <Enter> <CR>
 nnoremap <Enter> o<ESC>
 
 " Backspace: jump back
-nnoremap <BS> <C-o>
+noremap <BS> <C-o>
 
 " backquote ` (the key next to number 1): ESC
 " to enter real ` : <C-v> + `
+onoremap ` <ESC>
 vnoremap ` <ESC>
 inoremap ` <ESC>
 
 " command line Home key
 cnoremap <C-A> <Home>
 
-" paste again and again and again...
-xnoremap p pgvy
+" after replacing selection with p
+" keep in register what is pasted rather than what is replaced
+vnoremap p pgvy
 
 
 " [DISABLED] press 0 for HOME / (non-blank) HOME / END, alternatively
@@ -94,26 +98,25 @@ xnoremap p pgvy
 " map <silent> 0 :call <SID>AlternateHomeEnd()<CR>
 
 
+"""""""""""""""""""""
+" <leader> mappings "
+"""""""""""""""""""""
+" make / compile
+noremap <leader>m :wa \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
 
-""""""""""""""""""""""""""""
-" Location List / QuickFix "
-""""""""""""""""""""""""""""
-map <leader>lo :lopen<CR>
-map <leader>lx :lclose<CR>
-map <leader>ln :lnext<CR>
-map <leader>lp :lprev<CR>
+" Location List
+noremap <leader>lo :lopen<CR>
+noremap <leader>lx :lclose<CR>
+noremap <leader>ln :lnext<CR>
+noremap <leader>lp :lprev<CR>
+" QuickFix
+noremap <leader>qo :copen<CR>
+noremap <leader>qx :cclose<CR>
+noremap <leader>qn :cnext<CR>
+noremap <leader>qp :cprev<CR>
 
-map <leader>co :copen<CR>
-map <leader>cx :cclose<CR>
-map <leader>cn :cnext<CR>
-map <leader>cp :cprev<CR>
-
-
-"""""""""""""
-" Bookmarks "
-"""""""""""""
 " show bookmarks
-map <leader>m :marks<CR>
+noremap <leader>bm :marks<CR>
 
 
 """""""""""""""""
@@ -127,8 +130,8 @@ map <leader>/ <Plug>NERDCommenterToggle
 """""""""""""""""""""
 " Tagbar / NerdTree "
 """""""""""""""""""""
-map <leader>tt :TagbarToggle<CR>
-map <leader>tn :NerdTreeToggle<CR>
+noremap <leader>tt :TagbarToggle<CR>
+noremap <leader>tn :NerdTreeToggle<CR>
 
 
 """""""""""
@@ -154,11 +157,15 @@ noremap <leader>ft :LeaderfTag<CR>
 """""""
 " ALE "
 """""""
-noremap <leader>gd :ALEGoToDefinition<CR>
-noremap <leader>gt :ALEGoToTypeDefinition<CR>
+" noremap <leader>gd :ALEGoToDefinition<CR>
+" noremap <leader>gt :ALEGoToTypeDefinition<CR>
 
 
-""" Section: YouCompleteMe
-" nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
-" nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
-" nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
+"""""""""""""""""
+" YouCompleteMe "
+"""""""""""""""""
+noremap <leader>gt :YcmCompleter GetType<CR>
+" gh (get help)
+noremap <leader>gh :YcmCompleter GetDoc<CR>
+noremap <leader>gi :YcmCompleter GoToInclude<CR>
+noremap <leader>gd :YcmCompleter GoToDefinition<CR>

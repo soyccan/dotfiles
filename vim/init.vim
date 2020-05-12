@@ -27,6 +27,8 @@ Plug 'michaeljsmith/vim-indent-object'
 Plug 'majutsushi/tagbar'
 " fuzzy search
 Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+" search in files
+Plug 'mileszs/ack.vim'
 
 
 "" Looking
@@ -37,6 +39,8 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 " indention guide
 Plug 'Yggdroot/indentLine'
+" pop-up window support
+Plug 'Shougo/echodoc.vim'
 
 
 "" Syntax Highlighting
@@ -46,15 +50,12 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'chr4/nginx.vim'
 
 
-"" Syntax Checking
-" async syntax checking, auto formatting, go-to-definiton
-" (ALE's completion feature is disabled)
+"" Sementic
+" Async syntax checking, auto formatting
+" (I don't use its completion or go-to-definiton feature,
+" YouCompleteMe or deoplete is better)
 Plug 'dense-analysis/ale'
-
-
-"" Completion
-" completion engine
-" TODO: how about YouCompleteMe?
+" Completion
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 if !has('nvim')
     " additional plugin for deoplete
@@ -65,6 +66,14 @@ endif
 Plug 'Shougo/deoplete-clangx', { 'for': ['c', 'cpp'] }
 " Python source for deoplite
 Plug 'deoplete-plugins/deoplete-jedi', { 'for': 'python' }
+"
+" TODO: YouCompleteMe vs. deoplete
+" Completion / go-to-definition
+" Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --clangd-completer' }
+" tags manager
+Plug 'ludovicchabant/vim-gutentags'
+" auto connect cscope database and define :GscopeFind command
+Plug 'skywind3000/gutentags_plus'
 
 
 "" Others
@@ -83,15 +92,12 @@ call plug#end()
 runtime mapping.vim
 runtime options.vim
 runtime looking.vim
-runtime filetype.vim
-runtime pluginconf/nerdcommenter.vim
-runtime pluginconf/vim-signify.vim
-runtime pluginconf/vim-airline.vim
-runtime pluginconf/indentLine.vim
-runtime pluginconf/ale.vim
-runtime pluginconf/deoplete.vim
-runtime pluginconf/delimitMate.vim
-runtime pluginconf/leaderf.vim
+for plugin in g:plugs_order
+    " if !filereadable(expand('~/.config/nvim/conf.d/'.plugin.'.vim'))
+    "     echo plugin
+    " end
+    execute 'runtime conf.d/' . plugin . '.vim'
+endfor
 
 
 

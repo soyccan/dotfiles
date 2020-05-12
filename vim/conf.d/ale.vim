@@ -195,15 +195,21 @@ let g:ale_hover_to_preview = 1
 " \}
 " ```
 let g:ale_linters = {
-\   'c': ['cppcheck', 'clangd'],
-\   'cpp': ['cppcheck', 'clangd'],
+\   'c': ['clangtidy', 'cppcheck'],
+\   'cpp': ['clangtidy', 'cppcheck'],
 \   'python': ['pylint'],
 \   'sh': ['shellcheck'],
 \}
-if !executable('clangd')
-    " the path installed by Homebrew
-    let g:ale_c_clangd_executable = '/usr/local/opt/llvm/bin/clangd'
-    let g:ale_cpp_clangd_executable = '/usr/local/opt/llvm/bin/clangd'
+
+let g:ale_c_cppcheck_options = '-I/usr/local/include'
+let g:ale_cpp_cppcheck_options = '-I/usr/local/include'
+
+let g:ale_c_clangtidy_options = ''
+let g:ale_cpp_clangtidy_options = '-x c++'
+if !executable('clang-tidy')
+    " installed by Homebrew
+    let g:ale_c_clangtidy_executable = '/usr/local/opt/llvm/bin/clang-tidy'
+    let g:ale_cpp_clangtidy_executable = '/usr/local/opt/llvm/bin/clang-tidy'
 endif
 " Note: pylint scans across files, being more complete,
 "       while flake8 is faster

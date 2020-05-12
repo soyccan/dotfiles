@@ -49,11 +49,11 @@ let g:deoplete#enable_at_startup = 1
 "
 " ```vim
 " " Change clang binary path
-call deoplete#custom#var('clangx', 'clang_binary', trim(system('which clang')))
+" call deoplete#custom#var('clangx', 'clang_binary', trim(system('which clang')))
 "
 " " Change clang options
-call deoplete#custom#var('clangx', 'default_c_options', '')
-call deoplete#custom#var('clangx', 'default_cpp_options', '')
+" call deoplete#custom#var('clangx', 'default_c_options', '')
+" call deoplete#custom#var('clangx', 'default_cpp_options', '')
 " ```
 "
 "

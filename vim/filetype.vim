@@ -1,1 +1,1 @@
-au BufNewFile,BufRead *.sage  setfiletype python
+au BufNewFile,BufRead *.sage setfiletype python

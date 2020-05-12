@@ -29,12 +29,14 @@ set softtabstop=4
 set shiftwidth=4
 set expandtab " Ctrl-V + Tab to enter real tab
 
-" set tags=./.tags;,.tags
 set cscopetag
 
 "" Buffers
 " allow buffer to be hidden without being saved
 set hidden
+
+" completion behaviour
+set completeopt-=preview
 
 " syntax
 let g:c_space_errors = 1

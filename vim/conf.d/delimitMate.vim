@@ -94,7 +94,7 @@ let g:delimitMate_autoclose = 1
 " |delimitMateFunctions| for more details.
 let g:delimitMate_expand_cr = 2
 let g:delimitMate_expand_space = 1
-let g:delimitMate_jump_expansion = 1
+let g:delimitMate_jump_expansion = 0
 "
 " ------------------------------------------------------------------------------
 "    3.3 BACKSPACE                                        *delimitMateBackspace*
