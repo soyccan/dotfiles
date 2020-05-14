@@ -81,6 +81,8 @@ Plug 'skywind3000/gutentags_plus'
 Plug 'mhinz/vim-signify'
 " async run shell commands
 Plug 'skywind3000/asyncrun.vim'
+" :MarkdownPreview / :MarkdownPreviewStop
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install()  }  }
 
 call plug#end()
 
