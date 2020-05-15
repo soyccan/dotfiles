@@ -1,6 +1,7 @@
 Windows Registry Editor Version 5.00
 
-
+; Putty Theme
+;
 ; Builtin Tango Dark:
 ;     https://github.com/mbadolato/iTerm2-Color-Schemes/blob/master/putty/Builtin%20Tango%20Dark.reg
 ; Solarized Dark:
@@ -15,6 +16,7 @@ Windows Registry Editor Version 5.00
 "BoldFontIsBold"=dword:00000001
 "BoldAsColour"=dword:00000002
 "BlinkCur"=dword:00000001
+"Xterm256Colour"=dword:00000001
 "Colour0"="0,255,0"
 "Colour1"="0,255,0"
 "Colour2"="0,30,39"
