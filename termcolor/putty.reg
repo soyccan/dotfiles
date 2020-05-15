@@ -8,14 +8,18 @@ Windows Registry Editor Version 5.00
 ;     https://github.com/mbadolato/iTerm2-Color-Schemes/blob/master/putty/Solarized%20Dark%20-%20Patched.reg
 ; Green Foreground:
 ;     (0,255,0)
+;
+; Usage: Create saved a session by Putty GUI first, then import this file into registry
+;        may need to modifiy the session name below
 
 
-[HKEY_CURRENT_USER\Software\SimonTatham\PuTTY\Sessions\Tango Dark + Solarized Dark]
+[HKEY_CURRENT_USER\Software\SimonTatham\PuTTY\Sessions\YourSessionName]
 "Font"="MesloLGS NF"
 "BoldFont"="MesloLGS NF"
 "BoldFontIsBold"=dword:00000001
 "BoldAsColour"=dword:00000002
 "BlinkCur"=dword:00000001
+"TerminalType"="xterm-256color"
 "Xterm256Colour"=dword:00000001
 "Colour0"="0,255,0"
 "Colour1"="0,255,0"
