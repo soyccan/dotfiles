@@ -98,22 +98,20 @@ vnoremap p pgvy
 " map <silent> 0 :call <SID>AlternateHomeEnd()<CR>
 
 
-"""""""""""""""""""""
-" <leader> mappings "
-"""""""""""""""""""""
 " make / compile
 noremap <leader>m :wa \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
 
+" Inspired from: https://github.com/tpope/vim-unimpaired
 " Location List
 noremap <leader>lo :lopen<CR>
 noremap <leader>lx :lclose<CR>
-noremap <leader>ln :lnext<CR>
-noremap <leader>lp :lprev<CR>
+noremap [l :lnext<CR>
+noremap ]l :lprev<CR>
 " QuickFix
 noremap <leader>qo :copen<CR>
 noremap <leader>qx :cclose<CR>
-noremap <leader>qn :cnext<CR>
-noremap <leader>qp :cprev<CR>
+noremap [q :cnext<CR>
+noremap ]q :cprev<CR>
 
 " show bookmarks
 noremap <leader>bm :marks<CR>

@@ -57,6 +57,8 @@ Plug 'kana/vim-textobj-function', { 'for': ['c', 'cpp', 'vim', 'java'] }
 Plug 'sgur/vim-textobj-parameter'
 
 "" navigating
+" symbol list
+Plug 'majutsushi/tagbar'
 " browse files in project
 Plug 'preservim/nerdtree'
 " NerdTree Git support

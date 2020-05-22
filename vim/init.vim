@@ -23,9 +23,10 @@ Plug 'michaeljsmith/vim-indent-object'
 
 
 "" Navigation
-" symbol list
-Plug 'majutsushi/tagbar'
 " fuzzy search
+" in search box:
+"   ctrl+j/k: up/down
+"   ctrl+c: quit
 Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 " search in files
 Plug 'mileszs/ack.vim'
@@ -73,10 +74,12 @@ Plug 'deoplete-plugins/deoplete-jedi', { 'for': 'python' }
 " tags manager
 Plug 'ludovicchabant/vim-gutentags'
 " auto connect cscope database and define :GscopeFind command
-Plug 'skywind3000/gutentags_plus'
+" Plug 'skywind3000/gutentags_plus', { 'for': ['c', 'cpp'] }
 
 
 "" Others
+" locate project root
+Plug 'dbakker/vim-projectroot'
 " highlight git difference
 Plug 'mhinz/vim-signify'
 " async run shell commands

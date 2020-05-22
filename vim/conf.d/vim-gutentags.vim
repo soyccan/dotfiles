@@ -1,3 +1,9 @@
+" original was:
+"    autocmd VimEnter  *  if expand('<amatch>')==''|call gutentags#setup_gutentags()|endif
+" which don't run when open a file by: vim filename
+" I don't if this is correct, but it works
+autocmd VimEnter * if exists('*gutentags#setup_gutentags')|call gutentags#setup_gutentags()|endif
+
 "                                                 *gutentags_enabled*
 " g:gutentags_enabled
 "                         Defines whether Gutentags should be enabled. When
@@ -35,7 +41,13 @@ let g:gutentags_trace = 0
 "                         loading at all, as if it wasn't there.
 "
 "                                                 *gutentags_modules*
-let g:gutentags_modules = ['ctags', 'gtags_cscope']
+let g:gutentags_modules = []
+if executable('gtags-cscope') && executable('gtags')
+    let g:gutentags_modules += ['gtags_cscope']
+endif
+if executable('ctags')
+    let g:gutentags_modules += ['ctags']
+endif
 "                         A list of modules to load with Gutentags. Each module
 "                         is responsible for generating a specific type of tags
 "                         file.
@@ -54,7 +66,7 @@ let g:gutentags_modules = ['ctags', 'gtags_cscope']
 "                         Defaults to `[ctags]`.
 "
 "                                                 *gutentags_project_root*
-" g:gutentags_project_root
+" let g:gutentags_project_root = ['.gitignore', 'Makefile', 'README']
 "                         When a buffer is loaded, Gutentags will figure out if
 "                         it's part of a project that should have tags managed
 "                         automatically. To do this, it looks for "root markers"
@@ -106,7 +118,7 @@ let g:gutentags_modules = ['ctags', 'gtags_cscope']
 "                         on MacOS.
 "
 "                                                 *gutentags_project_root_finder*
-" g:gutentags_project_root_finder
+let g:gutentags_project_root_finder = 'projectroot#get'
 "                         When a buffer is loaded, Gutentags uses a default
 "                         (internal) implementation to find that file's
 "                         project's root directory, using settings like
@@ -352,6 +364,12 @@ let g:gutentags_define_advanced_commands = 1
 " g:gutentags_ctags_extra_args
 "                         A list of arguments to pass to `ctags`.
 "                         Defaults to `[]`.
+" (I don't what following mean, but they seem good
+let g:gutentags_ctags_extra_args = []
+let g:gutentags_ctags_extra_args += ['--fields=+niazS']
+let g:gutentags_ctags_extra_args += ['--extra=+q']
+let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
 "
 "                                                 *gutentags_ctags_post_process_cmd*
 " g:gutentags_ctags_post_process_cmd
@@ -424,7 +442,7 @@ let g:gutentags_define_advanced_commands = 1
 "                         Defaults to `".gutgtags"`.
 "
 "                                                 *gutentags_auto_add_gtags_cscope*
-" g:gutentags_auto_add_gtags_cscope
+let g:gutentags_auto_add_gtags_cscope = 0
 "                         If set to 1, Gutentags will automatically add the
 "                         generated code database to Vim by running `:cs add`
 "                         (see |:cscope|).
