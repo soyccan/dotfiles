@@ -29,7 +29,7 @@ set softtabstop=4
 set shiftwidth=4
 set expandtab " Ctrl-V + Tab to enter real tab
 
-set cscopetag
+" set cscopetag
 
 "" Buffers
 " allow buffer to be hidden without being saved
