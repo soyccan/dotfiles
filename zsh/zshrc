@@ -10,7 +10,7 @@ done
 ###########
 # Plugins #
 ###########
-source "$HOME/antigen.zsh"
+source "$HOME/.antigen.zsh"
 
 antigen use oh-my-zsh
 antigen theme romkatv/powerlevel10k powerlevel10k
