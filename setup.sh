@@ -64,7 +64,7 @@ setup_zsh() {
     ln_confirm "$dotfiles/zsh/zshrc" "$HOME/.zshrc"
 
     # antigen - plugin manager
-    curl -L git.io/antigen --create-dirs -o "$HOME/.antigen.zsh"
+    curl -L git.io/antigen --create-dirs -o "$HOME/antigen.zsh"
 
     # powerlever10k
     # ln_confirm "$dotfiles/zsh/p10k.zsh" "$HOME/.p10k.zsh"
