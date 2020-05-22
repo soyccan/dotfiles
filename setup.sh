@@ -51,23 +51,24 @@ setup_zsh() {
         echo Installing ZSH
         sudo "$(get_package_manager)" install zsh
     fi
-    sudo usermod "$USER" -s /bin/zsh
+
+    if [ "$(awk -F':' "/^$USER/ { print \$7 }" /etc/passwd)" != '/bin/zsh' ]; then
+        sudo usermod "$USER" -s /bin/zsh
+    fi
 
     # oh-my-zsh
-    echo Installing Oh My ZSH
-    sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    if [ ! -d "$HOME/.oh-my-zsh" ]; then
+        echo Installing Oh My ZSH
+        sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    fi
     ln_confirm "$dotfiles/zsh/zshrc" "$HOME/.zshrc"
 
-    # download third-party plugins
-    git clone --depth 1 https://github.com/Powerlevel9k/powerlevel9k "$HOME/.oh-my-zsh/custom/themes/powerlevel9k"
-    git clone --depth 1 https://github.com/romkatv/powerlevel10k "$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
-    git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
-    git clone --depth 1 https://github.com/zsh-users/zsh-completions "$HOME/.oh-my-zsh/custom/plugins/zsh-completions"
-    git clone --depth 1 https://github.com/zsh-users/zsh-history-substring-search "$HOME/.oh-my-zsh/custom/plugins/zsh-history-substring-search"
-    git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+    # antigen - plugin manager
+    curl -L git.io/antigen --create-dirs -o "$HOME/.antigen.zsh"
 
     # powerlever10k
-    ln_confirm "$dotfiles/zsh/p10k.zsh" "$HOME/.p10k.zsh"
+    # ln_confirm "$dotfiles/zsh/p10k.zsh" "$HOME/.p10k.zsh"
+    p10k configure
 
     # install my plugin
     mkdir -pv "$HOME/.oh-my-zsh/custom/plugins/urlencode"
@@ -86,7 +87,10 @@ setup_fish() {
     sudo usermod "$USER" -s /bin/fish
 
     # oh-my-fish
-    curl -L https://get.oh-my.fish | fish
+    # curl -L https://get.oh-my.fish | fish
+
+    # fisher
+    curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.fish
 }
 
 

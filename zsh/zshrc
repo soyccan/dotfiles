@@ -1,146 +1,85 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+# PATH
 for p in /snap/bin \
          "$HOME/bin" \
-         "$HOME/.local/bin"; do
+         "$HOME/.local/bin" \
+         "$HOME/go/bin"; do
     [ -d "$p" ] && export PATH="$p:$PATH"
 done
 
 
-# Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
+###########
+# Plugins #
+###########
+source "$HOME/antigen.zsh"
+
+antigen use oh-my-zsh
+antigen theme romkatv/powerlevel10k powerlevel10k
+
+# fish-like features
+antigen bundle zsh-users/zsh-autosuggestions
+antigen bundle zsh-users/zsh-completions
+antigen bundle zsh-users/zsh-history-substring-search
+antigen bundle zsh-users/zsh-syntax-highlighting
+
+# completions
+antigen bundle django
+antigen bundle docker
+antigen bundle fd
+antigen bundle heroku
+antigen bundle httpie # coloured curl
+antigen bundle pip
+antigen bundle ripgrep # alternative to grep / ag / ack
+
+# aliases
+antigen bundle brew # bubu = brew update|outdated|upgrade|cleanup
+antigen bundle docker-compose # dcb, dcup
+antigen bundle firewalld # fw / fwr / fwp / fwrp / fwl
+antigen bundle nmap # nmap_open_ports ...
+antigen bundle git # ga, gc, gcl, gl, gp, ...
+antigen bundle pipenv # pi = pipenv install
+antigen bundle pylint # pylint-quick
+antigen bundle rsync # rsync-copy / rsync-move / rsync-update / rsync-synchronize
+antigen bundle systemd # sc-xxxx
+
+# functions
+antigen bundle cp # cpv = rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress
+antigen bundle encode64 # e64 / d64
+antigen bundle extract # extract or x
+antigen bundle colorize # ccat
+antigen bundle jsontools # pp_json / is_json / urlencode_json / urldecode_json
+antigen bundle systemadmin # ping / mkdir / clr / path / pscpu / psmem...
+antigen bundle vscode
+antigen bundle urltools # urlencode / urldecode
+# antigen bundle osx
+# antigen bundle xcode # xcb
+
+# plugins
+# antigen bundle autoenv
+antigen bundle colored-man-pages
+antigen bundle fasd # fuzzy searcher
+antigen bundle fzf # fuzzy searcher
+antigen bundle globalias # expand alias to original commands
+antigen bundle pyenv # auto setup environment for pyenv
+antigen bundle transfer # transfer.sh
+antigen bundle zsh_reload # src
+antigen bundle z # easy jump
+
+# antigen bundle marlonrichert/zsh-autocomplete
+antigen bundle andrewferrier/fzf-z
+
+# disabled due to heavy start-up impact
+# command-not-found
+# thefuck
+
+antigen apply
 
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# ZSH_THEME="robbyrussell"
-ZSH_THEME="powerlevel10k/powerlevel10k"
+######################
+# User Configuration #
+######################
+
+# Powerlevel10k
 [ -f "$HOME/.p10k.zsh" ] && source "$HOME/.p10k.zsh"
-
-
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in ~/.oh-my-zsh/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS=true
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in ~/.oh-my-zsh/plugins/*
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-# plugins=(git)
-plugins=(
-  # third-party plugins
-  # cloned from git+https://github.com/zsh-users/...
-  # into $ZSH/custom/plugins/
-  zsh-autosuggestions
-  zsh-completions
-  zsh-history-substring-search
-  zsh-syntax-highlighting
-
-  # completions
-  django
-  docker
-  fd
-  heroku
-  httpie # coloured curl
-  pip
-  ripgrep # alternative to grep / ag / ack
-
-  # aliases
-  brew # bubu = brew update|outdated|upgrade|cleanup
-  docker-compose # dcb, dcup
-  firewalld # fw / fwr / fwp / fwrp / fwl
-  nmap # nmap_open_ports ...
-  git # ga, gc, gcl, gl, gp, ...
-  pipenv # pi = pipenv install
-  pylint # pylint-quick
-  rsync # rsync-copy / rsync-move / rsync-update / rsync-synchronize
-  systemd # sc-xxxx
-
-  # functions
-  cp # cpv = rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress
-  encode64 # e64 / d64
-  extract # extract or x
-  colorize # ccat
-  jsontools # pp_json / is_json / urlencode_json / urldecode_json
-  systemadmin # ping / mkdir / clr / path / pscpu / psmem...
-  vscode
-  urlencode # this should be using my own one in custom/
-  # osx
-  # xcode # xcb
-
-  # plugins
-  # autoenv
-  colored-man-pages
-  globalias # expand alias to original commands
-  pyenv # auto setup environment for pyenv
-  transfer # transfer.sh
-  zsh_reload # src
-  z # easy jump
-
-  # disabled due to heavy start-up impact
-  # command-not-found
-  # thefuck
-)
-
-source $ZSH/oh-my-zsh.sh
-
-
-######################
-# User configuration #
-######################
 
 # Launch tmux at start
 if [ -z "$TMUX" ] && [ "$(hostname)" != 'soyccanmac.local' ]; then
@@ -148,8 +87,8 @@ if [ -z "$TMUX" ] && [ "$(hostname)" != 'soyccanmac.local' ]; then
 fi
 
 # ^N and ^P is originally bind to {up,down}-line-or-history
-bindkey "^P" history-search-backward
-bindkey "^N" history-search-forward
+# bindkey "^P" history-search-backward
+# bindkey "^N" history-search-forward
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -168,6 +107,7 @@ which nvim >/dev/null && export EDITOR='nvim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
+
 
 
 ###########
@@ -276,7 +216,7 @@ alias -g P="2>&1| pygmentize -l pytb"
 # added
 alias -g X='| xargs'
 alias -g XG='| xargs grep'
-which ag >/dev/null && { alias -g G='| ag' ; alias -g XG='| xargs ag' }
+which ag >/dev/null && { alias -g G='| ag'; alias -g XG='| xargs ag'; }
 
 alias dud='du -d 1 -h'
 alias duf='du -sh *'
@@ -292,11 +232,6 @@ alias unexport='unset'
 
 # Make zsh know about hosts already accessed by SSH
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
-
-
-###########
-# Plugins #
-###########
 
 # remove one feature of globalias.plugin.zsh
 function _my_expand_word() {}

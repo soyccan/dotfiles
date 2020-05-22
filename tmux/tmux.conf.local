@@ -5,7 +5,7 @@
 #
 
 # -- default session -----------------------------------------------------------
-new-session 'htop'
+new-session 'exec htop'
 new-window
 
 
