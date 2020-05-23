@@ -9,6 +9,7 @@ set number
 set nowrap
 set ruler
 set scrolloff=5
+set colorcolumn=80
 
 set noshowmode
 " set statusline+=%{gutentags#statusline()}
@@ -37,6 +38,8 @@ set hidden
 
 " completion behaviour
 set completeopt-=preview
+
+set timeoutlen=500
 
 " syntax
 let g:c_space_errors = 1

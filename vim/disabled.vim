@@ -57,8 +57,15 @@ Plug 'kana/vim-textobj-function', { 'for': ['c', 'cpp', 'vim', 'java'] }
 Plug 'sgur/vim-textobj-parameter'
 
 "" navigating
-" symbol list
-Plug 'majutsushi/tagbar'
+" Async syntax checking, auto formatting
+" (I don't use its completion or go-to-definiton feature,
+" YouCompleteMe or deoplete is better)
+Plug 'dense-analysis/ale'
+" tags manager
+Plug 'jsfaint/gen_tags.vim'
+" :A to jump between alternate file (e.g. source and header)
+" template support
+Plug 'tpope/vim-projectionist'
 " browse files in project
 Plug 'preservim/nerdtree'
 " NerdTree Git support
@@ -71,11 +78,11 @@ Plug 'skywind3000/vim-preview'
 Plug 'Yggdroot/LeaderF',  { 'do': './install.sh' }
 " fuzzy search many things
 if has('nvim')
-  Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
+    Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
 else
-  Plug 'Shougo/denite.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
+    Plug 'Shougo/denite.nvim'
+    Plug 'roxma/nvim-yarp'
+    Plug 'roxma/vim-hug-neovim-rpc'
 endif
 
 "" others
