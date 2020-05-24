@@ -47,8 +47,8 @@
 "
 " ```viml
 augroup fmt
-  autocmd!
-  autocmd BufWritePre * undojoin | Neoformat
+    autocmd!
+    autocmd BufWritePre * undojoin | Neoformat
 augroup END
 " ```
 "
@@ -105,7 +105,7 @@ augroup END
 "
 " ```viml
 " Enable alignment
-let g:neoformat_basic_format_align = 1
+let g:neoformat_basic_format_align = 0
 
 " Enable tab to spaces conversion
 let g:neoformat_basic_format_retab = 1

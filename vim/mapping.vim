@@ -23,210 +23,215 @@ noremap Q :q<CR>
 " DO NOT mistake tabs' use:
 " http://stackoverflow.com/questions/102384/using-vims-tabs-like-buffers
 noremap <silent> <tab> :if winnr('$') == 1 \| b# \| else \| wincmd w \| endif<CR>
-    noremap <silent> <leader><tab> :b#<CR>
+noremap <silent> <leader><tab> :b#<CR>
 
-    noremap [b :bprev<CR>
-    noremap ]b :bnext<CR>
-    " Location List
-    noremap <leader>lo :lopen<CR>
-    noremap <leader>lx :lclose<CR>
-    noremap [l :lprev<CR>
-    noremap ]l :lnext<CR>
-    " QuickFix
-    noremap <leader>qo :copen<CR>
-    noremap <leader>qx :cclose<CR>
-    noremap [q :cprev<CR>
-    noremap ]q :cnext<CR>
-
-
-    " show bookmarks
-    noremap <leader>bm :marks<CR>
-
-    " 5/F5: [disabled] compile
-    " command is set in: after/compiler/xxx.vim
-    " autocmd FileType vim map <buffer> 5 :w \| source %<CR>
-    " map 5 :wa \| cclose \| copen \| wincmd p \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
-    " blocking compilation:
-    " map <silent> 5 :wa \| silent! make \| cwindow \| wincmd p<CR>
-    " imap <F5> <ESC>5
-
-    " make / compile
-    noremap <leader>m :wa \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
+noremap [b :bprev<CR>
+noremap ]b :bnext<CR>
+" Location List
+noremap <leader>lo :lopen<CR>
+noremap <leader>lx :lclose<CR>
+noremap [l :lprev<CR>
+noremap ]l :lnext<CR>
+" QuickFix
+noremap <leader>qo :copen<CR>
+noremap <leader>qx :cclose<CR>
+noremap [q :cprev<CR>
+noremap ]q :cnext<CR>
 
 
-    " 6/F6: [disabled] run
-    " autocmd FileType vim    map <buffer> 6 :w<CR>:source %<CR>
-    " autocmd FileType python map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw python "$(VIM_FILEPATH)"<CR>
-    " autocmd FileType ruby   map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw ruby   "$(VIM_FILEPATH)"<CR>
-    " autocmd FileType sh     map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw sh     "$(VIM_FILEPATH)"<CR>
-    " map 6 :cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw -cwd=$(VIM_FILEDIR) "$(VIM_FILEDIR)/$(VIM_FILENOEXT)"<CR>
-    " blocking run:
-    " map <silent> 6 :cexpr system(shellescape(expand("%:p:r"))) \| vertical botright copen 50 \| wincmd p<CR>
-    " imap <F6> <ESC>6
+" show bookmarks
+noremap <leader>bm :marks<CR>
 
-    " F7
-    " compile && run
-    " TODO: make it work well with AsyncRun
-    " map 7 56
-    " imap <F7> <ESC>7
+" 5/F5: [disabled] compile
+" command is set in: after/compiler/xxx.vim
+" autocmd FileType vim map <buffer> 5 :w \| source %<CR>
+" map 5 :wa \| cclose \| copen \| wincmd p \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
+" blocking compilation:
+" map <silent> 5 :wa \| silent! make \| cwindow \| wincmd p<CR>
+" imap <F5> <ESC>5
 
-    " move whole line(s) down/up
-    nnoremap J ddp
-    vnoremap <expr> J 'dp`[' . strgetchar(getregtype(), 0) . '`]'
-    nnoremap K ddkP
-    vnoremap <expr> K 'dkP`[' . strgetchar(getregtype(), 0) . '`]'
-
-    " re-map join lines command
-    noremap <C-j> J
-
-    " indent / unindent
-    " normal mode: indent a line
-    " visual mode: keep selection after indenting
-    noremap < <<_
-    noremap < <<_
-    vnoremap > >gv
-    vnoremap < <gv
-
-    " Enter / Return: create vertical space
-    " in help: jump to tag at current cursor
-    autocmd FileType help nnoremap <buffer> <Enter> <C-]>
-    autocmd FileType qf nnoremap <buffer> <Enter> <CR>
-    nnoremap <Enter> o<ESC>
-
-    " Backspace: jump back
-    noremap <BS> <C-o>
-
-    " backquote ` (the key next to number 1): ESC
-    " to enter real ` : <C-v> + `
-    onoremap ` <ESC>
-    vnoremap ` <ESC>
-    inoremap ` <ESC>
-
-    " command line Home key
-    cnoremap <C-A> <Home>
-
-    " after replacing selection with p
-    " keep in register what is pasted rather than what is replaced
-    vnoremap p pgvy
-
-    " no highlight
-    noremap <leader>n :noh<CR>
+" make / compile
+noremap <leader>m :wa \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
 
 
-    " [DISABLED] press 0 for HOME / (non-blank) HOME / END, alternatively
-    " function! s:AlternateHomeEnd()
-    "     " TODO; this function cause 'd0' to behave wrongly
-    "     if col('.') == len(getline('.'))
-    "         norm! 0
-    "     elseif col('.') == 1 && (getline('.')[0] == ' ' || getline('.')[0] == '\t')
-    "         norm! ^
-    "     else
-    "         norm! $
-    "     endif
-    " endfunction
-    " map <silent> 0 :call <SID>AlternateHomeEnd()<CR>
+" 6/F6: [disabled] run
+" autocmd FileType vim    map <buffer> 6 :w<CR>:source %<CR>
+" autocmd FileType python map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw python "$(VIM_FILEPATH)"<CR>
+" autocmd FileType ruby   map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw ruby   "$(VIM_FILEPATH)"<CR>
+" autocmd FileType sh     map <buffer> 6 :w<CR>:cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw sh     "$(VIM_FILEPATH)"<CR>
+" map 6 :cclose \| vertical botright copen 50 \| wincmd p \| AsyncRun -raw -cwd=$(VIM_FILEDIR) "$(VIM_FILEDIR)/$(VIM_FILENOEXT)"<CR>
+" blocking run:
+" map <silent> 6 :cexpr system(shellescape(expand("%:p:r"))) \| vertical botright copen 50 \| wincmd p<CR>
+" imap <F6> <ESC>6
+
+" F7
+" compile && run
+" TODO: make it work well with AsyncRun
+" map 7 56
+" imap <F7> <ESC>7
+
+" move whole line(s) down/up
+nnoremap J ddp
+vnoremap <expr> J 'dp`[' . strgetchar(getregtype(), 0) . '`]'
+nnoremap K ddkP
+vnoremap <expr> K 'dkP`[' . strgetchar(getregtype(), 0) . '`]'
+
+" re-map join lines command
+noremap <leader>j J
+
+" indent / unindent
+" normal mode: indent a line
+" visual mode: keep selection after indenting
+noremap < <<_
+noremap < <<_
+vnoremap > >gv
+vnoremap < <gv
+
+" Enter / Return: create vertical space
+" in help: jump to tag at current cursor
+autocmd FileType help nnoremap <buffer> <CR> <C-]>
+autocmd BufEnter * if &modifiable | nnoremap <CR> o<ESC> | endif
+
+" Backspace: jump back
+noremap <BS> <C-o>
+
+" backquote ` (the key next to number 1): ESC
+" to enter real ` : <C-v> + `
+onoremap ` <ESC>
+vnoremap ` <ESC>
+inoremap ` <ESC>
+
+" command line Home key
+cnoremap <C-A> <Home>
+
+" after replacing selection with p
+" keep in register what is pasted rather than what is replaced
+vnoremap p pgvy
+
+" no highlight
+noremap <leader>n :noh<CR>
+
+" alternate file (source / header)
+noremap <leader>a :AlternateFile<CR>
 
 
 
-    """""""""""""""""
-    " NERDCommenter "
-    """""""""""""""""
-    " <C-_> means Ctrl + / in terminal
-    " but Ctrl + / is not recoginzed in gVim
-    map <leader>/ <Plug>NERDCommenterToggle
+
+"""""""""""""""""
+" NERDCommenter "
+"""""""""""""""""
+" <C-_> means Ctrl + / in terminal
+" but Ctrl + / is not recoginzed in gVim
+map <leader>/ <Plug>NERDCommenterToggle
 
 
-    """""""""""""""""""""
-    " Tagbar / NerdTree "
-    """""""""""""""""""""
-    noremap <leader>tt :TagbarToggle<CR>
-    noremap <leader>tn :NerdTreeToggle<CR>
+"""""""""""""""""""""
+" Tagbar / NerdTree "
+"""""""""""""""""""""
+noremap <leader>tt :TagbarToggle<CR>
+noremap <leader>tn :NerdTreeToggle<CR>
 
 
-    """""""""""
-    " LeaderF "
-    """""""""""
-    " TODO: use Denite instead
-    " g:Lf_ShortcutF                                  *g:Lf_ShortcutF*
-    "     Use this option to set the mapping of searching files command.
-    "     e.g. let g:Lf_ShortcutF = '<C-P>'
-    "     Default value is '<leader>f'.
-    let g:Lf_ShortcutF = '<leader>ff'
-    " g:Lf_ShortcutB                                  *g:Lf_ShortcutB*
-    "     Use this option to set the mapping of searching buffers command.
-    "     Default value is '<leader>b'.
-    let g:Lf_ShortcutB = '<leader>fb'
-    " find functions (symbols)
-    noremap <leader>fs :LeaderfFunction<CR>
-    " find recently used
-    noremap <leader>fr :LeaderfMru<CR>
-    " find tags
-    noremap <leader>ft :LeaderfTag<CR>
+"""""""""""
+" LeaderF "
+"""""""""""
+" TODO: use Denite instead
+" g:Lf_ShortcutF                                  *g:Lf_ShortcutF*
+"     Use this option to set the mapping of searching files command.
+"     e.g. let g:Lf_ShortcutF = '<C-P>'
+"     Default value is '<leader>f'.
+let g:Lf_ShortcutF = '<leader>ff'
+" g:Lf_ShortcutB                                  *g:Lf_ShortcutB*
+"     Use this option to set the mapping of searching buffers command.
+"     Default value is '<leader>b'.
+let g:Lf_ShortcutB = '<leader>fb'
+" find functions, or (s)ymbols
+noremap <leader>fs :LeaderfFunction<CR>
+" find (r)ecently used
+noremap <leader>fr :LeaderfMru<CR>
+" find (t)ags
+noremap <leader>ft :LeaderfTag<CR>
+" search in files by r(g)
+noremap <leader>fg :Leaderf rg<CR>
 
 
-    """"""""""
-    " Denite "
-    """"""""""
-    " TODO: fuzzy search don't work
-    " find files recursively
-    " noremap <leader>ff :DeniteBufferDir file/rec<CR>
-    " " find recently used
-    " noremap <leader>fr :Denite file_mru<CR>
-    " " find tags
-    " noremap <leader>ft :Denite tag<CR>
-
-    " let s:insert_mode_mappings = [
-    "       \  ['jk', '<denite:enter_mode:normal>', 'noremap'],
-    "       \ ['<Tab>', '<denite:move_to_next_line>', 'noremap'],
-    "       \ ['<S-tab>', '<denite:move_to_previous_line>', 'noremap'],
-    "       \  ['<Esc>', '<denite:enter_mode:normal>', 'noremap'],
-    "       \  ['<C-N>', '<denite:assign_next_matched_text>', 'noremap'],
-    "       \  ['<C-P>', '<denite:assign_previous_matched_text>', 'noremap'],
-    "       \  ['<Up>', '<denite:assign_previous_text>', 'noremap'],
-    "       \  ['<Down>', '<denite:assign_next_text>', 'noremap'],
-    "       \  ['<C-Y>', '<denite:redraw>', 'noremap'],
-    "       \ ]
-    "
-    " let s:normal_mode_mappings = [
-    "       \   ["'", '<denite:toggle_select_down>', 'noremap'],
-    "       \   ['<C-n>', '<denite:jump_to_next_source>', 'noremap'],
-    "       \   ['<C-p>', '<denite:jump_to_previous_source>', 'noremap'],
-    "       \   ['gg', '<denite:move_to_first_line>', 'noremap'],
-    "       \   ['st', '<denite:do_action:tabopen>', 'noremap'],
-    "       \   ['sg', '<denite:do_action:vsplit>', 'noremap'],
-    "       \   ['sv', '<denite:do_action:split>', 'noremap'],
-    "       \   ['q', '<denite:quit>', 'noremap'],
-    "       \   ['r', '<denite:redraw>', 'noremap'],
-    "       \ ]
-    "
-    " for s:m in s:insert_mode_mappings
-    "   call denite#custom#map('insert', s:m[0], s:m[1], s:m[2])
-    " endfor
-    "
-    " for s:m in s:normal_mode_mappings
-    "   call denite#custom#map('normal', s:m[0], s:m[1], s:m[2])
-    " endfor
+"""""""""""
+" Airline "
+"""""""""""
+nmap <leader>1 <Plug>AirlineSelectTab1
+nmap <leader>2 <Plug>AirlineSelectTab2
+nmap <leader>3 <Plug>AirlineSelectTab3
+nmap <leader>4 <Plug>AirlineSelectTab4
+nmap <leader>5 <Plug>AirlineSelectTab5
+nmap <leader>6 <Plug>AirlineSelectTab6
+nmap <leader>7 <Plug>AirlineSelectTab7
+nmap <leader>8 <Plug>AirlineSelectTab8
+nmap <leader>9 <Plug>AirlineSelectTab9
 
 
+""""""""""
+" Denite "
+""""""""""
+" TODO: fuzzy search don't work
+" find files recursively
+" noremap <leader>ff :DeniteBufferDir file/rec<CR>
+" " find recently used
+" noremap <leader>fr :Denite file_mru<CR>
+" " find tags
+" noremap <leader>ft :Denite tag<CR>
 
-    """""""
-    " ALE "
-    """""""
-    " noremap <leader>gd :ALEGoToDefinition<CR>
-    " noremap <leader>gt :ALEGoToTypeDefinition<CR>
+" let s:insert_mode_mappings = [
+"       \  ['jk', '<denite:enter_mode:normal>', 'noremap'],
+"       \ ['<Tab>', '<denite:move_to_next_line>', 'noremap'],
+"       \ ['<S-tab>', '<denite:move_to_previous_line>', 'noremap'],
+"       \  ['<Esc>', '<denite:enter_mode:normal>', 'noremap'],
+"       \  ['<C-N>', '<denite:assign_next_matched_text>', 'noremap'],
+"       \  ['<C-P>', '<denite:assign_previous_matched_text>', 'noremap'],
+"       \  ['<Up>', '<denite:assign_previous_text>', 'noremap'],
+"       \  ['<Down>', '<denite:assign_next_text>', 'noremap'],
+"       \  ['<C-Y>', '<denite:redraw>', 'noremap'],
+"       \ ]
+"
+" let s:normal_mode_mappings = [
+"       \   ["'", '<denite:toggle_select_down>', 'noremap'],
+"       \   ['<C-n>', '<denite:jump_to_next_source>', 'noremap'],
+"       \   ['<C-p>', '<denite:jump_to_previous_source>', 'noremap'],
+"       \   ['gg', '<denite:move_to_first_line>', 'noremap'],
+"       \   ['st', '<denite:do_action:tabopen>', 'noremap'],
+"       \   ['sg', '<denite:do_action:vsplit>', 'noremap'],
+"       \   ['sv', '<denite:do_action:split>', 'noremap'],
+"       \   ['q', '<denite:quit>', 'noremap'],
+"       \   ['r', '<denite:redraw>', 'noremap'],
+"       \ ]
+"
+" for s:m in s:insert_mode_mappings
+"   call denite#custom#map('insert', s:m[0], s:m[1], s:m[2])
+" endfor
+"
+" for s:m in s:normal_mode_mappings
+"   call denite#custom#map('normal', s:m[0], s:m[1], s:m[2])
+" endfor
 
 
-    """""""""""""""""
-    " YouCompleteMe "
-    """""""""""""""""
-    " noremap <leader>gt :YcmCompleter GetType<CR>
-    " " gh (get help)
-    " noremap <leader>gh :YcmCompleter GetDoc<CR>
-    " noremap <leader>gi :YcmCompleter GoToInclude<CR>
-    " noremap <leader>gd :YcmCompleter GoToDefinition<CR>
+
+"""""""
+" ALE "
+"""""""
+" noremap <leader>gd :ALEGoToDefinition<CR>
+" noremap <leader>gt :ALEGoToTypeDefinition<CR>
 
 
-    """""""""""""""""
-    " vim-which-key "
-    """""""""""""""""
-    nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+"""""""""""""""""
+" YouCompleteMe "
+"""""""""""""""""
+" noremap <leader>gt :YcmCompleter GetType<CR>
+" " gh (get help)
+" noremap <leader>gh :YcmCompleter GetDoc<CR>
+" noremap <leader>gi :YcmCompleter GoToInclude<CR>
+" noremap <leader>gd :YcmCompleter GoToDefinition<CR>
+
+
+"""""""""""""""""
+" vim-which-key "
+"""""""""""""""""
+nnoremap <silent> <leader> :WhichKey '<Space>'<CR>

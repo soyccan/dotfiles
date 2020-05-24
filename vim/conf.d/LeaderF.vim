@@ -571,6 +571,7 @@ let g:Lf_PreviewInPopup = 1
 "         directory, otherwise, same as 'c'.
 "     Note: if "f", "F" is included with "a" or "A", use the behavior of "f" or
 "     "F"(as a fallback) when a root can't be found.
+let g:Lf_WorkingDirectoryMode = 'A'
 "
 " g:Lf_WorkingDirectory                           *g:Lf_WorkingDirectory*
 "     Set LeaderF's working directory. It will ignore the |g:Lf_RootMarkers| and

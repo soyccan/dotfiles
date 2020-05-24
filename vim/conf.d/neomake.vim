@@ -1,3 +1,25 @@
+" *g:neomake_<ft>_enabled_makers*
+" *b:neomake_<ft>_enabled_makers*
+" This setting will tell Neomake which makers to use by default for the given
+" filetype `<ft>` (when called without a maker as an argument, i.e. |:Neomake|).
+"
+" The default for this setting is the return value of the function
+" `neomake#makers#ft#<ft>#EnabledMakers`.  For Python this is defined in
+" `./autoload/neomake/makers/ft/python.vim`, and might return: >
+"     ['python', 'frosted', 'pylama']
+" <
+" This setting can also be defined per buffer, so the following snippet can be
+" used to configure a custom set of makers from your vimrc: >
+"     let g:neomake_python_enabled_makers = ['pep8', 'pylint']
+"     augroup my_custom_maker
+"         au!
+"         au Filetype custom.py let b:neomake_python_enabled_makers = ['flake8']
+"     augroup END
+" <
+" Please refer to |autocmd-patterns| for help on defining the pattern
+" (`custom.py`) in this case.
+" let g:neomake_cpp_enabled_makers =
+"
 " *g:neomake_highlight_columns*
 " This setting enables highlighting of columns for items from the location and
 " quickfix list. Defaults to 1.
