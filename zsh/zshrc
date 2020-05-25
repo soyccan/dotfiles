@@ -87,8 +87,8 @@ if [ -z "$TMUX" ] && [ "$(hostname)" != 'soyccanmac.local' ]; then
 fi
 
 # ^N and ^P is originally bind to {up,down}-line-or-history
-# bindkey "^P" history-search-backward
-# bindkey "^N" history-search-forward
+bindkey "^P" history-search-backward
+bindkey "^N" history-search-forward
 
 # export MANPATH="/usr/local/man:$MANPATH"
 

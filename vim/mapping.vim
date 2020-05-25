@@ -11,11 +11,27 @@ autocmd FileType vim vmap <buffer> w <ESC>:w \| source %<CR>
 
 
 " Z : Close buffer
-" Q : Close window
-" gQ is still entering Ex mode
-" Notice: this overrides ZZ and ZQ
+" q : Smart close window
+" Q : Record macro
+" gQ : Ex mode (originally Q)
+" Notice: this masks out ZZ and ZQ
+" TODO: this will quit vim when only main window and tagbar window exists
+"       even if there is other buffers
+function! s:smart_close()
+    let wincnt = winnr('$')
+    if bufwinnr(t:tagbar_buf_name) != -1
+        let wincnt -= 1
+    endif
+    if wincnt == 1 && len(getbufinfo({'buflisted':1})) > 1
+        bdelete
+    else
+        q
+    endif
+endfunction
+noremap <silent> q :call <SID>smart_close()<CR>
+noremap <leader>qq :q<CR>
 noremap Z :bdelete<CR>
-noremap Q :q<CR>
+noremap Q q
 
 " Inspired from: https://github.com/tpope/vim-unimpaired
 " <Tab>: smart alternating file or switch window
@@ -23,7 +39,7 @@ noremap Q :q<CR>
 " DO NOT mistake tabs' use:
 " http://stackoverflow.com/questions/102384/using-vims-tabs-like-buffers
 noremap <silent> <tab> :if winnr('$') == 1 \| b# \| else \| wincmd w \| endif<CR>
-noremap <silent> <leader><tab> :b#<CR>
+noremap <leader><tab> :b#<CR>
 
 noremap [b :bprev<CR>
 noremap ]b :bnext<CR>
@@ -109,7 +125,7 @@ cnoremap <C-A> <Home>
 vnoremap p pgvy
 
 " no highlight
-noremap <leader>n :noh<CR>
+noremap <leader>nh :noh<CR>
 
 " alternate file (source / header)
 noremap <leader>a :AlternateFile<CR>
@@ -140,12 +156,14 @@ noremap <leader>tn :NerdTreeToggle<CR>
 "     Use this option to set the mapping of searching files command.
 "     e.g. let g:Lf_ShortcutF = '<C-P>'
 "     Default value is '<leader>f'.
-let g:Lf_ShortcutF = '<leader>ff'
+let g:Lf_ShortcutF = ''
 " g:Lf_ShortcutB                                  *g:Lf_ShortcutB*
 "     Use this option to set the mapping of searching buffers command.
 "     Default value is '<leader>b'.
 let g:Lf_ShortcutB = '<leader>fb'
-" find functions, or (s)ymbols
+" find (f)iles
+noremap <silent> <leader>ff :execute ':Leaderf file --no-ignore ' . projectroot#get()<CR>
+" find functions, i.e. (s)ymbols
 noremap <leader>fs :LeaderfFunction<CR>
 " find (r)ecently used
 noremap <leader>fr :LeaderfMru<CR>
