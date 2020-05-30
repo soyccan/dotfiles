@@ -187,15 +187,15 @@ noremap <silent> <C-f> :execute ':Leaderf rg ' . projectroot#get()<CR>
 """""""""""
 " Airline "
 """""""""""
-noremap <leader>1 <Plug>AirlineSelectTab1
-noremap <leader>2 <Plug>AirlineSelectTab2
-noremap <leader>3 <Plug>AirlineSelectTab3
-noremap <leader>4 <Plug>AirlineSelectTab4
-noremap <leader>5 <Plug>AirlineSelectTab5
-noremap <leader>6 <Plug>AirlineSelectTab6
-noremap <leader>7 <Plug>AirlineSelectTab7
-noremap <leader>8 <Plug>AirlineSelectTab8
-noremap <leader>9 <Plug>AirlineSelectTab9
+map <leader>1 <Plug>AirlineSelectTab1
+map <leader>2 <Plug>AirlineSelectTab2
+map <leader>3 <Plug>AirlineSelectTab3
+map <leader>4 <Plug>AirlineSelectTab4
+map <leader>5 <Plug>AirlineSelectTab5
+map <leader>6 <Plug>AirlineSelectTab6
+map <leader>7 <Plug>AirlineSelectTab7
+map <leader>8 <Plug>AirlineSelectTab8
+map <leader>9 <Plug>AirlineSelectTab9
 
 
 """"""""""
