@@ -1,30 +1,17 @@
 #!/bin/bash
 
-if [ "$1" = 'clean' ]; then
-    echo 'Are you sure? (yes)'
-    read -r ans
-    if [ "$ans" = 'yes' ]; then
-        echo Cleaning
-        rm -rf "$HOME/.oh-my-zsh" \
-            "$HOME/.zshrc" \
-            "$HOME/.tmux" \
-            "$HOME/.tmux.conf" \
-            "$HOME/.tmux.conf.local" \
-            "$HOME/.vim" \
-            "$HOME/.config/nvim" \
-            "$HOME/.gdb" \
-            "$HOME/.gdbinit"
-    fi
-    exit
-fi
+
+dotfiles="$(realpath "$(dirname "$0")")"
 
 
-dotfiles="$(pwd)/$(dirname "$0")"
-
+has() {
+    command -v "$1" >/dev/null 2>&1
+}
 
 ln_confirm() {
     src="$1"
     link="$2"
+    mkdir -p "$(dirname "$link")"
     if [ -L "$link" ]; then
         ln -svf "$src" "$link"
     else
@@ -32,22 +19,20 @@ ln_confirm() {
     fi
 }
 
-
-get_package_manager() (
-    # following will be executed in a subshell
-    . /etc/os-release
-    if [ "$NAME" = "CentOS Linux" ]; then
-        echo yum
-    elif [ "$NAME" = "Ubuntu" ]; then
-        echo apt
-    fi
-)
+get_package_manager() {
+    for cmd in apt yum brew; do 
+        if has cmd; then
+            echo "$cmd"
+            break
+        fi
+    done
+}
 
 
 setup_zsh() {
     echo Configuring ZSH
 
-    if ! command -v zsh >/dev/null; then
+    if ! has zsh; then
         echo Installing ZSH
         sudo "$(get_package_manager)" install zsh
     fi
@@ -56,23 +41,22 @@ setup_zsh() {
         sudo usermod "$USER" -s /bin/zsh
     fi
 
-    # oh-my-zsh
-    if [ ! -d "$HOME/.oh-my-zsh" ]; then
-        echo Installing Oh My ZSH
-        sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-    fi
+    # config files
     ln_confirm "$dotfiles/zsh/zshrc" "$HOME/.zshrc"
+    ln_confirm "$dotfiles/zsh" "$HOME/.config/zsh"
 
-    # antigen - plugin manager
-    curl -L git.io/antigen --create-dirs -o "$HOME/antigen.zsh"
+    # zinit - faster plugin manager
+    if [ ! -d "$HOME/.zinit" ]; then
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh)"
+    fi
 
     # powerlever10k
     # ln_confirm "$dotfiles/zsh/p10k.zsh" "$HOME/.p10k.zsh"
     p10k configure
 
     # install my plugin
-    mkdir -pv "$HOME/.oh-my-zsh/custom/plugins/urlencode"
-    ln_confirm "$dotfiles/zsh/urlencode.sh" "$HOME/.oh-my-zsh/custom/plugins/urlencode/urlencode.plugin.zsh"
+    # mkdir -pv "$HOME/.oh-my-zsh/custom/plugins/urlencode"
+    # ln_confirm "$dotfiles/zsh/urlencode.sh" "$HOME/.oh-my-zsh/custom/plugins/urlencode/urlencode.plugin.zsh"
 }
 
 
@@ -84,7 +68,9 @@ setup_fish() {
         sudo "$(get_package_manager)" install fish
     fi
 
-    sudo usermod "$USER" -s /bin/fish
+    if [ "$(awk -F':' "/^$USER/ { print \$7 }" /etc/passwd)" != '/bin/fish' ]; then
+        sudo usermod "$USER" -s /bin/fish
+    fi
 
     # oh-my-fish
     # curl -L https://get.oh-my.fish | fish
@@ -152,7 +138,7 @@ setup_gdb() {
 
 main() {
     setup_tmux
-    setup_fish
+    # setup_fish
     setup_zsh
     setup_vim
     echo Voila! Setup Finished!

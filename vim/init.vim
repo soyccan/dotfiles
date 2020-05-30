@@ -100,29 +100,13 @@ Plug 'iamcco/markdown-preview.nvim', {
             \ 'on': 'MarkDownPreview'  }
 
 call plug#end()
+" End Plugins
 
 
-
-""""""""""""""""""""
-" Config Inclusion "
-""""""""""""""""""""
+" Include other configurations
 runtime mapping.vim
 runtime options.vim
 runtime looking.vim
 for plugin in g:plugs_order
-    " if !filereadable(expand('~/.config/nvim/conf.d/'.plugin.'.vim'))
-    "     echo plugin
-    " end
     execute 'runtime conf.d/' . plugin . '.vim'
 endfor
-
-
-
-""""""""""
-" Others "
-""""""""""
-packadd! termdebug
-
-if has('win32')
-    " Windows-specific commands
-endif

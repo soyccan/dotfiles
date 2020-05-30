@@ -14,15 +14,15 @@ autocmd FileType vim vmap <buffer> w <ESC>:w \| source %<CR>
 " q : Smart close window
 " Q : Record macro
 " gQ : Ex mode (originally Q)
-" Notice: this masks out ZZ and ZQ
+" Notice: this masks ZZ and ZQ
 " TODO: this will quit vim when only main window and tagbar window exists
 "       even if there is other buffers
 function! s:smart_close()
     let wincnt = winnr('$')
-    if bufwinnr(t:tagbar_buf_name) != -1
+    if exists('t:tagbar_buf_name') && bufwinnr(t:tagbar_buf_name) != -1
         let wincnt -= 1
     endif
-    if wincnt == 1 && len(getbufinfo({'buflisted':1})) > 1
+    if wincnt == 1 && len(getbufinfo({ 'buflisted': 1 })) > 1
         bdelete
     else
         q
@@ -33,14 +33,15 @@ noremap <leader>qq :q<CR>
 noremap Z :bdelete<CR>
 noremap Q q
 
-" Inspired from: https://github.com/tpope/vim-unimpaired
+" Inspired by: https://github.com/tpope/vim-unimpaired
 " <Tab>: smart alternating file or switch window
 " <leader><Tab>: alternating file
 " DO NOT mistake tabs' use:
 " http://stackoverflow.com/questions/102384/using-vims-tabs-like-buffers
 noremap <silent> <tab> :if winnr('$') == 1 \| b# \| else \| wincmd w \| endif<CR>
+noremap <silent> <s-tab> :if winnr('$') == 1 \| b# \| else \| wincmd W \| endif<CR>
 noremap <leader><tab> :b#<CR>
-
+" Buffers
 noremap [b :bprev<CR>
 noremap ]b :bnext<CR>
 " Location List
@@ -87,26 +88,28 @@ noremap <leader>m :wa \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
 " imap <F7> <ESC>7
 
 " move whole line(s) down/up
-nnoremap J ddp
-vnoremap <expr> J 'dp`[' . strgetchar(getregtype(), 0) . '`]'
-nnoremap K ddkP
-vnoremap <expr> K 'dkP`[' . strgetchar(getregtype(), 0) . '`]'
+" inspired by Sublime Text
+nnoremap J :move +1<CR>
+vnoremap J :'<,'>move '>+1\|normal gv<CR>
+nnoremap K :move -2<CR>
+vnoremap K :'<,'>move '<-2\|normal gv<CR>
 
 " re-map join lines command
-noremap <leader>j J
+" note CTRL-j is same as j originally
+noremap <C-j> J
 
 " indent / unindent
 " normal mode: indent a line
 " visual mode: keep selection after indenting
 noremap < <<_
-noremap < <<_
+noremap > >>_
 vnoremap > >gv
 vnoremap < <gv
 
 " Enter / Return: create vertical space
 " in help: jump to tag at current cursor
 autocmd FileType help nnoremap <buffer> <CR> <C-]>
-autocmd BufEnter * if &modifiable | nnoremap <CR> o<ESC> | endif
+autocmd BufEnter * if &modifiable|nnoremap <CR> o<ESC>|endif
 
 " Backspace: jump back
 noremap <BS> <C-o>
@@ -118,7 +121,7 @@ vnoremap ` <ESC>
 inoremap ` <ESC>
 
 " command line Home key
-cnoremap <C-A> <Home>
+cnoremap <C-a> <Home>
 
 " after replacing selection with p
 " keep in register what is pasted rather than what is replaced
@@ -128,6 +131,7 @@ vnoremap p pgvy
 noremap <leader>nh :noh<CR>
 
 " alternate file (source / header)
+" inspired by a.vim
 noremap <leader>a :AlternateFile<CR>
 
 
@@ -165,26 +169,33 @@ let g:Lf_ShortcutB = '<leader>fb'
 noremap <silent> <leader>ff :execute ':Leaderf file --no-ignore ' . projectroot#get()<CR>
 " find functions, i.e. (s)ymbols
 noremap <leader>fs :LeaderfFunction<CR>
-" find (r)ecently used
+" find most (r)ecently used
+" ^N is like "new file" in modern editors
+" and we use MRU as our startpoint
+" note ^N is same as j originally
 noremap <leader>fr :LeaderfMru<CR>
+noremap <C-n> :LeaderfMru<CR>
 " find (t)ags
 noremap <leader>ft :LeaderfTag<CR>
 " search in files by r(g)
-noremap <leader>fg :Leaderf rg<CR>
+" ^F is like "find in files" in modern editors
+" Note: ^F scrolls a page down originally, this masks it
+noremap <silent> <leader>fg :execute ':Leaderf rg ' . projectroot#get()<CR>
+noremap <silent> <C-f> :execute ':Leaderf rg ' . projectroot#get()<CR>
 
 
 """""""""""
 " Airline "
 """""""""""
-nmap <leader>1 <Plug>AirlineSelectTab1
-nmap <leader>2 <Plug>AirlineSelectTab2
-nmap <leader>3 <Plug>AirlineSelectTab3
-nmap <leader>4 <Plug>AirlineSelectTab4
-nmap <leader>5 <Plug>AirlineSelectTab5
-nmap <leader>6 <Plug>AirlineSelectTab6
-nmap <leader>7 <Plug>AirlineSelectTab7
-nmap <leader>8 <Plug>AirlineSelectTab8
-nmap <leader>9 <Plug>AirlineSelectTab9
+noremap <leader>1 <Plug>AirlineSelectTab1
+noremap <leader>2 <Plug>AirlineSelectTab2
+noremap <leader>3 <Plug>AirlineSelectTab3
+noremap <leader>4 <Plug>AirlineSelectTab4
+noremap <leader>5 <Plug>AirlineSelectTab5
+noremap <leader>6 <Plug>AirlineSelectTab6
+noremap <leader>7 <Plug>AirlineSelectTab7
+noremap <leader>8 <Plug>AirlineSelectTab8
+noremap <leader>9 <Plug>AirlineSelectTab9
 
 
 """"""""""

@@ -1,239 +1,92 @@
-# PATH
-for p in /snap/bin \
-         "$HOME/bin" \
-         "$HOME/.local/bin" \
-         "$HOME/go/bin"; do
-    [ -d "$p" ] && export PATH="$p:$PATH"
-done
+# profiling time usage, prologue
+# zmodload zsh/zprof
 
 
-###########
-# Plugins #
-###########
-source "$HOME/antigen.zsh"
+# check if command exists, return 0 on success
+# MUCH faster than external program `which` since this don't
+# require forking process
+# TODO: type vs. command -v
+has() {
+    type "$1" >/dev/null 2>&1
+}
 
-antigen use oh-my-zsh
-antigen theme romkatv/powerlevel10k powerlevel10k
-
-# fish-like features
-antigen bundle zsh-users/zsh-autosuggestions
-antigen bundle zsh-users/zsh-completions
-antigen bundle zsh-users/zsh-history-substring-search
-antigen bundle zsh-users/zsh-syntax-highlighting
-
-# completions
-antigen bundle django
-antigen bundle docker
-antigen bundle fd
-antigen bundle heroku
-antigen bundle httpie # coloured curl
-antigen bundle pip
-antigen bundle ripgrep # alternative to grep / ag / ack
-
-# aliases
-antigen bundle brew # bubu = brew update|outdated|upgrade|cleanup
-antigen bundle docker-compose # dcb, dcup
-antigen bundle firewalld # fw / fwr / fwp / fwrp / fwl
-antigen bundle nmap # nmap_open_ports ...
-antigen bundle git # ga, gc, gcl, gl, gp, ...
-antigen bundle pipenv # pi = pipenv install
-antigen bundle pylint # pylint-quick
-antigen bundle rsync # rsync-copy / rsync-move / rsync-update / rsync-synchronize
-antigen bundle systemd # sc-xxxx
-
-# functions
-antigen bundle cp # cpv = rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress
-antigen bundle encode64 # e64 / d64
-antigen bundle extract # extract or x
-antigen bundle colorize # ccat
-antigen bundle jsontools # pp_json / is_json / urlencode_json / urldecode_json
-antigen bundle systemadmin # ping / mkdir / clr / path / pscpu / psmem...
-antigen bundle vscode
-antigen bundle urltools # urlencode / urldecode
-# antigen bundle osx
-# antigen bundle xcode # xcb
-
-# plugins
-# antigen bundle autoenv
-antigen bundle colored-man-pages
-antigen bundle fasd # fuzzy searcher
-antigen bundle fzf # fuzzy searcher
-antigen bundle globalias # expand alias to original commands
-antigen bundle pyenv # auto setup environment for pyenv
-antigen bundle transfer # transfer.sh
-antigen bundle zsh_reload # src
-antigen bundle z # easy jump
-
-# antigen bundle marlonrichert/zsh-autocomplete
-antigen bundle andrewferrier/fzf-z
-
-# disabled due to heavy start-up impact
-# command-not-found
-# thefuck
-
-antigen apply
-
-
-######################
-# User Configuration #
-######################
-
-# Powerlevel10k
-[ -f "$HOME/.p10k.zsh" ] && source "$HOME/.p10k.zsh"
 
 # Launch tmux at start
 if [ -z "$TMUX" ] && [ "$(hostname)" != 'soyccanmac.local' ]; then
-    tmux a
+    exec tmux a
 fi
 
-# ^N and ^P is originally bind to {up,down}-line-or-history
-bindkey "^P" history-search-backward
-bindkey "^N" history-search-forward
+################
+# Environments #
+################
+# PATH
+# /usr/local/opt/llvm/bin is path of Homebrew
+for p in '/snap/bin' \
+         '/usr/local/opt/llvm/bin' \
+         "$HOME/go/bin" \
+         "$HOME/.rvm/bin" \
+         "$HOME/.pyenv/bin" \
+         "$HOME/bin"; do
+    [ -d "$p" ] && PATH="$p:$PATH"
+done
+export PATH
 
-# export MANPATH="/usr/local/man:$MANPATH"
+# pyenv
+if has pyenv; then
+    export PATH="$(pyenv root)/shims:$PATH"
+    pyenv() {
+        # lazy load
+        unset -f pyenv
+        eval "$(command pyenv init -)"
+        eval "$(command pyenv virtualenv-init -)"
+        pyenv "$@"
+    }
+fi
 
 # You may need to manually set your language environment
 export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 export EDITOR='vi'
-which vim >/dev/null && export EDITOR='vim'
-which nvim >/dev/null && export EDITOR='nvim'
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
+has vim && export EDITOR='vim'
+has nvim && export EDITOR='nvim'
 
 
 ###########
-# Aliases #
+# Plugins #
 ###########
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-alias cp='cp -irv' # --interactive --recursive --verbose
-alias mv='mv -iv' # --interactive --verbose
-alias rm='rm -i' # --interactive=always
-
-alias df='df -h' # --human-readable
-alias du='du -h'  # --human-readable --apparent-size(-A) ; -A connot be used in macOS
-alias free='free -h' # --human
-
-alias ctar='tar -vcf' # create
-alias ltar='tar -vtf' # list files
-alias untar='tar -vxf' # extract
-alias lzip='unzip -l'
-alias lrar='unrar l'
-
-alias less='less -R' # --RAW-CONTROL-CHARS ; only color code is printed raw
-alias ln='ln -s' # --symbolic
-alias wget='wget -c' # --continue; (--timestamping)
-alias hd='hexdump -C' # hex+ascii
-alias gcll='git clone --recurse-submodules --depth 1' # together with 'git' plugin
-
-alias py='python3'
-alias cl='clang'
-alias cll='clang++'
-
-if [ "$(uname)" = 'Darwin' ]; then
-    alias objdump='objdump -x86-asm-syntax=intel'
-    alias gobjdump='gobjdump -M intel'
-else
-    alias objdump='objdump -M intel'
+### Added by Zinit's installer
+if [ ! -f $HOME/.zinit/bin/zinit.zsh ]; then
+    print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
+    command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
+    command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
+        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+        print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
 
-if which nvim >/dev/null; then
-    alias vi='nvim'
-    alias vim='nvim'
-    alias vimdiff='nvim -d'
-fi
+source "$HOME/.zinit/bin/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
 
-# docker
-alias dat='docker attach'
-alias db='docker build'
-alias dcon='docker container'
-alias dim='docker image'
-alias diml='docker image ls'
-alias dl='docker pull'
-alias dps='docker ps'
-alias dpsa='docker ps -a'
-alias drm='docker rm'
-alias drmi='docker rmi'
-alias drun='docker run -it'
-alias dsta='docker start -ai'
-alias dsto='docker stop'
-alias dex='docker exec -it'
+# Load a few important annexes, without Turbo
+# (this is currently required for annexes)
+zinit light-mode for \
+    zinit-zsh/z-a-as-monitor \
+    zinit-zsh/z-a-patch-dl \
+    zinit-zsh/z-a-bin-gem-node
+### End of Zinit's installer chunk
 
-# gdb
-alias peda='gdb -q -ex init-peda'
-alias pwndbg='gdb -q -ex init-pwndbg'
 
-# from common-aliases.plugin.zsh
-# Advanced Aliases.
-# Use with caution
-#
+source "$HOME/.config/zsh/plugins.zsh"
+source "$HOME/.config/zsh/aliases.zsh"
 
-# ls, the common ones I use a lot shortened for rapid fire usage
-# alias l='ls -lFh'     #size,show type,human readable
-# alias la='ls -lAFh'   #long list,show almost all,show type,human readable
-# alias lr='ls -tRFh'   #sorted by date,recursive,show type,human readable
-# alias lt='ls -ltFh'   #long list,sorted by date,show type,human readable
-# alias ll='ls -l'      #long list
-# alias ldot='ls -ld .*'
-# alias lS='ls -1FSsh'
-# alias lart='ls -1Fcart'
-# alias lrt='ls -1Fcrt'
 
-alias zshrc='${=EDITOR} ~/.zshrc' # Quick access to the ~/.zshrc file
+# completion
+# TODO: what do these do? these cause about 0.1s delay
+# autoload -Uz compinit
+# compinit
+# zinit cdreplay -q
 
-alias grep='grep --color'
-alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
 
-alias t='tail -f'
-
-# Command line head / tail shortcuts
-alias -g H='| head'
-alias -g T='| tail'
-alias -g G='| grep'
-alias -g L="| less"
-alias -g M="| most"
-alias -g LL="2>&1 | less"
-alias -g CA="2>&1 | cat -A"
-alias -g NE="2> /dev/null"
-alias -g NUL="> /dev/null 2>&1"
-alias -g P="2>&1| pygmentize -l pytb"
-# added
-alias -g X='| xargs'
-alias -g XG='| xargs grep'
-which ag >/dev/null && { alias -g G='| ag'; alias -g XG='| xargs ag'; }
-
-alias dud='du -d 1 -h'
-alias duf='du -sh *'
-alias fd='find . -type d'
-alias ff='find . -type f'
-
-alias h='history'
-alias hgrep="fc -El 0 | grep"
-alias help='man'
-alias p='ps -f'
-alias sortnr='sort -n -r'
-alias unexport='unset'
-
-# Make zsh know about hosts already accessed by SSH
-zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
-
-# remove one feature of globalias.plugin.zsh
-function _my_expand_word() {}
-zle -D expand-word
-zle -N expand-word _my_expand_word
+# profiling time usage, epilogue
+# zprof

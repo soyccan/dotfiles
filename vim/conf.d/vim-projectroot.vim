@@ -1,5 +1,5 @@
 " =============================================================================
-" CUSTOMIZING			*projectroot-customizing*
+" CUSTOMIZING           *projectroot-customizing*
 "
 "                 *'g:rootmarkers'*
 " Default: ['.projectroot','.git','.hg','.svn','.bzr','_darcs','build.xml']
@@ -8,7 +8,9 @@
 " highest priority, `.git` second highest and so on. >
 "     let g:rootmarkers = ['.svn', '.git']
 " <
-let g:rootmarkers = ['.gitignore', '.clang-format', '.projectroot','.git','.hg','.svn','.bzr','_darcs','build.xml']
+let g:rootmarkers = ['.gitignore', '.clang-format',
+            \        'README', 'README.md', 'README.txt',
+            \        '.projectroot', '.git', '.hg', '.svn', '.bzr', '_darcs', 'build.xml']
 "
 "                 *'b:projectroot'*
 " Default: None

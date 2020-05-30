@@ -18,8 +18,28 @@
 " <
 " Please refer to |autocmd-patterns| for help on defining the pattern
 " (`custom.py`) in this case.
-" let g:neomake_cpp_enabled_makers =
 "
+" Example:
+"     let g:neomake_<ft>_<makername>_maker = {}
+"     let g:neomake_<ft>_enabled_makers = []
+
+" a maker for checking POSIX shell script
+let s:sc_sh = neomake#makers#ft#sh#shellcheck()
+let s:sc_bash = neomake#makers#ft#sh#shellcheck()
+
+let s:sc_bash['exe'] = 'shellcheck'
+let s:sc_sh['exe'] = 'shellcheck'
+let s:sc_sh['args'][index(s:sc_sh['args'], 'bash')] = 'sh'
+
+let g:neomake_sh_shellcheck_bash_maker = s:sc_bash
+let g:neomake_zsh_shellcheck_bash_maker = s:sc_bash
+
+let g:neomake_sh_shellcheck_sh_maker = s:sc_sh
+let g:neomake_zsh_shellcheck_sh_maker = s:sc_sh
+
+let g:neomake_sh_enabled_makers = ['sh', 'shellcheck_sh']
+let g:neomake_zsh_enabled_makers = ['zsh', 'shellcheck_sh']
+
 " *g:neomake_highlight_columns*
 " This setting enables highlighting of columns for items from the location and
 " quickfix list. Defaults to 1.

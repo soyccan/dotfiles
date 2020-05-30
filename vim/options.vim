@@ -32,7 +32,7 @@ set expandtab " Ctrl-V + Tab to enter real tab
 
 " set cscopetag
 
-"" Buffers
+" Buffers
 " allow buffer to be hidden without being saved
 set hidden
 
@@ -41,11 +41,8 @@ set completeopt-=preview
 
 set timeoutlen=500
 
-" syntax
-let g:c_space_errors = 1
-let g:c_curly_error = 1
-let g:c_comment_strings = 1
-let g:is_bash = 1
+let g:python_host_prog = trim(system('which python'))
+let g:python3_host_prog = trim(system('which python3'))
 
 " mouse
 " set mouse=a
@@ -61,5 +58,16 @@ autocmd FileType qf set wrap nonumber foldcolumn=0 | SignifyDisable
 " autocmd QuickFixCmdPost * vertical botright copen 50
 
 
-let g:python_host_prog = trim(system('which python'))
-let g:python3_host_prog = trim(system('which python3'))
+packadd! termdebug
+
+if has('win32')
+    " Windows-specific commands
+endif
+
+
+" Startup
+" start from choosing recent files
+" TODO: this breaks syntax highlighting, fix it
+" autocmd BufEnter * if argc() == 0 | LeaderfMru | endif
+" change dir correctly when a directory is opened
+autocmd BufEnter * if isdirectory(expand('%')) | cd expand('%') | endif
