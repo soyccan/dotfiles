@@ -57,6 +57,10 @@ let g:python3_host_prog = trim(system('which python3'))
 autocmd FileType qf set wrap nonumber foldcolumn=0 | SignifyDisable
 " autocmd QuickFixCmdPost * vertical botright copen 50
 
+" error format for quickfix
+autocmd FileType lua set errorformat=%[lua:\t]%#%f:%l:\ %m
+
+
 
 packadd! termdebug
 
