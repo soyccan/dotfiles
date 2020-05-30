@@ -1,0 +1,11 @@
+[credential]
+	helper = osxkeychain
+[user]
+	email = soyccan@gmail.com
+	name = soyccan
+[difftool]
+    prompt = false
+[merge]
+    tool = nvim
+[mergetool "nvim"]
+    cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED +'wincmd b' +'wincmd J'
