@@ -17,18 +17,7 @@ autocmd FileType vim vmap <buffer> w <ESC>:w \| source %<CR>
 " Notice: this masks ZZ and ZQ
 " TODO: this will quit vim when only main window and tagbar window exists
 "       even if there is other buffers
-function! s:smart_close()
-    let wincnt = winnr('$')
-    if exists('t:tagbar_buf_name') && bufwinnr(t:tagbar_buf_name) != -1
-        let wincnt -= 1
-    endif
-    if wincnt == 1 && len(getbufinfo({ 'buflisted': 1 })) > 1
-        bdelete
-    else
-        q
-    endif
-endfunction
-noremap <silent> q :call <SID>smart_close()<CR>
+noremap <silent> q :call SmartClose()<CR>
 noremap <leader>qq :q<CR>
 noremap Z :bdelete<CR>
 noremap Q q
@@ -68,7 +57,10 @@ noremap <leader>bm :marks<CR>
 " imap <F5> <ESC>5
 
 " make / compile
-noremap <leader>m :wa \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
+" -save=2 : Save all files
+" -program=make : Use &makeprg as :make (can be grep to use &grepprt)
+" -cwd=<root> : Detected project root by AsyncRun
+noremap <leader>m :AsyncRun -save=2 -cwd=<root> -program=make<CR>
 
 
 " 6/F6: [disabled] run
@@ -108,8 +100,9 @@ vnoremap < <gv
 
 " Enter / Return: create vertical space
 " in help: jump to tag at current cursor
+" note there shouldn't be space after noremap (before vertical bar)
 autocmd FileType help nnoremap <buffer> <CR> <C-]>
-autocmd BufEnter * if &modifiable|nnoremap <CR> o<ESC>|endif
+autocmd BufEnter * if &modifiable | nnoremap <CR> o<ESC>| endif
 
 " Backspace: jump back
 noremap <BS> <C-o>
@@ -166,22 +159,24 @@ let g:Lf_ShortcutF = ''
 "     Default value is '<leader>b'.
 let g:Lf_ShortcutB = '<leader>fb'
 " find (f)iles
-noremap <silent> <leader>ff :execute ':Leaderf file --no-ignore ' . projectroot#get()<CR>
+" ^N stands for "now": open file in current working dir
+noremap <silent> <leader>ff :execute ':Leaderf file --no-ignore ' . asyncrun#get_root('')<CR>
+map <C-n> <leader>ff
 " find functions, i.e. (s)ymbols
 noremap <leader>fs :LeaderfFunction<CR>
 " find most (r)ecently used
-" ^N is like "new file" in modern editors
+" ^P stands for "previous": open a file among previous edited ones
 " and we use MRU as our startpoint
 " note ^N is same as j originally
 noremap <leader>fr :LeaderfMru<CR>
-noremap <C-n> :LeaderfMru<CR>
+map <C-p> <leader>fr
 " find (t)ags
 noremap <leader>ft :LeaderfTag<CR>
 " search in files by r(g)
 " ^F is like "find in files" in modern editors
 " Note: ^F scrolls a page down originally, this masks it
-noremap <silent> <leader>fg :execute ':Leaderf rg ' . projectroot#get()<CR>
-noremap <silent> <C-f> :execute ':Leaderf rg ' . projectroot#get()<CR>
+noremap <silent> <leader>fg :let g:Lf_WorkingDirectory = asyncrun#get_root('') \| Leaderf rg<CR>
+map <C-f> <leader>fg
 
 
 """""""""""

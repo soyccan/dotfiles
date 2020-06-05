@@ -102,9 +102,7 @@ alias -g XG='| xargs grep'
 has ag && { alias -g G='| ag'; alias -g XG='| xargs ag'; }
 
 # show files/directories by size
-# following two generate similar result
-# I don't know their difference yet
-# but duf seems faster
+# duf seems faster
 alias dud='du -d 1 -h | sort -hr'
 alias duf='du -sh * | sort -hr'
 
@@ -126,7 +124,7 @@ p() {
     # -m : sorted by memory
     # -r : sorted by CPU
     # rss : resident set size = physical memory usage
-    ps -eo pid,user,state,rss,command
+    ps -eo pid,user,state,command
 }
 
 alias sortnr='sort -n -r'
@@ -156,6 +154,7 @@ if [ "$(uname)" = 'Darwin' ] && [ -e '/Applications/Turbo Boost Switcher.app' ];
     # https://github.com/nanoant/DisableTurboBoost.kext
     # https://github.com/rugarciap/Turbo-Boost-Switcher
     turbooff() {
+        sudo kextunload -b com.rugarciap.DisableTurboBoost
         sudo kextload '/Applications/Turbo Boost Switcher.app/Contents/Resources/DisableTurboBoost.64bits.kext'
     }
     turboon() {

@@ -9,6 +9,12 @@ let g:asyncrun_open = 8
 " <
 " Setting 'g:asyncrun_open' to 8 will open quickfix window automatically at 8
 " lines height after command starts.
+"
+let g:asyncrun_rootmarks = ['.gitignore', '.clang-format',
+            \               'README', 'README.md', 'README.txt',
+            \               '.projectroot', '.root',
+            \               '.git', '.hg', '.svn', '.bzr', '_darcs',
+            \               'build.xml', 'CMakeLists.txt']
 
 
 

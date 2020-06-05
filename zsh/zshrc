@@ -13,7 +13,7 @@ has() {
 
 # Launch tmux at start
 if [ -z "$TMUX" ] && [ "$(hostname)" != 'soyccanmac.local' ]; then
-    exec tmux a
+    tmux a
 fi
 
 ################

@@ -68,6 +68,8 @@ Plug 'jsfaint/gen_tags.vim'
 Plug 'tpope/vim-projectionist'
 " browse files in project
 Plug 'preservim/nerdtree'
+" locate project root
+Plug 'dbakker/vim-projectroot'
 " NerdTree Git support
 Plug 'Xuyuanp/nerdtree-git-plugin'
 " gtags: alternative of ctags and cscope

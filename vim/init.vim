@@ -71,9 +71,8 @@ Plug 'chr4/nginx.vim'
 "" Sementic
 " Completion
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" C/C++ source for deoplite
+Plug 'Shougo/neoinclude.vim', { 'for': ['c', 'cpp'] }
 Plug 'Shougo/deoplete-clangx', { 'for': ['c', 'cpp'] }
-" Python source for deoplite
 Plug 'deoplete-plugins/deoplete-jedi', { 'for': 'python' }
 "
 " TODO: YouCompleteMe vs. deoplete
@@ -88,12 +87,11 @@ Plug 'ludovicchabant/vim-gutentags'
 "" Others
 " key mapping cheatsheet
 Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
-" locate project root
-Plug 'dbakker/vim-projectroot'
 " highlight git difference
 Plug 'mhinz/vim-signify'
-" async run shell commands
-Plug 'skywind3000/asyncrun.vim', { 'on': 'AsyncRun' }
+" async run shell commands, and project root detection
+" set b:asyncrun_root to specify project root
+Plug 'skywind3000/asyncrun.vim'
 " :MarkdownPreview / :MarkdownPreviewStop
 Plug 'iamcco/markdown-preview.nvim', {
             \ 'do': { -> mkdp#util#install()  },

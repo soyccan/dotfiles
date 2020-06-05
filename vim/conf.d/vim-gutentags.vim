@@ -118,7 +118,7 @@ endif
 "                         on MacOS.
 "
 "                                                 *gutentags_project_root_finder*
-let g:gutentags_project_root_finder = 'projectroot#get'
+let g:gutentags_project_root_finder = 'asyncrun#get_root'
 "                         When a buffer is loaded, Gutentags uses a default
 "                         (internal) implementation to find that file's
 "                         project's root directory, using settings like
