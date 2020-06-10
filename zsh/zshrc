@@ -25,6 +25,7 @@ for p in '/usr/local/brew/bin' \
          "$HOME/go/bin" \
          "$HOME/.rvm/bin" \
          "$HOME/.pyenv/bin" \
+         "$HOME/.local/bin" \
          "$HOME/bin"; do
     [ -d "$p" ] && PATH="$p:$PATH"
 done

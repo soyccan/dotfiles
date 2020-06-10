@@ -9,7 +9,7 @@ alias free='free -h' # --human
 alias ctar='tar -vcf' # create
 alias ltar='tar -vtf' # list files
 alias untar='tar -vxf' # extract
-alias lzip='unzip -l'
+alias lzip='unzip -lv'
 alias lrar='unrar l'
 
 alias less='less -R' # --RAW-CONTROL-CHARS ; only color code is printed raw
