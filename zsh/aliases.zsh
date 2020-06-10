@@ -63,7 +63,7 @@ alias pwndbg='gdb -q -ex init-pwndbg'
 #
 
 # ls, the common ones I use a lot shortened for rapid fire usage
-alias ls='ls -Gh'   # colered, human readable
+alias ls='ls -Gh --color'   # colered, human readable
 alias l='ls -l'     # long list
 alias ll='ls -la'   # long list, show all
 alias lr='ls -R'    # recursive
@@ -124,7 +124,9 @@ p() {
     # -m : sorted by memory
     # -r : sorted by CPU
     # rss : resident set size = physical memory usage
-    ps -eo pid,user,state,command
+    # first line is duplicated to stderr
+    # it's convenient when piping result to grep
+    ps -eo pid,user,state,command | tee >(sed -n '1p' >&2)
 }
 
 alias sortnr='sort -n -r'
