@@ -43,6 +43,9 @@ noremap <leader>qo :copen<CR>
 noremap <leader>qx :cclose<CR>
 noremap [q :cprev<CR>
 noremap ]q :cnext<CR>
+" tag match list
+noremap [t :tprev<CR>
+noremap ]t :tnext<CR>
 
 
 " show bookmarks

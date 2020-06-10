@@ -20,9 +20,8 @@ fi
 # Environments #
 ################
 # PATH
-# /usr/local/opt/llvm/bin is path of Homebrew
-for p in '/snap/bin' \
-         '/usr/local/opt/llvm/bin' \
+for p in '/usr/local/brew/bin' \
+         '/snap/bin' \
          "$HOME/go/bin" \
          "$HOME/.rvm/bin" \
          "$HOME/.pyenv/bin" \

@@ -1,3 +1,6 @@
+let $GTAGSCONF = $HOME . '/dotfiles/gtags.conf'
+let $GTAGSLABEL = 'ctags'
+
 " original was:
 "    autocmd VimEnter  *  if expand('<amatch>')==''|call gutentags#setup_gutentags()|endif
 " which don't run when open a file by: vim filename
@@ -46,7 +49,7 @@ if executable('gtags-cscope') && executable('gtags')
     let g:gutentags_modules += ['gtags_cscope']
 endif
 if executable('ctags')
-    let g:gutentags_modules += ['ctags']
+    " let g:gutentags_modules += ['ctags']
 endif
 "                         A list of modules to load with Gutentags. Each module
 "                         is responsible for generating a specific type of tags
@@ -442,7 +445,7 @@ let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
 "                         Defaults to `".gutgtags"`.
 "
 "                                                 *gutentags_auto_add_gtags_cscope*
-let g:gutentags_auto_add_gtags_cscope = 0
+let g:gutentags_auto_add_gtags_cscope = 1
 "                         If set to 1, Gutentags will automatically add the
 "                         generated code database to Vim by running `:cs add`
 "                         (see |:cscope|).

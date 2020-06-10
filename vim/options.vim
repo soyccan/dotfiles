@@ -30,7 +30,9 @@ set softtabstop=4
 set shiftwidth=4
 set expandtab " Ctrl-V + Tab to enter real tab
 
-" set cscopetag
+" we don't use ctags but gtags, which is of cscope-like interface
+" (gtags-cscope)
+set cscopetag
 
 " Buffers
 " allow buffer to be hidden without being saved
@@ -43,6 +45,11 @@ set timeoutlen=500
 
 let g:python_host_prog = trim(system('which python'))
 let g:python3_host_prog = trim(system('which python3'))
+
+" set syntax=sh default to posix
+" see: $VIM/runtime/syntax/sh.vim
+" let g:is_bash = 1
+let g:is_posix = 1
 
 " mouse
 " set mouse=a
