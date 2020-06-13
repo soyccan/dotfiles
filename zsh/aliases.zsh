@@ -63,7 +63,11 @@ alias pwndbg='gdb -q -ex init-pwndbg'
 #
 
 # ls, the common ones I use a lot shortened for rapid fire usage
-alias ls='ls -Gh --color'   # colered, human readable
+if [ "$(uname)" = 'Darwin' ]; then
+    alias ls='ls -hG'   # colered, human readable
+else
+    alias ls='ls -h --color' # colered, human readable
+fi
 alias l='ls -l'     # long list
 alias ll='ls -la'   # long list, show all
 alias lr='ls -R'    # recursive
