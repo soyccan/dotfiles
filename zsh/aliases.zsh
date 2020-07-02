@@ -57,7 +57,43 @@ alias pwndbg='gdb -q -ex init-pwndbg'
 
 
 
-# below are from common-aliases plugin of oh-my-zsh
+## oh-my-zsh/directories.zsh
+# https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/directories.zsh
+# Changing/making/removing directory
+setopt auto_cd # if !executable(cmd) and isdir(cmd) -> cd cmd
+setopt auto_pushd
+setopt pushd_ignore_dups
+setopt pushdminus
+
+alias -g ...='../..'
+alias -g ....='../../..'
+alias -g .....='../../../..'
+alias -g ......='../../../../..'
+
+alias -- -='cd -'
+alias 1='cd -'
+alias 2='cd -2'
+alias 3='cd -3'
+alias 4='cd -4'
+alias 5='cd -5'
+alias 6='cd -6'
+alias 7='cd -7'
+alias 8='cd -8'
+alias 9='cd -9'
+
+function d () {
+  if [[ -n $1 ]]; then
+    dirs "$@"
+  else
+    dirs -v | head -10
+  fi
+}
+compdef _dirs d
+## end oh-my-zsh/directories.zsh
+
+
+## oh-my-zsh/common-aliases.zsh
+# https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/common-aliases/common-aliases.plugin.zsh
 # Advanced Aliases.
 # Use with caution
 #
