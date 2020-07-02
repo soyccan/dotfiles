@@ -66,7 +66,7 @@ alias pwndbg='gdb -q -ex init-pwndbg'
 if [ "$(uname)" = 'Darwin' ]; then
     alias ls='ls -hG'   # colered, human readable
 else
-    alias ls='ls -h --color' # colered, human readable
+    alias ls='ls -h --color=auto' # colered, human readable
 fi
 alias l='ls -l'     # long list
 alias ll='ls -la'   # long list, show all
@@ -130,7 +130,7 @@ p() {
     # rss : resident set size = physical memory usage
     # first line is duplicated to stderr
     # it's convenient when piping result to grep
-    ps -eo pid,user,state,command | tee >(sed -n '1p' >&2)
+    ps -eo pid,user,state,etime,command | tee >(sed -n '1p' >&2)
 }
 
 alias sortnr='sort -n -r'
