@@ -5,7 +5,7 @@ dotfiles="$(realpath "$(dirname "$0")")"
 
 
 has() {
-    command -v "$1" >/dev/null 2>&1
+    type "$1" >/dev/null 2>&1
 }
 
 ln_confirm() {
@@ -13,7 +13,8 @@ ln_confirm() {
     link="$2"
     mkdir -p "$(dirname "$link")"
     if [ -L "$link" ]; then
-        ln -svf "$src" "$link"
+        rm "$link"
+        ln -sv "$src" "$link"
     else
         ln -svi "$src" "$link"
     fi
@@ -21,7 +22,7 @@ ln_confirm() {
 
 get_package_manager() {
     for cmd in apt yum brew; do 
-        if has cmd; then
+        if has "$cmd"; then
             echo "$cmd"
             break
         fi
@@ -63,7 +64,7 @@ setup_zsh() {
 setup_fish() {
     echo Configuring FISH
 
-    if ! command -v fish >/dev/null; then
+    if ! has fish; then
         echo Installing FISH
         sudo "$(get_package_manager)" install fish
     fi
@@ -83,15 +84,14 @@ setup_fish() {
 setup_tmux() {
     echo Configuring TMUX
 
-    if ! command -v zsh >/dev/null; then
+    if ! has tmux; then
         echo Installing TMUX
         sudo "$(get_package_manager)" install tmux
     fi
 
     # oh-my-tmux
     echo Installing Oh My TMUX
-    git clone --depth 1 https://github.com/gpakosz/.tmux "$HOME/.tmux"
-    ln_confirm "$HOME/.tmux/.tmux.conf" "$HOME/.tmux.conf"
+    ln_confirm "$dotfiles/tmux/oh-my-tmux/.tmux.conf" "$HOME/.tmux.conf"
     ln_confirm "$dotfiles/tmux/tmux.conf.local" "$HOME/.tmux.conf.local"
 }
 
@@ -99,7 +99,7 @@ setup_tmux() {
 setup_vim() {
     echo Configuring Vim
 
-    if ! command -v nvim >/dev/null; then
+    if ! has nvim; then
         echo Installing NeoVim
         sudo "$(get_package_manager)" install neovim
     fi
@@ -108,7 +108,9 @@ setup_vim() {
     ln_confirm "$dotfiles/vim" "$HOME/.config/nvim"
 
     # vim-plug
-    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim \
+           --create-dirs \
+           https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
     # compatible with vim
     ln_confirm "$dotfiles/vim" "$HOME/.vim"
@@ -119,20 +121,20 @@ setup_vim() {
 setup_gdb() {
     echo Configuring GDB
 
-    if ! command -v gdb >/dev/null; then
+    if ! has gdb; then
         echo Installing GDB
         sudo "$(get_package_manager)" install gdb
     fi
 
-    mkdir "$HOME/.gdb"
-    git clone --depth 1 https://github.com/longld/peda "$HOME/.gdb/peda"
-    git clone --depth 1 https://github.com/pwndbg/pwndbg "$HOME/.gdb/pwndbg"
-    git clone --depth 1 https://github.com/scwuaptx/Pwngdb "$HOME/.gdb/Pwngdb"
-    git clone --depth 1 https://github.com/cloudburst/libheap "$HOME/.gdb/libheap"
+    ln_confirm "$dotfiles/gdb" "$HOME/.gdb"
     ln_confirm "$dotfiles/gdb/gdbinit" "$HOME/.gdbinit"
-
-    # lldb
     ln_confirm "$dotfiles/gdb/lldbinit" "$HOME/.lldbinit"
+}
+
+
+setup_git() {
+    echo Configuring Git
+    ln_confirm "$dotfiles/git/gitconfig" "$HOME/.gitconfig"
 }
 
 
@@ -141,6 +143,7 @@ main() {
     # setup_fish
     setup_zsh
     setup_vim
+    setup_git
     echo Voila! Setup Finished!
 }
 

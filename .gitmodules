@@ -1,0 +1,18 @@
+[submodule "gdb/libheap"]
+	path = gdb/libheap
+	url = https://github.com/cloudburst/libheap
+[submodule "gdb/peda"]
+	path = gdb/peda
+	url = https://github.com/longld/peda
+[submodule "gdb/Pwngdb"]
+	path = gdb/Pwngdb
+	url = https://github.com/scwuaptx/Pwngdb
+[submodule "gdb/pwndbg"]
+	path = gdb/pwndbg
+	url = https://github.com/pwndbg/pwndbg
+[submodule "tmux/oh-my-tmux"]
+	path = tmux/oh-my-tmux
+	url = https://github.com/gpakosz/.tmux
+[submodule "vim/no_plugins.git"]
+	path = vim/no_plugins.git
+	url = https://github.com/changemewtf/no_plugins
