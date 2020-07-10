@@ -74,6 +74,9 @@ autocmd BufWinEnter *
             \| endif
 " autocmd QuickFixCmdPost * vertical botright copen 50
 
+" fix the problem that quickfix will open inside tagbar
+autocmd filetype qf wincmd J
+
 " error format for quickfix
 autocmd FileType lua set errorformat=%[lua:\t]%#%f:%l:\ %m
 

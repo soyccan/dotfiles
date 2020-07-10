@@ -93,29 +93,55 @@
 
 " autocmd BufDelete * call <SID>HandleBufDelete(expand('<afile>'), expand('<abuf>'))
 
+
+" adding following command will fix the problem that quickfix will open
+" inside tagbar:
+"   autocmd filetype qf wincmd J
+
 function! SmartClose()
-    " wincnt: #windows that is attached with a "real" file buffer
+    if &buftype != ''
+        " if current window is not a normal buffer
+        " e.g. being quickfix, tagbar ...
+        close
+        return
+    endif
+
+    " wincnt: #windows that are normal buffers
     " (other than quickfix, location list, tagbar...)
     let wincnt = winnr('$')
+    let tagbar_exists = 0
+    let quickfix_exists = 0
+
     if exists('t:tagbar_buf_name') && bufwinnr(t:tagbar_buf_name) != -1
         " if tagbar exists
+        let tagbar_exists = 1
         let wincnt -= 1
+        TagbarClose
     endif
     if getqflist({ 'winid' : 1 }).winid != 0
         " if quickfix window exists
+        let quickfix_exists = 1
         let wincnt -= 1
+        cclose
     end
+
     if wincnt == 1 && len(getbufinfo({ 'buflisted': 1 })) > 1
         " if there is one window and multiple buffers
-        " tagbar will handle bdelete correctly as closing tagbar
-        " TODO: make quickfix open again if it exists at first
-        if &buftype == 'quickfix'
-            close
-        else
-            cclose
-            bdelete
-        end
+        bdelete
     else
         q
     endif
+
+    " reopen quickfix or tagbar
+    if tagbar_exists
+        let curwin = winnr()
+        TagbarOpen
+        execute curwin . 'wincmd w'
+    endif
+    if quickfix_exists
+        let curwin = winnr()
+        copen
+        execute curwin . 'wincmd w'
+    endif
+
 endfunction
