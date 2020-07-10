@@ -20,7 +20,7 @@ zinit wait lucid for \
   atload"_zsh_autosuggest_start" \
       zsh-users/zsh-autosuggestions \
   blockf atpull'zinit creinstall -q .' atload"zicompinit; zicdreplay" \
-      zinit zsh-users/zsh-completions
+      zsh-users/zsh-completions
 # CTRL-r for searching history
 # zinit light zdharma/history-search-multi-word
 
