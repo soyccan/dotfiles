@@ -74,6 +74,8 @@ Plug 'Shougo/echodoc.vim'
 Plug 'octol/vim-cpp-enhanced-highlight'
 " Nginx config
 Plug 'chr4/nginx.vim'
+" Zinit config
+Plug 'zinit-zsh/zinit-vim-syntax'
 
 
 "" Sementic

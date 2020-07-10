@@ -81,14 +81,14 @@ alias 7='cd -7'
 alias 8='cd -8'
 alias 9='cd -9'
 
-function d () {
-  if [[ -n $1 ]]; then
-    dirs "$@"
-  else
-    dirs -v | head -10
-  fi
-}
-compdef _dirs d
+# function d () {
+#   if [[ -n $1 ]]; then
+#     dirs "$@"
+#   else
+#     dirs -v | head -10
+#   fi
+# }
+# compdef _dirs d
 ## end oh-my-zsh/directories.zsh
 
 
@@ -100,7 +100,11 @@ compdef _dirs d
 
 # ls, the common ones I use a lot shortened for rapid fire usage
 if [ "$(uname)" = 'Darwin' ]; then
-    alias ls='ls -hG'   # colered, human readable
+    if has gls; then
+        alias ls='gls -h --color=auto' # colered, human readable
+    else
+        alias ls='ls -hG'   # colered, human readable
+    fi
 else
     alias ls='ls -h --color=auto' # colered, human readable
 fi

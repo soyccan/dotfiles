@@ -12,31 +12,22 @@
 # light-mode: as light
 
 
+
+# fish-like features
 zinit wait lucid for \
-  atinit"zicompinit; zicdreplay" \
+  atload"zicompinit; zicdreplay" \
       zdharma/fast-syntax-highlighting \
   atload"_zsh_autosuggest_start" \
       zsh-users/zsh-autosuggestions \
-  blockf atpull'zinit creinstall -q .' \
-      zinit light zsh-users/zsh-completions
-
-# fish-like features
-# zinit ice wait lucid atload'_zsh_autosuggest_start'
-# zinit light zsh-users/zsh-autosuggestions
-#
-# zinit light zdharma/fast-syntax-highlighting
-#
-# zinit ice blockf
-# zinit light zsh-users/zsh-completions
-
+  blockf atpull'zinit creinstall -q .' atload"zicompinit; zicdreplay" \
+      zinit zsh-users/zsh-completions
 # CTRL-r for searching history
 # zinit light zdharma/history-search-multi-word
 
 
-# A.
-setopt promptsubst
 
-# Oh My Zsh libraries and plugins
+## Oh My Zsh libraries and plugins
+setopt promptsubst
 # available libraries:
 # bzr.zsh
 # cli.zsh
@@ -74,8 +65,7 @@ zinit wait lucid for \
     \
     atload"unalias grv" \
         OMZP::git
-
-
+#
 # completions
 zinit wait lucid as"completion" for \
     OMZP::fd/_fd \
@@ -84,64 +74,34 @@ zinit wait lucid as"completion" for \
     OMZP::pip/_pip \
     OMZP::ripgrep/_ripgrep \
     OMZP::gem/_gem
-
-
+#
 # following must not be delayed loading
 # if so, history.zsh will cause history of previous sessions unloaded
-# key-binding... of course
+# and key-binding will fail
+# key-bindings: ^N and ^P is originally bind to {up,down}-line-or-history
 zinit light-mode for \
-    OMZL::history.zsh
-
-# ^N and ^P is originally bind to {up,down}-line-or-history
-zinit light-mode for \
+    OMZL::history.zsh \
     atload'bindkey "^P" history-search-backward; \
            bindkey "^N" history-search-forward' \
         OMZL::key-bindings.zsh
 
 
 
-PS1="READY >" # provide a simple prompt till the theme loads
-
+## Theme
+#
+# Load the pure theme, with zsh-async library that's bundled with it.
+# zinit ice pick"async.zsh" src"pure.zsh"
+# zinit light sindresorhus/pure
+#
 # OMZ Theme
 # zinit wait'!' lucid for \
 #     OMZL::prompt_info_functions.zsh \
 #     OMZT::gnzh
-
-
-
-# Theme
-# Load the pure theme, with zsh-async library that's bundled with it.
-# zinit ice pick"async.zsh" src"pure.zsh"
-# zinit light sindresorhus/pure
-
-# Load within zshrc – for the instant prompt
-zinit atload'!source ~/.p10k.zsh' lucid nocd for \
+#
+# Powerlevel10k
+zinit atload'!source ~/.p10k.zsh' lucid for \
     romkatv/powerlevel10k
 
-# Load ~/.p10k_zinit.zsh when in ~/github/zinit.git
-zinit id-as'zinit-prompt' nocd lucid \
-    unload'[[ $PWD != */zinit.git(|/*) ]]' \
-    load'![[ $PWD = */zinit.git(|/*) ]]' \
-    atload'!source ~/.p10k_zinit.zsh; _p9k_precmd' for \
-        zdharma/null
-
-# Load ~/.p10k.zsh when in any other directory
-zinit id-as'normal-prompt' nocd lucid \
-    unload'[[ $PWD = */zinit.git(|/*) ]]' \
-    load'![[ $PWD != */zinit.git(|/*) ]]' \
-    atload'!source ~/.p10k.zsh; _p9k_precmd' for \
-        zdharma/null
-
-
-# A glance at the new for-syntax – load all of the above
-# plugins with a single command. For more information see:
-# https://zdharma.org/zinit/wiki/For-Syntax/
-# zinit for \
-#     light-mode  zsh-users/zsh-autosuggestions \
-#     light-mode  zdharma/fast-syntax-highlighting \
-#                 zdharma/history-search-multi-word \
-#     light-mode pick"async.zsh" src"pure.zsh" \
-#                 sindresorhus/pure
 
 
 # fzf (fuzzy searcher) and its intergration with fasd (recent dir jumper)
@@ -190,8 +150,8 @@ _z() {
 # Scripts that are built at install (there's single default make target, "install",
 # and it constructs scripts by `cat'ing a few files). The make'' ice could also be:
 # `make"install PREFIX=$ZPFX"`, if "install" wouldn't be the only, default target.
-zinit ice as"program" pick"$ZPFX/bin/git-*" make"PREFIX=$ZPFX"
-zinit light tj/git-extras
+# zinit ice as"program" pick"$ZPFX/bin/git-*" make"PREFIX=$ZPFX"
+# zinit light tj/git-extras
 
 # Handle completions without loading any plugin, see "clist" command.
 # This one is to be ran just once, in interactive session.
@@ -199,13 +159,22 @@ zinit light tj/git-extras
 
 # For GNU ls (the binaries can be gls, gdircolors, e.g. on OS X when installing the
 # coreutils package from Homebrew; you can also use https://github.com/ogham/exa)
-zinit ice atclone"dircolors -b LS_COLORS > c.zsh" atpull'%atclone' pick"c.zsh" nocompile'!'
-zinit light trapd00r/LS_COLORS
+zinit ice wait lucid \
+    atclone"(dircolors -b LS_COLORS || gdircolors -b LS_COLORS) > c.zsh" \
+    atpull'%atclone' pick"c.zsh" nocompile'!' \
+    atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
+zinit load trapd00r/LS_COLORS
 
 # zinit plugin manpages
-zinit light zinit-zsh/z-a-man
+zinit wait lucid for zinit-zsh/z-a-man
 
 
+# Load a few important annexes, without Turbo
+# (this is currently required for annexes)
+# zinit wait lucid for \
+#     zinit-zsh/z-a-as-monitor \
+#     zinit-zsh/z-a-patch-dl \
+#     zinit-zsh/z-a-bin-gem-node
 
 
 
