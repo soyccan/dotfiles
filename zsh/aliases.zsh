@@ -56,6 +56,14 @@ alias peda='gdb -q -ex init-peda'
 alias pwndbg='gdb -q -ex init-pwndbg'
 
 
+## oh-my-zsh/rsync.plugin.zsh
+# https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/rsync/rsync.plugin.zsh
+alias rsync-copy="rsync -avz --progress -h"
+alias rsync-move="rsync -avz --progress -h --remove-source-files"
+alias rsync-update="rsync -avzu --progress -h"
+alias rsync-synchronize="rsync -avzu --delete --progress -h"
+## end oh-my-zsh/rsync.plugin.zsh
+
 
 ## oh-my-zsh/directories.zsh
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/directories.zsh
@@ -178,10 +186,12 @@ alias unexport='unset'
 
 # Make zsh know about hosts already accessed by SSH
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
+## end oh-my-zsh/common-aliases.zsh
 
 
+## oh-my-zsh/globalias.plugin.zsh
+# https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/globalias/globalias.plugin.zsh
 # expand alias to full command
-# zinit snippet OMZ::plugins/globalias/globalias.plugin.zsh
 globalias() {
     # expand wildchar * ? to file list
     # zle expand-word
@@ -191,6 +201,7 @@ globalias() {
 }
 zle -N globalias
 bindkey " " globalias
+## end oh-my-zsh/globalias.plugin.zsh
 
 
 if [ "$(uname)" = 'Darwin' ] && [ -e '/Applications/Turbo Boost Switcher.app' ]; then
