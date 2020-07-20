@@ -280,6 +280,11 @@ tmux_conf_copy_to_os_clipboard=false
 
 # -- user customizations -------------------------------------------------------
 # this is the place to override or undo settings
+# Help:
+#   set    : set a session option
+#   set -g : set a global session/windows option
+#   set -s : set a tmux server option
+#   set -u : unset an option
 
 # increase history size
 #set -g history-limit 10000
@@ -292,12 +297,9 @@ tmux_conf_copy_to_os_clipboard=false
 set -g status-keys vi
 set -g mode-keys vi
 
-# replace C-b by C-a instead of using both prefixes
+# use C-b as the only prefix, unset C-a
 set -gu prefix2
 unbind C-a
-# unbind C-b
-# set -g prefix C-a
-# bind C-a send-prefix
 
 # move status line to top
 #set -g status-position top
@@ -306,9 +308,11 @@ unbind C-a
 bind c new-window -a
 
 # this is originally bind as: new-session
-# but is often pressed
+# but new-window is more often used
 bind C-c new-window -a
 
-# swtich between windows, don't repeat (-r)
-bind C-h previous-window # select previous window
-bind C-l next-window     # select next window
+# switch between windows without repeat (-r)
+# not using ^H/^L since some terminal sends ^? (0x7f) when Ctrl-h is pressed
+# and ^? has binding issue in tmux
+bind C-[ previous-window
+bind C-] next-window

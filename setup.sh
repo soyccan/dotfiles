@@ -91,6 +91,7 @@ setup_tmux() {
 
     # oh-my-tmux
     echo Installing Oh My TMUX
+    ln_confirm "$dotfiles/tmux/oh-my-tmux"
     ln_confirm "$dotfiles/tmux/oh-my-tmux/.tmux.conf" "$HOME/.tmux.conf"
     ln_confirm "$dotfiles/tmux/tmux.conf.local" "$HOME/.tmux.conf.local"
 }

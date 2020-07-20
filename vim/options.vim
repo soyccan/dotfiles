@@ -28,7 +28,8 @@ set foldlevel=1
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
-set expandtab " Ctrl-V + Tab to enter real tab
+set expandtab " use space instead of tab; Ctrl-V + Tab to enter real tab
+set nofixendofline " no LF at file end
 
 " we don't use ctags but gtags, which is of cscope-like interface
 " (gtags-cscope)

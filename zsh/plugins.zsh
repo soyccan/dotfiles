@@ -73,7 +73,8 @@ zinit wait lucid as"completion" for \
     OMZP::docker-compose/_docker-compose \
     OMZP::pip/_pip \
     OMZP::ripgrep/_ripgrep \
-    OMZP::gem/_gem
+    OMZP::gem/_gem \
+    OMZP::bundler/_bundler
 #
 # following must not be delayed loading
 # if so, history.zsh will cause history of previous sessions unloaded

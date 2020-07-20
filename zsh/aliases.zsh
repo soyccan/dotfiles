@@ -116,11 +116,11 @@ if [ "$(uname)" = 'Darwin' ]; then
 else
     alias ls='ls -h --color=auto' # colered, human readable
 fi
-alias l='ls -l'     # long list
-alias ll='ls -la'   # long list, show all
-alias lr='ls -R'    # recursive
-alias lt='l -t'     # sorted by date
-alias llt='ll -t'   # sorted by date
+alias l='ls -la'        # long list, show all
+alias ll='ls -l'        # long list
+alias lr='ls -R'        # recursive
+alias lt='ls -lat'      # sorted by date
+alias llt='ls -lt'      # sorted by date
 # alias l='ls -lFh'     #size,show type,human readable
 # alias la='ls -lAFh'   #long list,show almost all,show type,human readable
 # alias lr='ls -tRFh'   #sorted by date,recursive,show type,human readable

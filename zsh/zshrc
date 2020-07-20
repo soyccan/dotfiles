@@ -20,13 +20,17 @@ fi
 # Environments #
 ################
 # PATH
-for p in '/usr/local/brew/bin' \
-         '/snap/bin' \
-         "$HOME/go/bin" \
-         "$HOME/.rvm/bin" \
-         "$HOME/.pyenv/bin" \
-         "$HOME/.local/bin" \
-         "$HOME/bin"; do
+paths=('/usr/local/brew/bin'
+       '/snap/bin'
+       "$HOME/go/bin"
+       "$HOME/.rvm/bin"
+       "$HOME/.pyenv/bin"
+       "$HOME/.local/bin" # pip
+       "$HOME/bin")
+for x in $(ls "$HOME/.gem/ruby" 2>/dev/null); do
+    paths+="$HOME/.gem/ruby/$x/bin"
+done
+for p in $paths; do
     [ -d "$p" ] && PATH="$p:$PATH"
 done
 export PATH
