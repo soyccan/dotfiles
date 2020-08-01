@@ -314,5 +314,7 @@ bind C-c new-window -a
 # switch between windows without repeat (-r)
 # not using ^H/^L since some terminal sends ^? (0x7f) when Ctrl-h is pressed
 # and ^? has binding issue in tmux
+bind C-h previous-window
 bind C-[ previous-window
 bind C-] next-window
+bind C-l next-window
