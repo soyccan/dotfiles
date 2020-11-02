@@ -20,23 +20,31 @@ ln_confirm() {
     fi
 }
 
-get_package_manager() {
-    for cmd in apt yum brew; do 
-        if has "$cmd"; then
-            echo "$cmd"
-            break
-        fi
-    done
+install_pkg() {
+    if has "$1"; then
+        return
+    fi
+
+    sudo=
+    if has sudo; then
+        sudo=sudo
+    fi
+
+    if has apt; then
+        "$sudo" apt install -y "$1"
+    elif has yum; then
+        "$sudo" yum install -y "$1"
+    elif has brew; then
+        brew install "$1"
+    fi
 }
 
 
 setup_zsh() {
     echo Configuring ZSH
 
-    if ! has zsh; then
-        echo Installing ZSH
-        sudo "$(get_package_manager)" install zsh
-    fi
+    echo Installing ZSH
+    install_pkg zsh
 
     if [ "$(awk -F':' "/^$USER/ { print \$7 }" /etc/passwd)" != '/bin/zsh' ]; then
         sudo usermod "$USER" -s /bin/zsh
@@ -64,10 +72,8 @@ setup_zsh() {
 setup_fish() {
     echo Configuring FISH
 
-    if ! has fish; then
-        echo Installing FISH
-        sudo "$(get_package_manager)" install fish
-    fi
+    echo Installing FISH
+    install_pkg fish
 
     if [ "$(awk -F':' "/^$USER/ { print \$7 }" /etc/passwd)" != '/bin/fish' ]; then
         sudo usermod "$USER" -s /bin/fish
@@ -84,14 +90,12 @@ setup_fish() {
 setup_tmux() {
     echo Configuring TMUX
 
-    if ! has tmux; then
-        echo Installing TMUX
-        sudo "$(get_package_manager)" install tmux
-    fi
+    echo Installing TMUX
+    install_pkg tmux
 
     # oh-my-tmux
     echo Installing Oh My TMUX
-    ln_confirm "$dotfiles/tmux/oh-my-tmux"
+    ln_confirm "$dotfiles/tmux/oh-my-tmux" "$HOME/.tmux"
     ln_confirm "$dotfiles/tmux/oh-my-tmux/.tmux.conf" "$HOME/.tmux.conf"
     ln_confirm "$dotfiles/tmux/tmux.conf.local" "$HOME/.tmux.conf.local"
 }
@@ -100,10 +104,8 @@ setup_tmux() {
 setup_vim() {
     echo Configuring Vim
 
-    if ! has nvim; then
-        echo Installing NeoVim
-        sudo "$(get_package_manager)" install neovim
-    fi
+    echo Installing NeoVim
+    install_pkg neovim
 
     # neovim configurations
     ln_confirm "$dotfiles/vim" "$HOME/.config/nvim"
@@ -122,10 +124,8 @@ setup_vim() {
 setup_gdb() {
     echo Configuring GDB
 
-    if ! has gdb; then
-        echo Installing GDB
-        sudo "$(get_package_manager)" install gdb
-    fi
+    echo Installing GDB
+    install_pkg gdb
 
     ln_confirm "$dotfiles/gdb" "$HOME/.gdb"
     ln_confirm "$dotfiles/gdb/gdbinit" "$HOME/.gdbinit"
