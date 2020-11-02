@@ -55,6 +55,9 @@ Plug 'Shougo/neomru.vim'
 Plug 'mileszs/ack.vim'
 " symbol list
 Plug 'majutsushi/tagbar'
+" fast motions
+" jump to a search match by one single key
+Plug 'easymotion/vim-easymotion'
 
 
 "" Looking

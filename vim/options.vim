@@ -1,6 +1,6 @@
 set backspace=2
 set helplang=tw
-set hlsearch incsearch
+set nohlsearch incsearch
 set ignorecase smartcase
 
 set cursorline
