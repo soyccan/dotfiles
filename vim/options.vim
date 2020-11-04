@@ -52,6 +52,9 @@ let g:python3_host_prog = trim(system('which python3'))
 " let g:is_bash = 1
 let g:is_posix = 1
 
+" clipboard for mac
+set clipboard=unnamed
+
 " mouse
 " set mouse=a
 " set ttymouse=xterm
