@@ -264,39 +264,52 @@ map <leader>9 <Plug>AirlineSelectTab9
 nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 
 
-"""""""""""""
-" incsearch "
-"""""""""""""
-" map /  <Plug>(incsearch-forward)
-" map ?  <Plug>(incsearch-backward)
-" map g/ <Plug>(incsearch-stay)
-" let g:incsearch#auto_nohlsearch = 1
-" map n  <Plug>(incsearch-nohl-n)
-" map N  <Plug>(incsearch-nohl-N)
-" map *  <Plug>(incsearch-nohl-*)
-" map #  <Plug>(incsearch-nohl-#)
-" map g* <Plug>(incsearch-nohl-g*)
-" map g# <Plug>(incsearch-nohl-g#)
-" map z/ <Plug>(incsearch-easymotion-/)
-" map z? <Plug>(incsearch-easymotion-?)
-" map zg/ <Plug>(incsearch-easymotion-stay)
-
-
 """"""""""""""
 " easymotion "
 """"""""""""""
+" function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
+"   num_strokes:
+"     The number of input characters. Currently provide 1, 2, or -1.
+"     '-1' means no limit.
+"   visualmode:
+"     Vim script couldn't detect the function is called in visual mode by
+"     mode(1), so tell whether it is in visual mode by argument explicitly
+"   direction:
+"     0 -> forward
+"     1 -> backward
+"     2 -> bi-direction (handle forward & backward at the same time) }}}
+"
+" function! EasyMotion#User(pattern, visualmode, direction, inclusive, ...) " {{{
+"   inclusive:
+"     usually 0
+"     'f' motion is inclusive but 'F' motion is exclusive
+"
+" function! EasyMotion#OverwinF(num_strokes) " {{{
+"
 " move around
-map <Leader>l <Plug>(easymotion-lineforward)
+map <Leader>h <Plug>(easymotion-linebackward)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
-map <Leader>h <Plug>(easymotion-linebackward)
-" 2-character search
-nmap s <Plug>(easymotion-overwin-f2)
-" n-character search
-map  / <Plug>(easymotion-sn)
-omap / <Plug>(easymotion-tn)
+map <Leader>l <Plug>(easymotion-lineforward)
+" 2-character search, cross window
+nmap s :<C-U>call EasyMotion#OverwinF(2)<CR>
+omap s :<C-U>call EasyMotion#OverwinF(2)<CR>
+vmap s <Esc>:<C-U>call EasyMotion#OverwinF(2)<CR>
+" n-character search, cross window
+nmap / :<C-U>call EasyMotion#OverwinF(-1)<CR>
+omap / :<C-U>call EasyMotion#OverwinF(-1)<CR>
+vmap / <Esc>:<C-U>call EasyMotion#OverwinF(-1)<CR>
 " These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
 " Without these mappings, `n` & `N` works fine. (These mappings just provide
 " different highlight method and have some other features )
-map  n <Plug>(easymotion-next)
-map  N <Plug>(easymotion-prev)
+nmap n <Plug>(easymotion-next)
+omap n <Plug>(easymotion-next)
+vmap n <Plug>(easymotion-next)
+nmap N <Plug>(easymotion-prev)
+omap N <Plug>(easymotion-prev)
+vmap N <Plug>(easymotion-prev)
+" search the word under cursor
+nmap * :<C-U>call EasyMotion#User(expand('<cword>'),0,2,0)<CR>
+omap * :<C-U>call EasyMotion#User(expand('<cword>'),0,2,0)<CR>
+vmap * <Esc>:<C-U>call EasyMotion#User(expand('<cword>'),1,2,0)<CR>
+
