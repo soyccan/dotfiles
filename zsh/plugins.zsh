@@ -59,7 +59,6 @@ zinit wait lucid for \
     OMZP::pipenv \
     OMZP::systemadmin \
     OMZP::systemd \
-    OMZP::thefuck \
     OMZP::urltools \
     OMZP::zsh_reload \
     \

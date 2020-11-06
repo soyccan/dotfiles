@@ -285,6 +285,7 @@ nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 "     'f' motion is inclusive but 'F' motion is exclusive
 "
 " function! EasyMotion#OverwinF(num_strokes) " {{{
+"   " no keeping last search pattern when <Plug>(easymotion-next) is invoked
 "
 " move around
 map <Leader>h <Plug>(easymotion-linebackward)
@@ -296,9 +297,9 @@ nmap s :<C-U>call EasyMotion#OverwinF(2)<CR>
 omap s :<C-U>call EasyMotion#OverwinF(2)<CR>
 vmap s <Esc>:<C-U>call EasyMotion#OverwinF(2)<CR>
 " n-character search, cross window
-nmap / :<C-U>call EasyMotion#OverwinF(-1)<CR>
-omap / :<C-U>call EasyMotion#OverwinF(-1)<CR>
-vmap / <Esc>:<C-U>call EasyMotion#OverwinF(-1)<CR>
+nmap / :<C-U>call EasyMotion#S(-1,0,2)<CR>
+omap / :<C-U>call EasyMotion#S(-1,0,2)<CR>
+vmap / <Esc>:<C-U>call EasyMotion#S(-1,1,2)<CR>
 " These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
 " Without these mappings, `n` & `N` works fine. (These mappings just provide
 " different highlight method and have some other features )
