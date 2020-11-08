@@ -287,6 +287,8 @@ nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
 " function! EasyMotion#OverwinF(num_strokes) " {{{
 "   " no keeping last search pattern when <Plug>(easymotion-next) is invoked
 "
+" function! EasyMotion#NextPrevious(visualmode, direction) " {{{
+"
 " move around
 map <Leader>h <Plug>(easymotion-linebackward)
 map <Leader>j <Plug>(easymotion-j)
@@ -310,7 +312,9 @@ nmap N <Plug>(easymotion-prev)
 omap N <Plug>(easymotion-prev)
 vmap N <Plug>(easymotion-prev)
 " search the word under cursor
-nmap * :<C-U>call EasyMotion#User(expand('<cword>'),0,2,0)<CR>
-omap * :<C-U>call EasyMotion#User(expand('<cword>'),0,2,0)<CR>
-vmap * <Esc>:<C-U>call EasyMotion#User(expand('<cword>'),1,2,0)<CR>
+nmap * :<C-U>call EasyMotion#User(expand('<cword>'),0,2,0)<CR>;:<C-U>call EasyMotion#NextPrevious(0,0)<CR>
+omap * :<C-U>call EasyMotion#User(expand('<cword>'),0,2,0)<CR>;:<C-U>call EasyMotion#NextPrevious(0,0)<CR>
+vmap * <Esc>:<C-U>call EasyMotion#User(expand('<cword>'),1,2,0)<CR>;:<C-U>call EasyMotion#NextPrevious(0,0)<CR>
+" nmap * :<C-U>call EasyMotion#highlight#attach_autocmd()<CR>
+"       \:<C-U>call EasyMotion#highlight#add_highlight(expand('<cword>'), g:EasyMotion_hl_move)<CR>
 

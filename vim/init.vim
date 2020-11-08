@@ -79,6 +79,8 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'chr4/nginx.vim'
 " Zinit config
 Plug 'zinit-zsh/zinit-vim-syntax'
+" Powershell
+Plug 'zigford/vim-powershell'
 
 
 "" Sementic
