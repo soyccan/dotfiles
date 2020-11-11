@@ -39,6 +39,9 @@ Plug 'michaeljsmith/vim-indent-object'
 Plug 'neomake/neomake'
 " formatter
 Plug 'sbdchd/neoformat'
+" align around any character
+" select text and :EasyAlign N<char> or :EasyAlign N/<regex>/
+Plug 'junegunn/vim-easy-align'
 
 
 "" Navigation

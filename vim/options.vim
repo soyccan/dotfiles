@@ -4,32 +4,45 @@ set nohlsearch incsearch
 set ignorecase smartcase
 
 set cursorline
-set autoindent smartindent cindent
 set number
 set nowrap
 set ruler
 set scrolloff=5
 set colorcolumn=80
-
 set noshowmode
-" set statusline+=%{gutentags#statusline()}
-
-set list
-set listchars=tab:┊\ ,trail:-,nbsp:+,extends:>,precedes:<
-
-set autochdir
-set autoread " auto reload when changed
 
 set nofoldenable
 set foldmethod=indent
 set foldcolumn=1
 set foldlevel=1
 
+set list
+set listchars=tab:┊\ ,trail:-,nbsp:+,extends:>,precedes:<
+
+filetype plugin indent on
+syntax on
+
+" &cindent and &cinoptions is ignored if &indentexpr is set
+" Many languages other than C have defined their indent convension
+" in $VIM/runtime/indent
+" &autoindent, &smartindent and &cindent aren't necessary if filetype-based
+" indent is enabled by exeuting "filetype indent on"
+"
+" set autoindent
+" set smartindent
+" set cindent
+"
+" align with parentheses
+set cinoptions+=(0
+
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab " use space instead of tab; Ctrl-V + Tab to enter real tab
 set nofixendofline " no LF at file end
+
+set autochdir
+set autoread " auto reload when changed
 
 " we don't use ctags but gtags, which is of cscope-like interface
 " (gtags-cscope)
@@ -39,7 +52,7 @@ set cscopetag
 " allow buffer to be hidden without being saved
 set hidden
 
-" completion behaviour
+" Completion behaviour
 set completeopt-=preview
 
 set timeoutlen=500
@@ -52,10 +65,11 @@ let g:python3_host_prog = trim(system('which python3'))
 " let g:is_bash = 1
 let g:is_posix = 1
 
-" clipboard for mac
-set clipboard=unnamed
+" Clipboard for mac
+" This breaks block-mode paste
+" set clipboard=unnamed
 
-" mouse
+" Mouse
 " set mouse=a
 " set ttymouse=xterm
 
@@ -84,14 +98,11 @@ autocmd filetype qf wincmd J
 " error format for quickfix
 autocmd FileType lua set errorformat=%[lua:\t]%#%f:%l:\ %m
 
-
-
 packadd! termdebug
 
 if has('win32')
     " Windows-specific commands
 endif
-
 
 " Startup
 " start from choosing recent files
