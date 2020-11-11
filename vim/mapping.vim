@@ -136,6 +136,7 @@ noremap <leader>a :<C-U>AlternateFile<CR>
 " Inspired by: https://github.com/easymotion/vim-easymotion
 "              https://github.com/justinmk/vim-sneak
 function! s:SmartHighlightAttachAutocmd()
+    " following code is from Easymotion#highlight#attach_autocmd()
     augroup smart-highlight
         autocmd!
         autocmd InsertEnter,WinLeave,BufLeave <buffer>
@@ -147,9 +148,10 @@ function! s:SmartHighlightAttachAutocmd()
             \  | autocmd! smart-highlight * <buffer>
     augroup END
 endfunction
-noremap * :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>*
-noremap n :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>n
-noremap N :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>N
+" noremap * :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>*
+" noremap / :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>/
+" noremap n :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>n
+" noremap N :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>N
 
 " Replace motion with recently yanked/deleted text
 " Inspired by: https://github.com/inkarkat/vim-ReplaceWithRegister
@@ -157,7 +159,7 @@ noremap N :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>N
 nnoremap <silent> gr :<C-U>set opfunc=<SID>ReplaceWithRegister<CR>g@
 vnoremap <silent> gr :<C-U>call <SID>ReplaceWithRegister(visualmode(), 1)<CR>
 map grr gr_
-"
+" following code is from manual of
 function! s:ReplaceWithRegister(type, ...)
     let sel_save = &selection
     let reg_save = @@
@@ -184,6 +186,7 @@ endfunction
 """""""""""""""""
 " <C-_> means Ctrl + / in terminal
 " but Ctrl + / is not recoginzed in gVim
+" [N]<leader>/ for commenting N lines
 map <leader>/ <Plug>NERDCommenterToggle
 
 
@@ -257,7 +260,7 @@ map <leader>9 <Plug>AirlineSelectTab9
 "       \  ['jk', '<denite:enter_mode:normal>', 'noremap'],
 "       \ ['<Tab>', '<denite:move_to_next_line>', 'noremap'],
 "       \ ['<S-tab>', '<denite:move_to_previous_line>', 'noremap'],
-"       \  ['<Esc>', '<denite:enter_mode:normal>', 'noremap'],
+"       \  ['<ESC>', '<denite:enter_mode:normal>', 'noremap'],
 "       \  ['<C-N>', '<denite:assign_next_matched_text>', 'noremap'],
 "       \  ['<C-P>', '<denite:assign_previous_matched_text>', 'noremap'],
 "       \  ['<Up>', '<denite:assign_previous_text>', 'noremap'],
@@ -334,41 +337,46 @@ nnoremap <silent> <leader> :<C-U>WhichKey '<Space>'<CR>
 "   " no keeping last search pattern when <Plug>(easymotion-next) is invoked
 "
 " function! EasyMotion#NextPrevious(visualmode, direction) " {{{
-"
+
 " Move around
 map <Leader>h <Plug>(easymotion-linebackward)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 map <Leader>l <Plug>(easymotion-lineforward)
-"
+
 " 2-character search, cross window
-nmap s :<C-U>call EasyMotion#OverwinF(2)<CR>
-omap s :<C-U>call EasyMotion#OverwinF(2)<CR>
-vmap s <Esc>:<C-U>call EasyMotion#OverwinF(2)<CR>
-"
-" Note: Since mapping / n N * breaks searching system in VIM
-"       along as my favorite variable-renaming method: * -> cgn -> ......
-"       I set it side temporarily until I find a solution
-"
-" N-character search, cross window
-" nmap / :<C-U>call EasyMotion#S(-1,0,2)<CR>
-" omap / :<C-U>call EasyMotion#S(-1,0,2)<CR>
-" vmap / <Esc>:<C-U>call EasyMotion#S(-1,1,2)<CR>
-"
+nmap <silent> s :<C-U>call EasyMotion#OverwinF(2)<CR>
+omap <silent> s :<C-U>call EasyMotion#OverwinF(2)<CR>
+vmap s <ESC>s
+
+" N-character search
+nmap <silent> / :<C-U>call EasyMotion#S(-1,0,2)<CR>
+omap <silent> / :<C-U>call EasyMotion#S(-1,0,2)<CR>
+vmap / <ESC>/
+
 " These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
 " Without these mappings, `n` & `N` works fine. (These mappings just provide
 " different highlight method and have some other features )
-" nmap n <Plug>(easymotion-next)
-" omap n <Plug>(easymotion-next)
-" vmap n <Plug>(easymotion-next)
-" nmap N <Plug>(easymotion-prev)
-" omap N <Plug>(easymotion-prev)
-" vmap N <Plug>(easymotion-prev)
-"
+map n <Plug>(easymotion-next)
+map N <Plug>(easymotion-prev)
+
 " Search the word under cursor
-" nmap * :<C-U>call EasyMotion#User(expand('<cword>'),0,2,0)<CR>;:<C-U>call EasyMotion#NextPrevious(0,0)<CR>
-" omap * :<C-U>call EasyMotion#User(expand('<cword>'),0,2,0)<CR>;:<C-U>call EasyMotion#NextPrevious(0,0)<CR>
-" vmap * <Esc>:<C-U>call EasyMotion#User(expand('<cword>'),1,2,0)<CR>;:<C-U>call EasyMotion#NextPrevious(0,0)<CR>
-" nmap * :<C-U>call EasyMotion#highlight#attach_autocmd()<CR>
-"       \:<C-U>call EasyMotion#highlight#add_highlight(expand('<cword>'), g:EasyMotion_hl_move)<CR>
+function! s:AddSearchHistory(re)
+    " code is from Easymotion.s:findMotion()
+    if g:EasyMotion_add_search_history
+        let history_re = substitute(a:re, '\\c\|\\C', '', '')
+        let @/ = history_re "For textobject: 'gn'
+        call histadd('search', history_re)
+    endif
+endfunction
+function! s:EasyMotionFindCursor()
+    let re = '\<' . expand('<cword>') . '\>'
+    call s:AddSearchHistory(re)
+    call EasyMotion#User(re, 0, 2, 0)
+    call EasyMotion#highlight#attach_autocmd()
+    call EasyMotion#highlight#add_highlight(re, g:EasyMotion_hl_move)
+endfunction
+nmap <silent> * :<C-U>call <SID>EasyMotionFindCursor()<CR><ESC>
+omap <silent> * :<C-U>call <SID>EasyMotionFindCursor()<CR><ESC>
+vmap * <ESC>*
 
