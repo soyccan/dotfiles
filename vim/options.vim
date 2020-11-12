@@ -57,6 +57,9 @@ set completeopt-=preview
 
 set timeoutlen=500
 
+" Ignore white space difference in diff mode
+set diffopt+=iwhite
+
 let g:python_host_prog = trim(system('which python'))
 let g:python3_host_prog = trim(system('which python3'))
 

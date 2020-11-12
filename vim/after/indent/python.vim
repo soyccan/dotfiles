@@ -1,8 +1,8 @@
 " Vim indent file
-" Language:		Python
-" Maintainer:		Bram Moolenaar <Bram@vim.org>
-" Original Author:	David Bustos <bustos@caltech.edu>
-" Last Change:		2019 Feb 21
+" Language:         Python
+" Maintainer:       Bram Moolenaar <Bram@vim.org>
+" Original Author:  David Bustos <bustos@caltech.edu>
+" Last Change:      2019 Feb 21
 
 " Only load this indent file when no other was loaded.
 if exists("b:did_indent")
@@ -11,8 +11,8 @@ endif
 let b:did_indent = 1
 
 " Some preliminary settings
-setlocal nolisp		" Make sure lisp indenting doesn't supersede us
-setlocal autoindent	" indentexpr isn't much help otherwise
+setlocal nolisp     " Make sure lisp indenting doesn't supersede us
+setlocal autoindent " indentexpr isn't much help otherwise
 
 setlocal indentexpr=GetPythonIndent(v:lnum)
 setlocal indentkeys+=<:>,=elif,=except
@@ -26,7 +26,7 @@ set cpo&vim
 
 " Come here when loading the script the first time.
 
-let s:maxoff = 50	" maximum number of lines to look backwards for ()
+let s:maxoff = 50   " maximum number of lines to look backwards for ()
 
 function GetPythonIndent(lnum)
 
@@ -41,7 +41,7 @@ function GetPythonIndent(lnum)
 
   " If the start of the line is in a string don't change the indent.
   if has('syntax_items')
-	\ && synIDattr(synID(a:lnum, 1, 1), "name") =~ "String$"
+        \ && synIDattr(synID(a:lnum, 1, 1), "name") =~ "String$"
     return -1
   endif
 
@@ -73,10 +73,10 @@ function GetPythonIndent(lnum)
     " Trick: use the non-existing "dummy" variable to break out of the loop when
     " going too far back.
     let parlnum = searchpair('(\|{\|\[', '', ')\|}\|\]', 'nbW',
-            \ "line('.') < " . (plnum - s:maxoff) . " ? dummy :"
-            \ . " synIDattr(synID(line('.'), col('.'), 1), 'name')"
-            \ . " =~ '\\(Comment\\|Todo\\|String\\)$'",
-            \ searchpair_stopline, searchpair_timeout)
+          \ "line('.') < " . (plnum - s:maxoff) . " ? dummy :"
+          \ . " synIDattr(synID(line('.'), col('.'), 1), 'name')"
+          \ . " =~ '\\(Comment\\|Todo\\|String\\)$'",
+          \ searchpair_stopline, searchpair_timeout)
     if parlnum > 0
       let plindent = indent(parlnum)
       let plnumstart = parlnum
@@ -92,12 +92,12 @@ function GetPythonIndent(lnum)
     "       + c)
     call cursor(a:lnum, 1)
     let [p, pcol] = searchpairpos('(\|{\|\[', '', ')\|}\|\]', 'bW',
-            \ "line('.') < " . (a:lnum - s:maxoff) . " ? dummy :"
-            \ . " synIDattr(synID(line('.'), col('.'), 1), 'name')"
-            \ . " =~ '\\(Comment\\|Todo\\|String\\)$'",
-            \ searchpair_stopline, searchpair_timeout)
+          \ "line('.') < " . (a:lnum - s:maxoff) . " ? dummy :"
+          \ . " synIDattr(synID(line('.'), col('.'), 1), 'name')"
+          \ . " =~ '\\(Comment\\|Todo\\|String\\)$'",
+          \ searchpair_stopline, searchpair_timeout)
     if p > 0
-      if match(getline(p), ',\s*$') != -1
+      if getline(p) =~ ',\s*$'
         " align parameters of a function, if the first parameter is
         " immediately after "("
         return pcol
@@ -105,10 +105,10 @@ function GetPythonIndent(lnum)
       if p == plnum
         " When the start is inside parenthesis, only indent one 'shiftwidth'.
         let pp = searchpair('(\|{\|\[', '', ')\|}\|\]', 'bW',
-            \ "line('.') < " . (a:lnum - s:maxoff) . " ? dummy :"
-            \ . " synIDattr(synID(line('.'), col('.'), 1), 'name')"
-            \ . " =~ '\\(Comment\\|Todo\\|String\\)$'",
-            \ searchpair_stopline, searchpair_timeout)
+              \ "line('.') < " . (a:lnum - s:maxoff) . " ? dummy :"
+              \ . " synIDattr(synID(line('.'), col('.'), 1), 'name')"
+              \ . " =~ '\\(Comment\\|Todo\\|String\\)$'",
+              \ searchpair_stopline, searchpair_timeout)
         if pp > 0
           return indent(plnum) + (exists("g:pyindent_nested_paren") ? eval(g:pyindent_nested_paren) : shiftwidth())
         endif
@@ -135,12 +135,12 @@ function GetPythonIndent(lnum)
       let min = 1
       let max = pline_len
       while min < max
-	let col = (min + max) / 2
-	if synIDattr(synID(plnum, col, 1), "name") =~ "\\(Comment\\|Todo\\)$"
-	  let max = col
-	else
-	  let min = col + 1
-	endif
+        let col = (min + max) / 2
+        if synIDattr(synID(plnum, col, 1), "name") =~ "\\(Comment\\|Todo\\)$"
+          let max = col
+        else
+          let min = col + 1
+        endif
       endwhile
       let pline = strpart(pline, 0, min - 1)
     endif
@@ -148,8 +148,8 @@ function GetPythonIndent(lnum)
     let col = 0
     while col < pline_len
       if pline[col] == '#'
-	let pline = strpart(pline, 0, col)
-	break
+        let pline = strpart(pline, 0, col)
+        break
       endif
       let col = col + 1
     endwhile
@@ -176,15 +176,15 @@ function GetPythonIndent(lnum)
     let lnum = a:lnum - 1
     while lnum >= 1
       if getline(lnum) =~ '^\s*\(try\|except\)\>'
-	let ind = indent(lnum)
-	if ind >= indent(a:lnum)
-	  return -1	" indent is already less than this
-	endif
-	return ind	" line up with previous try or except
+        let ind = indent(lnum)
+        if ind >= indent(a:lnum)
+          return -1 " indent is already less than this
+        endif
+        return ind  " line up with previous try or except
       endif
       let lnum = lnum - 1
     endwhile
-    return -1		" no matching "try"!
+    return -1       " no matching "try"!
   endif
 
   " If the current line begins with a header keyword, dedent

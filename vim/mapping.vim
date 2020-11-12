@@ -10,16 +10,18 @@ autocmd FileType vim nnoremap <buffer> w :<C-U>w \| source %<CR>
 autocmd FileType vim vnoremap <buffer> w <ESC>:<C-U>w \| source %<CR>
 
 
-" Z : Close buffer
-" q : Smart close window
+" Z or <leader>bd : Close buffer while keeping window (my plugin)
+" q or <leader>qs : Smart quit (close buffer or window) (my plugin)
 " Q : Record macro
 " gQ : Ex mode (originally Q)
 " Notice: this masks ZZ and ZQ
 " TODO: this will quit vim when only main window and tagbar window exists
 "       even if there is other buffers
-noremap <silent> q :<C-U>call SmartClose()<CR>
-noremap <leader>qq :<C-U>qa<CR>
-noremap Z :<C-U>bdelete<CR>
+noremap q :<C-U>SmartClose<CR>
+noremap Z :<C-U>Bclose<CR>
+noremap <leader>qs :<C-U>SmartClose<CR>
+noremap <leader>qa :<C-U>qa<CR>
+noremap <leader>bd :<C-U>Bclose<CR>
 noremap Q q
 
 " Switch between windows, buffers ...
@@ -135,19 +137,19 @@ noremap <leader>a :<C-U>AlternateFile<CR>
 " Turn off highlight after cursor moves
 " Inspired by: https://github.com/easymotion/vim-easymotion
 "              https://github.com/justinmk/vim-sneak
-function! s:SmartHighlightAttachAutocmd()
-    " following code is from Easymotion#highlight#attach_autocmd()
-    augroup smart-highlight
-        autocmd!
-        autocmd InsertEnter,WinLeave,BufLeave <buffer>
-            \ silent! set nohlsearch
-            \  | autocmd! smart-highlight * <buffer>
-        autocmd CursorMoved <buffer>
-            \ autocmd smart-highlight CursorMoved <buffer>
-            \ silent! set nohlsearch
-            \  | autocmd! smart-highlight * <buffer>
-    augroup END
-endfunction
+" function! s:SmartHighlightAttachAutocmd()
+"     " following code is from Easymotion#highlight#attach_autocmd()
+"     augroup smart-highlight
+"         autocmd!
+"         autocmd InsertEnter,WinLeave,BufLeave <buffer>
+"             \ silent! set nohlsearch
+"             \  | autocmd! smart-highlight * <buffer>
+"         autocmd CursorMoved <buffer>
+"             \ autocmd smart-highlight CursorMoved <buffer>
+"             \ silent! set nohlsearch
+"             \  | autocmd! smart-highlight * <buffer>
+"     augroup END
+" endfunction
 " noremap * :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>*
 " noremap / :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>/
 " noremap n :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>n

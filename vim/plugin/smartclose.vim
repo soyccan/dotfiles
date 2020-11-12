@@ -98,7 +98,7 @@
 " inside tagbar:
 "   autocmd filetype qf wincmd J
 
-function! SmartClose()
+function! s:SmartClose()
     if &buftype != ''
         " if current window is not a normal buffer
         " e.g. being quickfix, tagbar ...
@@ -143,5 +143,6 @@ function! SmartClose()
         copen
         execute curwin . 'wincmd w'
     endif
-
 endfunction
+
+command! SmartClose call <SID>SmartClose()
