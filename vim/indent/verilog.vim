@@ -62,7 +62,7 @@ function GetVerilogIndent()
   let last_line  = getline(lnum)
   let last_line2 = getline(lnum2)
   let ind  = indent(lnum)
-  let ind2 = indent(lnum - 1)
+  let ind2 = indent(lnum2)
   let offset_comment1 = 1
   " Define the condition of an open statement
   "   Exclude the match of //, /* or */
@@ -76,16 +76,39 @@ function GetVerilogIndent()
     let vverb = 0
   endif
 
-  " Align parameters if first parameter follow directly after a "("
+  " Align parameters inside ()
   " Code copied from $VIM/runtime/indent/python.vim
-  call cursor(v:lnum, 1)
-  let [p, pcol] = searchpairpos('(\|{\|\[', '', ')\|}\|\]', 'bW',
-        \ "line('.') < " . (v:lnum - 50) . " ? dummy :"
+  " searchpair() can be slow sometimes, limit the time to 150 msec
+  let searchpair_stopline = 0
+  let searchpair_timeout = 150
+  let s:maxoff = 50   " maximum number of lines to look backwards for ()
+  " If the previous line is inside parenthesis, use the indent of the starting
+  " line.
+  " Trick: use the non-existing "dummy" variable to break out of the loop when
+  " going too far back.
+  call cursor(prevnonblank(v:lnum - 1), 1)
+  let parlnum = searchpairpos('(\|{\', '', ')\|}\', 'nbW',
+        \ "line('.') < " . (lnum2 - s:maxoff) . " ? dummy :"
         \ . " synIDattr(synID(line('.'), col('.'), 1), 'name')"
         \ . " =~ '\\(Comment\\|Todo\\|String\\)$'",
-        \ 0, 150)
+        \ searchpair_stopline, searchpair_timeout)
+  if parlnum > 0
+    let plindent = indent(parlnum)
+  else
+    let plindent = indent(prevnonblank(v:lnum - 1))
+  endif
+  " When inside parenthesis: If at the first line below the parenthesis add
+  " two 'shiftwidth', otherwise same as previous line.
+  " i = (a
+  "       + b
+  "       + c)
+  call cursor(v:lnum, 1)
+  let [p, pcol] = searchpairpos('(\|{\|\[', '', ')\|}\|\]', 'bW',
+        \ "line('.') < " . (v:lnum - s:maxoff) . " ? dummy :"
+        \ . " synIDattr(synID(line('.'), col('.'), 1), 'name')"
+        \ . " =~ '\\(Comment\\|Todo\\|String\\)$'",
+        \ searchpair_stopline, searchpair_timeout)
   if p > 0
-    echo "Hi Verilog"
     if getline(p) =~ ',\s*$'
       " align parameters of a function, if the first parameter is
       " immediately after "("
@@ -172,13 +195,17 @@ function GetVerilogIndent()
     " Close statement
     "   De-indent for an optional close parenthesis and a semicolon, and only
     "   if there exists precedent non-whitespace char
+    "   After closing parenthesis and semicolon, we expect cursor be:
+    "   My_Module(input a,
+    "             output b);
+    "   here
     elseif last_line =~ ')*\s*;\s*' . vlog_comment . '*$' &&
       \ last_line !~ '^\s*)*\s*;\s*' . vlog_comment . '*$' &&
       \ last_line !~ '\(//\|/\*\).*\S)*\s*;\s*' . vlog_comment . '*$' &&
       \ ( last_line2 =~ vlog_openstat . '\s*' . vlog_comment . '*$' &&
       \ last_line2 !~ ';\s*//.*$') &&
       \ last_line2 !~ '^\s*' . vlog_comment . '$'
-      let ind = ind - offset
+      return plindent
       if vverb | echo vverb_str "De-indent after a close statement." | endif
 
   " `ifdef or `ifndef or `elsif or `else
