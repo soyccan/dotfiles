@@ -16,6 +16,9 @@ if [ -z "$TMUX" ] && [ "$(hostname)" != 'soyccanmac.local' ]; then
     tmux a
 fi
 
+# Pull new changes of dotfiles
+(git -C "$HOME/dotfiles" pull &>/dev/null &)
+
 ################
 # Environments #
 ################

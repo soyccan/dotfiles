@@ -58,10 +58,10 @@ alias pwndbg='gdb -q -ex init-pwndbg'
 
 ## oh-my-zsh/rsync.plugin.zsh
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/rsync/rsync.plugin.zsh
-alias rsync-copy="rsync -avz --progress -h"
-alias rsync-move="rsync -avz --progress -h --remove-source-files"
-alias rsync-update="rsync -avzu --progress -h"
-alias rsync-synchronize="rsync -avzu --delete --progress -h"
+alias rsync-copy="rsync -avzPh"
+alias rsync-move="rsync -avzPh --remove-source-files"
+alias rsync-update="rsync -avzuPh"
+alias rsync-synchronize="rsync -avzu --delete -Ph"
 ## end oh-my-zsh/rsync.plugin.zsh
 
 
