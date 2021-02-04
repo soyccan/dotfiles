@@ -46,10 +46,10 @@
 " Or perhaps run a formatter on save
 "
 " ```viml
-augroup fmt
-    autocmd!
-    autocmd BufWritePre * undojoin | Neoformat
-augroup END
+" augroup fmt
+"     autocmd!
+"     autocmd BufWritePre * undojoin | Neoformat
+" augroup END
 " ```
 "
 " The `undojoin` command will put changes made by Neoformat into the same

@@ -315,6 +315,12 @@ map <leader>9 <Plug>AirlineSelectTab9
 nnoremap <silent> <leader> :<C-U>WhichKey '<Space>'<CR>
 
 
+"""""""""""""
+" NeoFormat "
+"""""""""""""
+nnoremap <leader>w :Neoformat<CR>
+
+
 """"""""""""""
 " easymotion "
 """"""""""""""
@@ -373,7 +379,7 @@ function! s:AddSearchHistory(re)
 endfunction
 function! s:EasyMotionFindCursor()
     let re = '\<' . expand('<cword>') . '\>'
-    call s:AddSearchHistory(re)
+    call <SID>AddSearchHistory(re)
     call EasyMotion#User(re, 0, 2, 0)
     call EasyMotion#highlight#attach_autocmd()
     call EasyMotion#highlight#add_highlight(re, g:EasyMotion_hl_move)

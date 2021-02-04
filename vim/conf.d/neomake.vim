@@ -23,22 +23,37 @@
 "     let g:neomake_<ft>_<makername>_maker = {}
 "     let g:neomake_<ft>_enabled_makers = []
 
-" a maker for checking POSIX shell script
-let s:sc_sh = neomake#makers#ft#sh#shellcheck()
-let s:sc_bash = neomake#makers#ft#sh#shellcheck()
+" variants of shellcheck maker for different shells
+" Refer to: neomake#makers#ft#sh#shellcheck()
+let s:shellcheck = {
+        \ 'args': ['-fgcc', '-x'],
+        \ 'errorformat':
+            \ '%f:%l:%c: %trror: %m [SC%n],' .
+            \ '%f:%l:%c: %tarning: %m [SC%n],' .
+            \ '%I%f:%l:%c: Note: %m [SC%n]',
+        \ 'output_stream': 'stdout',
+        \ 'short_name': 'SC',
+        \ 'cwd': '%:h',
+        \ }
 
-let s:sc_bash['exe'] = 'shellcheck'
-let s:sc_sh['exe'] = 'shellcheck'
-let s:sc_sh['args'][index(s:sc_sh['args'], 'bash')] = 'sh'
+let s:posixcheck = deepcopy(s:shellcheck)
+let s:posixcheck.exe = 'shellcheck'
+let s:posixcheck.args += ['-s', 'sh']
 
-let g:neomake_sh_shellcheck_bash_maker = s:sc_bash
-let g:neomake_zsh_shellcheck_bash_maker = s:sc_bash
+let s:bashcheck = deepcopy(s:shellcheck)
+let s:bashcheck.exe = 'shellcheck'
+let s:bashcheck.args += ['-s', 'bash']
 
-let g:neomake_sh_shellcheck_sh_maker = s:sc_sh
-let g:neomake_zsh_shellcheck_sh_maker = s:sc_sh
+let g:neomake_sh_posixcheck_maker = s:posixcheck
+let g:neomake_sh_bashcheck_maker = s:bashcheck
 
-let g:neomake_sh_enabled_makers = ['sh', 'shellcheck_sh']
-let g:neomake_zsh_enabled_makers = ['zsh', 'shellcheck_sh']
+let g:neomake_zsh_posixcheck_maker = s:posixcheck
+let g:neomake_zsh_bashcheck_maker = s:bashcheck
+
+" Specifying 'shellcheck' (already defined) makes shell type automatically
+" determined, but zsh is not supported by shellcheck, so we see it as bash
+let g:neomake_sh_enabled_makers = ['sh', 'shellcheck']
+let g:neomake_zsh_enabled_makers = ['zsh', 'bashcheck']
 
 " *g:neomake_highlight_columns*
 " This setting enables highlighting of columns for items from the location and

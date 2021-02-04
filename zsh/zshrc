@@ -62,6 +62,9 @@ elif has vi; then
     export EDITOR='vi'
 fi
 
+# Homebrew
+export HOMEBREW_NO_AUTO_UPDATE=1
+
 
 ###########
 # Plugins #
@@ -81,8 +84,24 @@ autoload -Uz _zinit
 ### End of Zinit's installer chunk
 
 
-source "$HOME/.config/zsh/plugins.zsh"
-source "$HOME/.config/zsh/aliases.zsh"
+# The inner expansion follows ${name:-word} form, so as the variable called
+# `name` (which is empty string) does not exist, the value will be given from
+# `word` (which is "%x"). Refer to:
+# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion
+#
+# The %x is a prompt escape indicating the file being sourced. Refer to:
+# http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Shell-state
+#
+# And the (%) is a parameter expansion flag that expands the %x. Refer to:
+# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
+#
+# The outer expansion has P modifier that calls realpath() to obtain the
+# absolute path, and h modifier to obtain dirname. Refer to:
+# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Modifiers
+#
+source_dir="${${(%):-%x}:P:h}"
+source "$source_dir/plugins.zsh"
+source "$source_dir/aliases.zsh"
 
 
 # completion

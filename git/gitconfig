@@ -9,3 +9,8 @@
     tool = nvim
 [mergetool "nvim"]
     cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED +'wincmd b' +'wincmd J'
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
