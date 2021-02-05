@@ -12,7 +12,7 @@ has() {
 
 # Launch tmux at start
 if [ -z "$TMUX" ] && [ "$HOST" != 'soyccanmac.local' ]; then
-    tmux a
+    tmux a -d
 fi
 
 # Pull new changes of dotfiles, in background

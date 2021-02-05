@@ -81,6 +81,9 @@ let g:is_posix = 1
 " set exrc
 
 
+" Close Netrw buffer when it loses focus
+autocmd FileType netrw setl bufhidden=wipe
+
 " QuickFix window specific options
 " to use default behaviour when opening new buffer from a quickfix window
 " we need to set it explicitly

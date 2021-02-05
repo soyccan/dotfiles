@@ -17,19 +17,9 @@
     "vim.normalModeKeyBindingsNonRecursive": [
         {
             "before": [
-                "2"
+                "w"
             ],
-            "commands": [
-                ":w"
-            ]
-        },
-        {
-            "before": [
-                "4"
-            ],
-            "commands": [
-                ":q"
-            ]
+            "commands": [":wa"]
         },
         {
             "before": [
@@ -54,71 +44,6 @@
         },
         {
             "before": [
-                "<c-j>"
-            ],
-            "after": [
-                "J"
-            ]
-        },
-        {
-            "before": [
-                "<tab>"
-            ],
-            "after": [
-                "g",
-                "t"
-            ]
-        },
-        {
-            "before": [
-                "<s-tab>"
-            ],
-            "after": [
-                "g",
-                "T"
-            ]
-        },
-        {
-            "before": [
-                "<enter>"
-            ],
-            "after": [
-                "o",
-                "<esc>"
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "g",
-                "d"
-            ],
-            "commands": [
-                "editor.action.goToDefinition"
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "p",
-                "d"
-            ],
-            "commands": [
-                "editor.action.peekDefinition"
-            ]
-        },
-        {
-            "before": [
-                "<leader>",
-                "p",
-                "r"
-            ],
-            "commands": [
-                "editor.action.peekReference"
-            ]
-        },
-        {
-            "before": [
                 "<c-f>"
             ],
             "after": [
@@ -135,20 +60,37 @@
         },
         {
             "before": [
-                "<c-.>"
+                "<c-j>"
             ],
             "after": [
-                "<c-v>"
+                "J"
             ]
         },
         {
             "before": [
-                "<c-o>"
+                "<enter>"
             ],
             "after": [
-                "<c-r>"
+                "o",
+                "<esc>"
             ]
         },
+        // {
+        //     "before": [
+        //         "<"
+        //     ],
+        //     "after": [
+        //         "<<",
+        //     ]
+        // },
+        // {
+        //     "before": [
+        //         ">"
+        //     ],
+        //     "after": [
+        //         ">>",
+        //     ]
+        // },
     ],
     "vim.visualModeKeyBindingsNonRecursive": [
         {
@@ -199,12 +141,11 @@
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
     "todo-tree.tree.showScanModeButton": false,
-    "editor.formatOnSave": true,
-    "[c]": {
-        "editor.defaultFormatter": "xaver.clang-format",
-    },
-    "[cpp]": {
-        "editor.defaultFormatter": "xaver.clang-format",
-    },
     "window.zoomLevel": 0,
+    "C_Cpp.updateChannel": "Insiders",
+    "C_Cpp.clang_format_path": "/usr/bin/clang-format",
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.formatOnType": true,
+    "files.autoSave": "off"
 }
