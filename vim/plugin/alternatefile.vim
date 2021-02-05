@@ -1,5 +1,5 @@
-" alternate file (source / header)
-" don't want to use a.vim since it's old and problem-causing
+" Alternate file (source / header)
+" Inspired by a.vim, which is old and not working well
 function! s:AlternateFile()
     let map = {
                 \ 'c': ['h'],
@@ -17,4 +17,5 @@ function! s:AlternateFile()
         endfor
     endif
 endfunction
-command! AlternateFile :call s:AlternateFile()
+
+command! AlternateFile call <SID>AlternateFile()

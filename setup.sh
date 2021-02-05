@@ -5,7 +5,7 @@ dotfiles="$(realpath "$(dirname "$0")")"
 
 
 has() {
-    command -v "$1" >/dev/null 2>&1
+    type "$1" >/dev/null 2>&1
 }
 
 ln_confirm() {
@@ -13,29 +13,38 @@ ln_confirm() {
     link="$2"
     mkdir -p "$(dirname "$link")"
     if [ -L "$link" ]; then
-        ln -svf "$src" "$link"
+        rm "$link"
+        ln -sv "$src" "$link"
     else
         ln -svi "$src" "$link"
     fi
 }
 
-get_package_manager() {
-    for cmd in apt yum brew; do 
-        if has cmd; then
-            echo "$cmd"
-            break
-        fi
-    done
+install_pkg() {
+    if has "$1"; then
+        return
+    fi
+
+    sudo=
+    if has sudo; then
+        sudo=sudo
+    fi
+
+    if has apt; then
+        "$sudo" apt install -y "$1"
+    elif has yum; then
+        "$sudo" yum install -y "$1"
+    elif has brew; then
+        brew install "$1"
+    fi
 }
 
 
 setup_zsh() {
     echo Configuring ZSH
 
-    if ! has zsh; then
-        echo Installing ZSH
-        sudo "$(get_package_manager)" install zsh
-    fi
+    echo Installing ZSH
+    install_pkg zsh
 
     if [ "$(awk -F':' "/^$USER/ { print \$7 }" /etc/passwd)" != '/bin/zsh' ]; then
         sudo usermod "$USER" -s /bin/zsh
@@ -63,10 +72,8 @@ setup_zsh() {
 setup_fish() {
     echo Configuring FISH
 
-    if ! command -v fish >/dev/null; then
-        echo Installing FISH
-        sudo "$(get_package_manager)" install fish
-    fi
+    echo Installing FISH
+    install_pkg fish
 
     if [ "$(awk -F':' "/^$USER/ { print \$7 }" /etc/passwd)" != '/bin/fish' ]; then
         sudo usermod "$USER" -s /bin/fish
@@ -83,15 +90,13 @@ setup_fish() {
 setup_tmux() {
     echo Configuring TMUX
 
-    if ! command -v zsh >/dev/null; then
-        echo Installing TMUX
-        sudo "$(get_package_manager)" install tmux
-    fi
+    echo Installing TMUX
+    install_pkg tmux
 
     # oh-my-tmux
     echo Installing Oh My TMUX
-    git clone --depth 1 https://github.com/gpakosz/.tmux "$HOME/.tmux"
-    ln_confirm "$HOME/.tmux/.tmux.conf" "$HOME/.tmux.conf"
+    ln_confirm "$dotfiles/tmux/oh-my-tmux" "$HOME/.tmux"
+    ln_confirm "$dotfiles/tmux/oh-my-tmux/.tmux.conf" "$HOME/.tmux.conf"
     ln_confirm "$dotfiles/tmux/tmux.conf.local" "$HOME/.tmux.conf.local"
 }
 
@@ -99,16 +104,16 @@ setup_tmux() {
 setup_vim() {
     echo Configuring Vim
 
-    if ! command -v nvim >/dev/null; then
-        echo Installing NeoVim
-        sudo "$(get_package_manager)" install neovim
-    fi
+    echo Installing NeoVim
+    install_pkg neovim
 
     # neovim configurations
     ln_confirm "$dotfiles/vim" "$HOME/.config/nvim"
 
     # vim-plug
-    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim \
+           --create-dirs \
+           https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
     # compatible with vim
     ln_confirm "$dotfiles/vim" "$HOME/.vim"
@@ -119,20 +124,18 @@ setup_vim() {
 setup_gdb() {
     echo Configuring GDB
 
-    if ! command -v gdb >/dev/null; then
-        echo Installing GDB
-        sudo "$(get_package_manager)" install gdb
-    fi
+    echo Installing GDB
+    install_pkg gdb
 
-    mkdir "$HOME/.gdb"
-    git clone --depth 1 https://github.com/longld/peda "$HOME/.gdb/peda"
-    git clone --depth 1 https://github.com/pwndbg/pwndbg "$HOME/.gdb/pwndbg"
-    git clone --depth 1 https://github.com/scwuaptx/Pwngdb "$HOME/.gdb/Pwngdb"
-    git clone --depth 1 https://github.com/cloudburst/libheap "$HOME/.gdb/libheap"
+    ln_confirm "$dotfiles/gdb" "$HOME/.gdb"
     ln_confirm "$dotfiles/gdb/gdbinit" "$HOME/.gdbinit"
-
-    # lldb
     ln_confirm "$dotfiles/gdb/lldbinit" "$HOME/.lldbinit"
+}
+
+
+setup_git() {
+    echo Configuring Git
+    ln_confirm "$dotfiles/git/gitconfig" "$HOME/.gitconfig"
 }
 
 
@@ -141,6 +144,7 @@ main() {
     # setup_fish
     setup_zsh
     setup_vim
+    setup_git
     echo Voila! Setup Finished!
 }
 

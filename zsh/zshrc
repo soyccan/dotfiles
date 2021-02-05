@@ -1,62 +1,63 @@
-# profiling time usage, prologue
+# Profiling begin
 # zmodload zsh/zprof
 
 
-# check if command exists, return 0 on success
+# Check if command exists, return 0 on success
 # MUCH faster than external program `which` since this don't
 # require forking process
-# TODO: type vs. command -v
 has() {
-    type "$1" >/dev/null 2>&1
+    whence "$1" &>/dev/null
 }
 
 
 # Launch tmux at start
-if [ -z "$TMUX" ] && [ "$(hostname)" != 'soyccanmac.local' ]; then
-    exec tmux a
+if [ -z "$TMUX" ] && [ "$HOST" != 'soyccanmac.local' ]; then
+    tmux a
 fi
+
+# Pull new changes of dotfiles, in background
+(git -C "$HOME/dotfiles" pull &>/dev/null &)
 
 ################
 # Environments #
 ################
 # PATH
-# /usr/local/opt/llvm/bin is path of Homebrew
-for p in '/snap/bin' \
-         '/usr/local/opt/llvm/bin' \
-         "$HOME/go/bin" \
-         "$HOME/.rvm/bin" \
-         "$HOME/.pyenv/bin" \
-         "$HOME/bin"; do
+paths=('/usr/local/brew/bin'
+       '/snap/bin'
+       "$HOME/go/bin"
+       "$HOME/.rvm/bin"
+       "$HOME/.pyenv/bin"
+       "$HOME/.local/bin" # pip
+       "$HOME/bin")
+for x in "$HOME"/.gem/ruby/*; do
+    paths+=("$x/bin")
+done
+for p in "${paths[@]}"; do
     [ -d "$p" ] && PATH="$p:$PATH"
 done
 export PATH
-
-# pyenv
-if has pyenv; then
-    export PATH="$(pyenv root)/shims:$PATH"
-    pyenv() {
-        # lazy load
-        unset -f pyenv
-        eval "$(command pyenv init -)"
-        eval "$(command pyenv virtualenv-init -)"
-        pyenv "$@"
-    }
-fi
 
 # You may need to manually set your language environment
 export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-export EDITOR='vi'
-has vim && export EDITOR='vim'
-has nvim && export EDITOR='nvim'
+if has nvim; then
+    export EDITOR='nvim'
+elif has vim; then
+    export EDITOR='vim'
+elif has vi; then
+    export EDITOR='vi'
+fi
+
+# Homebrew
+export HOMEBREW_NO_AUTO_UPDATE=1
 
 
 ###########
 # Plugins #
 ###########
 ### Added by Zinit's installer
-if [ ! -f $HOME/.zinit/bin/zinit.zsh ]; then
+if [ ! -f "$HOME/.zinit/bin/zinit.zsh" ]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
     command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
     command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
@@ -67,26 +68,27 @@ fi
 source "$HOME/.zinit/bin/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
-
-# Load a few important annexes, without Turbo
-# (this is currently required for annexes)
-zinit light-mode for \
-    zinit-zsh/z-a-as-monitor \
-    zinit-zsh/z-a-patch-dl \
-    zinit-zsh/z-a-bin-gem-node
 ### End of Zinit's installer chunk
 
 
-source "$HOME/.config/zsh/plugins.zsh"
-source "$HOME/.config/zsh/aliases.zsh"
+# The inner expansion follows ${name:-word} form, so as the variable called
+# `name` (which is empty string) does not exist, the value will be given from
+# `word` (which is "%x"). Refer to:
+# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion
+#
+# The %x is a prompt escape indicating the file being sourced. Refer to:
+# http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Shell-state
+#
+# And the (%) is a parameter expansion flag that expands the %x. Refer to:
+# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
+#
+# The outer expansion has P modifier that calls realpath() to obtain the
+# absolute path, and h modifier to obtain dirname. Refer to:
+# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Modifiers
+#
+source_dir="${${(%):-%x}:P:h}"
+source "$source_dir/plugins.zsh"
+source "$source_dir/aliases.zsh"
 
-
-# completion
-# TODO: what do these do? these cause about 0.1s delay
-# autoload -Uz compinit
-# compinit
-# zinit cdreplay -q
-
-
-# profiling time usage, epilogue
+# Profiling end
 # zprof

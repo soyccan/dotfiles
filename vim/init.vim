@@ -3,6 +3,14 @@
 """""""""""
 " Plugins "
 """""""""""
+" Install Vim-Plug
+let s:vimplugdir = stdpath('data') . '/site/autoload/plug.vim'
+if empty(glob(s:vimplugdir))
+    execute 'silent !curl -fLo ' . s:vimplugdir .
+          \ ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 " TODO: replace vim-plug with dein
 call plug#begin(stdpath('data') . '/plugged')
 
@@ -31,6 +39,9 @@ Plug 'michaeljsmith/vim-indent-object'
 Plug 'neomake/neomake'
 " formatter
 Plug 'sbdchd/neoformat'
+" align around any character
+" select text and :EasyAlign N<char> or :EasyAlign N/<regex>/
+Plug 'junegunn/vim-easy-align'
 
 
 "" Navigation
@@ -47,6 +58,9 @@ Plug 'Shougo/neomru.vim'
 Plug 'mileszs/ack.vim'
 " symbol list
 Plug 'majutsushi/tagbar'
+" fast motions
+" jump to a search match by one single key
+Plug 'easymotion/vim-easymotion'
 
 
 "" Looking
@@ -66,14 +80,17 @@ Plug 'Shougo/echodoc.vim'
 Plug 'octol/vim-cpp-enhanced-highlight'
 " Nginx config
 Plug 'chr4/nginx.vim'
+" Zinit config
+Plug 'zinit-zsh/zinit-vim-syntax'
+" Powershell
+Plug 'zigford/vim-powershell'
 
 
 "" Sementic
 " Completion
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" C/C++ source for deoplite
+Plug 'Shougo/neoinclude.vim', { 'for': ['c', 'cpp'] }
 Plug 'Shougo/deoplete-clangx', { 'for': ['c', 'cpp'] }
-" Python source for deoplite
 Plug 'deoplete-plugins/deoplete-jedi', { 'for': 'python' }
 "
 " TODO: YouCompleteMe vs. deoplete
@@ -88,12 +105,11 @@ Plug 'ludovicchabant/vim-gutentags'
 "" Others
 " key mapping cheatsheet
 Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
-" locate project root
-Plug 'dbakker/vim-projectroot'
 " highlight git difference
 Plug 'mhinz/vim-signify'
-" async run shell commands
-Plug 'skywind3000/asyncrun.vim', { 'on': 'AsyncRun' }
+" async run shell commands, and project root detection
+" set b:asyncrun_root to specify project root
+Plug 'skywind3000/asyncrun.vim'
 " :MarkdownPreview / :MarkdownPreviewStop
 Plug 'iamcco/markdown-preview.nvim', {
             \ 'do': { -> mkdp#util#install()  },

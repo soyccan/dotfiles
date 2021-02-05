@@ -3,73 +3,67 @@ let mapleader = ' '
 " w : Save
 " upper W is still words forward
 " or e can be replacement
-nnoremap w :w<CR>
-vnoremap w <ESC>:w<CR>
+nnoremap w :<C-U>w<CR>
+vnoremap w <ESC>:<C-U>w<CR>
 " save and load config
-autocmd FileType vim nmap <buffer> w :w \| source %<CR>
-autocmd FileType vim vmap <buffer> w <ESC>:w \| source %<CR>
+autocmd FileType vim nnoremap <buffer> w :<C-U>w \| source %<CR>
+autocmd FileType vim vnoremap <buffer> w <ESC>:<C-U>w \| source %<CR>
 
 
-" Z : Close buffer
-" q : Smart close window
+" Z or <leader>bd : Close buffer while keeping window (my plugin)
+" q or <leader>qs : Smart quit (close buffer or window) (my plugin)
 " Q : Record macro
 " gQ : Ex mode (originally Q)
 " Notice: this masks ZZ and ZQ
 " TODO: this will quit vim when only main window and tagbar window exists
 "       even if there is other buffers
-function! s:smart_close()
-    let wincnt = winnr('$')
-    if exists('t:tagbar_buf_name') && bufwinnr(t:tagbar_buf_name) != -1
-        let wincnt -= 1
-    endif
-    if wincnt == 1 && len(getbufinfo({ 'buflisted': 1 })) > 1
-        bdelete
-    else
-        q
-    endif
-endfunction
-noremap <silent> q :call <SID>smart_close()<CR>
-noremap <leader>qq :q<CR>
-noremap Z :bdelete<CR>
+noremap q :<C-U>SmartClose<CR>
+noremap Z :<C-U>Bclose<CR>
+noremap <leader>qs :<C-U>SmartClose<CR>
+noremap <leader>qa :<C-U>qa<CR>
+noremap <leader>bd :<C-U>Bclose<CR>
 noremap Q q
 
+" Switch between windows, buffers ...
 " Inspired by: https://github.com/tpope/vim-unimpaired
+"              https://github.com/SpaceVim/SpaceVim
 " <Tab>: smart alternating file or switch window
 " <leader><Tab>: alternating file
 " DO NOT mistake tabs' use:
 " http://stackoverflow.com/questions/102384/using-vims-tabs-like-buffers
-noremap <silent> <tab> :if winnr('$') == 1 \| b# \| else \| wincmd w \| endif<CR>
-noremap <silent> <s-tab> :if winnr('$') == 1 \| b# \| else \| wincmd W \| endif<CR>
-noremap <leader><tab> :b#<CR>
+noremap <silent> <tab> :<C-U>if winnr('$') == 1 \| b# \| else \| wincmd w \| endif<CR>
+noremap <silent> <s-tab> :<C-U>if winnr('$') == 1 \| b# \| else \| wincmd W \| endif<CR>
+noremap <leader><tab> :<C-U>b#<CR>
 " Buffers
-noremap [b :bprev<CR>
-noremap ]b :bnext<CR>
+noremap [b :<C-U>bprev<CR>
+noremap ]b :<C-U>bnext<CR>
 " Location List
-noremap <leader>lo :lopen<CR>
-noremap <leader>lx :lclose<CR>
-noremap [l :lprev<CR>
-noremap ]l :lnext<CR>
+noremap <leader>lo :<C-U>lopen<CR>
+noremap <leader>lx :<C-U>lclose<CR>
+noremap [l :<C-U>lprev<CR>
+noremap ]l :<C-U>lnext<CR>
 " QuickFix
-noremap <leader>qo :copen<CR>
-noremap <leader>qx :cclose<CR>
-noremap [q :cprev<CR>
-noremap ]q :cnext<CR>
+noremap <leader>qo :<C-U>copen<CR>
+noremap <leader>qx :<C-U>cclose<CR>
+noremap [q :<C-U>cprev<CR>
+noremap ]q :<C-U>cnext<CR>
+" Tag match list
+noremap [t :<C-U>tprev<CR>
+noremap ]t :<C-U>tnext<CR>
+" Jump list
+noremap [j <C-O>
+noremap ]j <C-I>
 
 
-" show bookmarks
-noremap <leader>bm :marks<CR>
+" Show bookmarks
+noremap <leader>bm :<C-U>marks<CR>
 
-" 5/F5: [disabled] compile
-" command is set in: after/compiler/xxx.vim
-" autocmd FileType vim map <buffer> 5 :w \| source %<CR>
-" map 5 :wa \| cclose \| copen \| wincmd p \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
-" blocking compilation:
-" map <silent> 5 :wa \| silent! make \| cwindow \| wincmd p<CR>
-" imap <F5> <ESC>5
-
-" make / compile
-noremap <leader>m :wa \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
-
+" Make / Compile
+" -save=2 : Save all files
+" -program=make : Use &makeprg as when doing :make
+"                 (or -program=grep to use &grepprt)
+" -cwd=<root> : Detected project root by AsyncRun
+noremap <leader>m :<C-U>AsyncRun -save=2 -cwd=<root> -program=make<CR>
 
 " 6/F6: [disabled] run
 " autocmd FileType vim    map <buffer> 6 :w<CR>:source %<CR>
@@ -87,52 +81,104 @@ noremap <leader>m :wa \| AsyncRun -cwd=$(VIM_ROOT) make<CR>
 " map 7 56
 " imap <F7> <ESC>7
 
-" move whole line(s) down/up
-" inspired by Sublime Text
-nnoremap J :move +1<CR>
-vnoremap J :'<,'>move '>+1\|normal gv<CR>
-nnoremap K :move -2<CR>
-vnoremap K :'<,'>move '<-2\|normal gv<CR>
+" Move whole line(s) down/up
+" Inspired by Sublime Text
+nnoremap J :<C-U>move +1<CR>
+vnoremap J :<C-U>'<,'>move '>+1\|normal gv<CR>
+nnoremap K :<C-U>move -2<CR>
+vnoremap K :<C-U>'<,'>move '<-2\|normal gv<CR>
 
-" re-map join lines command
-" note CTRL-j is same as j originally
+" Re-map join lines command
+" CTRL-j is same as j originally (move cursor downward)
 noremap <C-j> J
 
-" indent / unindent
-" normal mode: indent a line
+" Indent / Unindent
+" normal mode: [N]> will indent [N] lines, default N=1
 " visual mode: keep selection after indenting
-noremap < <<_
-noremap > >>_
+noremap < <_
+noremap > >_
 vnoremap > >gv
 vnoremap < <gv
 
 " Enter / Return: create vertical space
 " in help: jump to tag at current cursor
-autocmd FileType help nnoremap <buffer> <CR> <C-]>
-autocmd BufEnter * if &modifiable|nnoremap <CR> o<ESC>|endif
+" note there shouldn't be space after noremap (before vertical bar)
+autocmd BufEnter *
+            \  if &modifiable
+            \|     nnoremap <buffer> <CR> o<ESC>
+            \| elseif &filetype == 'help'
+            \|     nnoremap <buffer> <CR> <C-]>
+            \| endif
 
 " Backspace: jump back
-noremap <BS> <C-o>
+" noremap <BS> <C-o>
 
-" backquote ` (the key next to number 1): ESC
+" Backquote ` (the key next to number 1): ESC
 " to enter real ` : <C-v> + `
 onoremap ` <ESC>
 vnoremap ` <ESC>
 inoremap ` <ESC>
 
-" command line Home key
+" Command line Home key
 cnoremap <C-a> <Home>
 
-" after replacing selection with p
-" keep in register what is pasted rather than what is replaced
+" After replacing selection with p, keep in register "" what is pasted
+" rather than what is replaced
 vnoremap p pgvy
 
-" no highlight
-noremap <leader>nh :noh<CR>
+" No highlight
+noremap <leader>nh :<C-U>noh<CR>
 
-" alternate file (source / header)
+" Alternate file (source / header)
 " inspired by a.vim
-noremap <leader>a :AlternateFile<CR>
+noremap <leader>a :<C-U>AlternateFile<CR>
+
+" Search
+" Turn off highlight after cursor moves
+" Inspired by: https://github.com/easymotion/vim-easymotion
+"              https://github.com/justinmk/vim-sneak
+" function! s:SmartHighlightAttachAutocmd()
+"     " following code is from Easymotion#highlight#attach_autocmd()
+"     augroup smart-highlight
+"         autocmd!
+"         autocmd InsertEnter,WinLeave,BufLeave <buffer>
+"             \ silent! set nohlsearch
+"             \  | autocmd! smart-highlight * <buffer>
+"         autocmd CursorMoved <buffer>
+"             \ autocmd smart-highlight CursorMoved <buffer>
+"             \ silent! set nohlsearch
+"             \  | autocmd! smart-highlight * <buffer>
+"     augroup END
+" endfunction
+" noremap * :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>*
+" noremap / :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>/
+" noremap n :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>n
+" noremap N :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>N
+
+" Replace motion with recently yanked/deleted text
+" Inspired by: https://github.com/inkarkat/vim-ReplaceWithRegister
+" Masking out gr, which is seldom used
+nnoremap <silent> gr :<C-U>set opfunc=<SID>ReplaceWithRegister<CR>g@
+vnoremap <silent> gr :<C-U>call <SID>ReplaceWithRegister(visualmode(), 1)<CR>
+map grr gr_
+" following code is from manual of
+function! s:ReplaceWithRegister(type, ...)
+    let sel_save = &selection
+    let reg_save = @@
+
+    let &selection = "inclusive"
+
+    if a:type  " Invoked from Visual mode, use gv command.
+        silent exe "normal! gvpgvy"
+    elseif a:type == 'line'
+        silent exe "normal! '[V']pgvy"
+    else
+        silent exe "normal! `[v`]pgvy"
+    endif
+
+    let &selection = sel_save
+    let @@ = reg_save
+endfunction
 
 
 
@@ -142,14 +188,15 @@ noremap <leader>a :AlternateFile<CR>
 """""""""""""""""
 " <C-_> means Ctrl + / in terminal
 " but Ctrl + / is not recoginzed in gVim
+" [N]<leader>/ for commenting N lines
 map <leader>/ <Plug>NERDCommenterToggle
 
 
 """""""""""""""""""""
 " Tagbar / NerdTree "
 """""""""""""""""""""
-noremap <leader>tt :TagbarToggle<CR>
-noremap <leader>tn :NerdTreeToggle<CR>
+noremap <leader>tt :<C-U>TagbarToggle<CR>
+noremap <leader>tn :<C-U>NerdTreeToggle<CR>
 
 
 """""""""""
@@ -166,36 +213,38 @@ let g:Lf_ShortcutF = ''
 "     Default value is '<leader>b'.
 let g:Lf_ShortcutB = '<leader>fb'
 " find (f)iles
-noremap <silent> <leader>ff :execute ':Leaderf file --no-ignore ' . projectroot#get()<CR>
+" ^N stands for "now": open file in current working dir
+noremap <silent> <leader>ff :execute ':Leaderf file --no-ignore ' . asyncrun#get_root('')<CR>
+map <C-n> <leader>ff
 " find functions, i.e. (s)ymbols
-noremap <leader>fs :LeaderfFunction<CR>
+noremap <leader>fs :<C-U>LeaderfFunction<CR>
 " find most (r)ecently used
-" ^N is like "new file" in modern editors
+" ^P stands for "previous": open a file among previous edited ones
 " and we use MRU as our startpoint
 " note ^N is same as j originally
-noremap <leader>fr :LeaderfMru<CR>
-noremap <C-n> :LeaderfMru<CR>
+noremap <leader>fr :<C-U>LeaderfMru<CR>
+map <C-p> <leader>fr
 " find (t)ags
-noremap <leader>ft :LeaderfTag<CR>
+noremap <leader>ft :<C-U>LeaderfTag<CR>
 " search in files by r(g)
 " ^F is like "find in files" in modern editors
 " Note: ^F scrolls a page down originally, this masks it
-noremap <silent> <leader>fg :execute ':Leaderf rg ' . projectroot#get()<CR>
-noremap <silent> <C-f> :execute ':Leaderf rg ' . projectroot#get()<CR>
+noremap <silent> <leader>fg :<C-U>let g:Lf_WorkingDirectory = asyncrun#get_root('') \| Leaderf rg<CR>
+map <C-f> <leader>fg
 
 
 """""""""""
 " Airline "
 """""""""""
-noremap <leader>1 <Plug>AirlineSelectTab1
-noremap <leader>2 <Plug>AirlineSelectTab2
-noremap <leader>3 <Plug>AirlineSelectTab3
-noremap <leader>4 <Plug>AirlineSelectTab4
-noremap <leader>5 <Plug>AirlineSelectTab5
-noremap <leader>6 <Plug>AirlineSelectTab6
-noremap <leader>7 <Plug>AirlineSelectTab7
-noremap <leader>8 <Plug>AirlineSelectTab8
-noremap <leader>9 <Plug>AirlineSelectTab9
+map <leader>1 <Plug>AirlineSelectTab1
+map <leader>2 <Plug>AirlineSelectTab2
+map <leader>3 <Plug>AirlineSelectTab3
+map <leader>4 <Plug>AirlineSelectTab4
+map <leader>5 <Plug>AirlineSelectTab5
+map <leader>6 <Plug>AirlineSelectTab6
+map <leader>7 <Plug>AirlineSelectTab7
+map <leader>8 <Plug>AirlineSelectTab8
+map <leader>9 <Plug>AirlineSelectTab9
 
 
 """"""""""
@@ -213,7 +262,7 @@ noremap <leader>9 <Plug>AirlineSelectTab9
 "       \  ['jk', '<denite:enter_mode:normal>', 'noremap'],
 "       \ ['<Tab>', '<denite:move_to_next_line>', 'noremap'],
 "       \ ['<S-tab>', '<denite:move_to_previous_line>', 'noremap'],
-"       \  ['<Esc>', '<denite:enter_mode:normal>', 'noremap'],
+"       \  ['<ESC>', '<denite:enter_mode:normal>', 'noremap'],
 "       \  ['<C-N>', '<denite:assign_next_matched_text>', 'noremap'],
 "       \  ['<C-P>', '<denite:assign_previous_matched_text>', 'noremap'],
 "       \  ['<Up>', '<denite:assign_previous_text>', 'noremap'],
@@ -263,4 +312,79 @@ noremap <leader>9 <Plug>AirlineSelectTab9
 """""""""""""""""
 " vim-which-key "
 """""""""""""""""
-nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+nnoremap <silent> <leader> :<C-U>WhichKey '<Space>'<CR>
+
+
+"""""""""""""
+" NeoFormat "
+"""""""""""""
+nnoremap <leader>w :Neoformat<CR>
+
+
+""""""""""""""
+" easymotion "
+""""""""""""""
+" function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
+"   num_strokes:
+"     The number of input characters. Currently provide 1, 2, or -1.
+"     '-1' means no limit.
+"   visualmode:
+"     Vim script couldn't detect the function is called in visual mode by
+"     mode(1), so tell whether it is in visual mode by argument explicitly
+"   direction:
+"     0 -> forward
+"     1 -> backward
+"     2 -> bi-direction (handle forward & backward at the same time) }}}
+"
+" function! EasyMotion#User(pattern, visualmode, direction, inclusive, ...) " {{{
+"   inclusive:
+"     usually 0
+"     'f' motion is inclusive but 'F' motion is exclusive
+"
+" function! EasyMotion#OverwinF(num_strokes) " {{{
+"   " no keeping last search pattern when <Plug>(easymotion-next) is invoked
+"
+" function! EasyMotion#NextPrevious(visualmode, direction) " {{{
+
+" Move around
+map <Leader>h <Plug>(easymotion-linebackward)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+map <Leader>l <Plug>(easymotion-lineforward)
+
+" 2-character search, cross window
+nmap <silent> s :<C-U>call EasyMotion#OverwinF(2)<CR>
+omap <silent> s :<C-U>call EasyMotion#OverwinF(2)<CR>
+vmap s <ESC>s
+
+" N-character search
+nmap <silent> / :<C-U>call EasyMotion#S(-1,0,2)<CR>
+omap <silent> / :<C-U>call EasyMotion#S(-1,0,2)<CR>
+vmap / <ESC>/
+
+" These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
+" Without these mappings, `n` & `N` works fine. (These mappings just provide
+" different highlight method and have some other features )
+map n <Plug>(easymotion-next)
+map N <Plug>(easymotion-prev)
+
+" Search the word under cursor
+function! s:AddSearchHistory(re)
+    " code is from Easymotion.s:findMotion()
+    if g:EasyMotion_add_search_history
+        let history_re = substitute(a:re, '\\c\|\\C', '', '')
+        let @/ = history_re "For textobject: 'gn'
+        call histadd('search', history_re)
+    endif
+endfunction
+function! s:EasyMotionFindCursor()
+    let re = '\<' . expand('<cword>') . '\>'
+    call <SID>AddSearchHistory(re)
+    call EasyMotion#User(re, 0, 2, 0)
+    call EasyMotion#highlight#attach_autocmd()
+    call EasyMotion#highlight#add_highlight(re, g:EasyMotion_hl_move)
+endfunction
+nmap <silent> * :<C-U>call <SID>EasyMotionFindCursor()<CR><ESC>
+omap <silent> * :<C-U>call <SID>EasyMotionFindCursor()<CR><ESC>
+vmap * <ESC>*
+

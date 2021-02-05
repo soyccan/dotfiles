@@ -35,8 +35,16 @@ let g:indentLine_char_list = ['┊', '┆', '¦', '|']
 " indentLine will overwrite your "concealcursor" and "conceallevel" with default value:
 let g:indentLine_concealcursor = 'inc'
 let g:indentLine_conceallevel = 2
+
 " Solve problem with JSON
-" let g:vim_json_syntax_conceal = 0
+let g:vim_json_syntax_conceal = 0
+" g:indentLine_fileTypeExclude                    *g:indentLine_fileTypeExclude*
+"                 This variable specify a list of file types.
+"                 When opening these types of files, the plugin is disabled by
+"                 default.
+"                 e.g. let g:indentLine_fileTypeExclude = ['text', 'sh']
+"                 Default value is [] which means no file types are excluded.
+let g:indentLine_fileTypeExclude = ['json']
 
 " You can customize these settings, but the plugin will not function if conceallevel is not set to 1 or 2.
 " If you want to keep your conceal setting, put this line to your vim dotfile:
