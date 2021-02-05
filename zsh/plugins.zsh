@@ -131,7 +131,7 @@ zinit for \
 #
 # Powerlevel10k
 # wait'!' to reset prompt after loaded
-zinit wait'!' lucid for \
+zinit for \
     src"$HOME/.p10k.zsh" \
     romkatv/powerlevel10k
 
