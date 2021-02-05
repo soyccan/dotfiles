@@ -1,22 +1,21 @@
-# profiling time usage, prologue
+# Profiling begin
 # zmodload zsh/zprof
 
 
-# check if command exists, return 0 on success
+# Check if command exists, return 0 on success
 # MUCH faster than external program `which` since this don't
 # require forking process
-# TODO: type vs. command -v
 has() {
-    type "$1" >/dev/null 2>&1
+    whence "$1" &>/dev/null
 }
 
 
 # Launch tmux at start
-if [ -z "$TMUX" ] && [ "$(hostname)" != 'soyccanmac.local' ]; then
+if [ -z "$TMUX" ] && [ "$HOST" != 'soyccanmac.local' ]; then
     tmux a
 fi
 
-# Pull new changes of dotfiles
+# Pull new changes of dotfiles, in background
 (git -C "$HOME/dotfiles" pull &>/dev/null &)
 
 ################
@@ -30,25 +29,13 @@ paths=('/usr/local/brew/bin'
        "$HOME/.pyenv/bin"
        "$HOME/.local/bin" # pip
        "$HOME/bin")
-for x in $(ls "$HOME/.gem/ruby" 2>/dev/null); do
-    paths+="$HOME/.gem/ruby/$x/bin"
+for x in "$HOME"/.gem/ruby/*; do
+    paths+=("$x/bin")
 done
-for p in $paths; do
+for p in "${paths[@]}"; do
     [ -d "$p" ] && PATH="$p:$PATH"
 done
 export PATH
-
-# pyenv
-if has pyenv; then
-    export PATH="$(pyenv root)/shims:$PATH"
-    pyenv() {
-        # lazy load
-        unset -f pyenv
-        eval "$(command pyenv init -)"
-        eval "$(command pyenv virtualenv-init -)"
-        pyenv "$@"
-    }
-fi
 
 # You may need to manually set your language environment
 export LANG=en_US.UTF-8
@@ -103,13 +90,5 @@ source_dir="${${(%):-%x}:P:h}"
 source "$source_dir/plugins.zsh"
 source "$source_dir/aliases.zsh"
 
-
-# completion
-# TODO: what do these do? these cause about 0.1s delay
-# autoload -Uz compinit
-# compinit
-# zinit cdreplay -q
-
-
-# profiling time usage, epilogue
+# Profiling end
 # zprof

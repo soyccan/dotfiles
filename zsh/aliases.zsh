@@ -1,3 +1,5 @@
+ismacos=${${(M)OSTYPE:#*darwin*}:+true}
+
 # system commands
 alias cp='cp -irv' # --interactive --recursive --verbose
 alias mv='mv -iv' # --interactive --verbose
@@ -23,7 +25,7 @@ alias cl='clang'
 alias cll='clang++'
 
 # binutils
-if [ "$(uname)" = 'Darwin' ]; then
+if [ "$ismacos" ]; then
     alias objdump='objdump -x86-asm-syntax=intel'
     alias gobjdump='gobjdump -M intel'
 else
@@ -202,14 +204,16 @@ alias 9='cd -9'
 #
 
 # ls, the common ones I use a lot shortened for rapid fire usage
-if [ "$(uname)" = 'Darwin' ]; then
-    if has gls; then
-        alias ls='gls -h --color=auto' # colered, human readable
-    else
-        alias ls='ls -hG'   # colered, human readable
-    fi
+if has exa; then
+    # exa is a modern ls replacement
+    alias ls='exa'
+elif [ "$ismacos" ]; then
+    # colered, human readable
+    # BSD-like systems have different arguments
+    alias ls='ls -hG'
 else
-    alias ls='ls -h --color=auto' # colered, human readable
+    # colered, human readable
+    alias ls='ls -h --color=auto'
 fi
 alias l='ls -la'        # long list, show all
 alias ll='ls -l'        # long list
@@ -299,7 +303,7 @@ bindkey " " globalias
 ## end oh-my-zsh/globalias.plugin.zsh
 
 
-if [ "$(uname)" = 'Darwin' ] && [ -e '/Applications/Turbo Boost Switcher.app' ]; then
+if [ "$ismacos" ] && [ -e '/Applications/Turbo Boost Switcher.app' ]; then
     # disable Turbo Boost on macOS
     # required to install Turbo Boost Switcher
     # or clone from:
