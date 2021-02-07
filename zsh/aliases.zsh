@@ -206,7 +206,7 @@ alias 9='cd -9'
 # ls, the common ones I use a lot shortened for rapid fire usage
 if has exa; then
     # exa is a modern ls replacement
-    alias ls='exa'
+    alias ls='exa -b'  # binary size prefix
 elif [ "$ismacos" ]; then
     # colered, human readable
     # BSD-like systems have different arguments

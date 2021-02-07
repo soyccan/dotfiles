@@ -33,10 +33,10 @@ zinit for zinit-zsh/z-a-bin-gem-node
 # z-a-man: A Zsh-Zinit extension that automatically generates man pages out of
 # plugin README.md files
 # command: `zman`
-# zinit for zinit-zsh/z-a-man
+zinit for zinit-zsh/z-a-man
 
 # z-a-test: Specify modifier 'test' to run 'make test'
-zinit for zinit-zsh/z-a-test
+# zinit for zinit-zsh/z-a-test
 
 # zinit for zinit-zsh/z-a-submods
 # zinit for zinit-zsh/z-a-patch-dl
@@ -274,7 +274,7 @@ zinit wait lucid for \
     atinit"export PYTHONPATH=$ZPFX/lib/python3.7/site-packages/" \
     atclone"PYTHONPATH=$ZPFX/lib/python3.7/site-packages/ \
     python3 setup.py --quiet install --prefix $ZPFX" \
-    atpull'%atclone' test'0' \
+    atpull'%atclone' \
     sbin"$ZPFX/bin/asciinema" \
     @asciinema/asciinema.git
 

@@ -214,7 +214,7 @@ let g:Lf_ShortcutF = ''
 let g:Lf_ShortcutB = '<leader>fb'
 " find (f)iles
 " ^N stands for "now": open file in current working dir
-noremap <silent> <leader>ff :execute ':Leaderf file --no-ignore ' . asyncrun#get_root('')<CR>
+noremap <silent> <leader>ff :execute ':Leaderf file --no-ignore ' . asyncrun#get_root('%')<CR>
 map <C-n> <leader>ff
 " find functions, i.e. (s)ymbols
 noremap <leader>fs :<C-U>LeaderfFunction<CR>
@@ -229,7 +229,7 @@ noremap <leader>ft :<C-U>LeaderfTag<CR>
 " search in files by r(g)
 " ^F is like "find in files" in modern editors
 " Note: ^F scrolls a page down originally, this masks it
-noremap <silent> <leader>fg :<C-U>let g:Lf_WorkingDirectory = asyncrun#get_root('') \| Leaderf rg<CR>
+noremap <silent> <leader>fg :<C-U>let g:Lf_WorkingDirectory = asyncrun#get_root('%') \| Leaderf rg<CR>
 map <C-f> <leader>fg
 
 
@@ -318,7 +318,8 @@ nnoremap <silent> <leader> :<C-U>WhichKey '<Space>'<CR>
 """""""""""""
 " NeoFormat "
 """""""""""""
-nnoremap <leader>w :Neoformat<CR>
+" Format and then save
+nnoremap <leader>w :Neoformat \| w<CR>
 
 
 """"""""""""""

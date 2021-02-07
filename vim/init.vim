@@ -126,3 +126,14 @@ runtime looking.vim
 for plugin in g:plugs_order
     execute 'runtime conf.d/' . plugin . '.vim'
 endfor
+
+
+" Set project root
+if argc() == 0
+    let g:asyncrun_root = getcwd()
+else
+    let p = fnamemodify(argv()[0], ':p')
+    if isdirectory(p)
+        let g:asyncrun_root = p
+    endif
+endif
