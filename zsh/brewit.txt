@@ -1,0 +1,5 @@
+tmux
+htop
+neovim
+p7zip
+the_silver_searcher
