@@ -5,6 +5,7 @@
 # Check if command exists, return 0 on success
 # MUCH faster than external program `which` since this don't
 # require forking process
+# Bash equivalence: command -v
 has() {
     whence "$1" &>/dev/null
 }
@@ -18,23 +19,40 @@ fi
 # Pull new changes of dotfiles, in background
 (git -C "$HOME/dotfiles" pull &>/dev/null &)
 
+
 ################
 # Environments #
 ################
 # PATH
-paths=('/usr/local/brew/bin'
+# ignore error when globbing fails (/path/to/some/dir/* not exist)
+setopt null_glob
+
+paths=('/opt/brew/bin'
        '/snap/bin'
        "$HOME/go/bin"
        "$HOME/.rvm/bin"
-       "$HOME/.pyenv/bin"
-       "$HOME/.local/bin" # pip
-       "$HOME/bin")
+       "$HOME/.pyenv/bin")
+
+# Ruby gems
 for x in "$HOME"/.gem/ruby/*; do
     paths+=("$x/bin")
 done
-for p in "${paths[@]}"; do
+
+# Python pips
+# Linux
+paths+=("$HOME/.local/bin")
+# masOS
+paths+=(/Library/Frameworks/Python.framework/Versions/Current/bin)
+for x in /Users/soyccan/Library/Python/*/bin; do
+    paths+=("$x")
+done
+
+# Later elements in $path have priority
+for p in $paths; do
     [ -d "$p" ] && PATH="$p:$PATH"
 done
+
+unset paths
 export PATH
 
 # You may need to manually set your language environment
@@ -70,6 +88,10 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 ### End of Zinit's installer chunk
 
+# Load colors
+# Plugin `colored-man-pages` requires this
+autoload -Uz colors
+colors
 
 # The inner expansion follows ${name:-word} form, so as the variable called
 # `name` (which is empty string) does not exist, the value will be given from
@@ -87,8 +109,19 @@ autoload -Uz _zinit
 # http://zsh.sourceforge.net/Doc/Release/Expansion.html#Modifiers
 #
 source_dir="${${(%):-%x}:P:h}"
+
 source "$source_dir/plugins.zsh"
 source "$source_dir/aliases.zsh"
+source "$source_dir/brewit.zsh"
+
+
+###############
+# Completions #
+###############
+# Completion Path
+# TODO: is this right
+fpath+=($HOME/dotfiles/zsh)
+
 
 # Profiling end
 # zprof
