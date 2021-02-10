@@ -1,4 +1,11 @@
-ismacos=${${(M)OSTYPE:#*darwin*}:+true}
+# ${name:#pattern} tries to match $name with pattern
+# refer to:
+# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion
+#
+# (M) includes the matched portion in the result.
+# refer to:
+# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
+ismacos=${(M)OSTYPE:#*darwin*}
 
 # system commands
 alias cp='cp -irv' # --interactive --recursive --verbose
@@ -21,6 +28,7 @@ alias wget='wget -c' # --continue; (--timestamping)
 alias hd='hexdump -C' # hex+ascii
 
 alias py='python3'
+alias python='python3'
 alias cl='clang'
 alias cll='clang++'
 
@@ -91,8 +99,10 @@ fi
 
 # brew
 if has brew; then
-    alias bi='brew install --force-bottle --verbose'
+    # brewit is my own function
+    alias bi='brewit --verbose'
     alias bu='brew uninstall'
+    alias bl='brew link'
 fi
 
 # gdb
@@ -123,22 +133,22 @@ fi
 
 # pipenv
 # Refer to: oh-my-zsh/pipenv.plugin.zsh
-if has pipenv; then
-    alias pch='pipenv check'
-    alias pcl='pipenv clean'
-    alias pgr='pipenv graph'
-    alias pi='pipenv install --skip-lock --verbose'
-    alias pidev='pipenv install --skip-lock --verbose --dev'
-    alias pl='pipenv lock'
-    alias po='pipenv open'
-    alias ppy='pipenv --py'
-    alias prun='pipenv run'
-    alias psh='pipenv shell'
-    alias psy='pipenv sync'
-    alias pu='pipenv uninstall'
-    alias pvenv='pipenv --venv'
-    alias pwh='pipenv --where'
-fi
+# if has pipenv; then
+#     alias pch='pipenv check'
+#     alias pcl='pipenv clean'
+#     alias pgr='pipenv graph'
+#     alias pi='pipenv install --skip-lock --verbose'
+#     alias pidev='pipenv install --skip-lock --verbose --dev'
+#     alias pl='pipenv lock'
+#     alias po='pipenv open'
+#     alias ppy='pipenv --py'
+#     alias prun='pipenv run'
+#     alias psh='pipenv shell'
+#     alias psy='pipenv sync'
+#     alias pu='pipenv uninstall'
+#     alias pvenv='pipenv --venv'
+#     alias pwh='pipenv --where'
+# fi
 
 # systemd
 # Refer to: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/systemd/systemd.plugin.zsh
@@ -147,9 +157,10 @@ if has systemctl; then
     alias scen='sudo systemctl enable --now'
     alias scd='sudo systemctl disable'
     alias scdn='sudo systemctl disable --now'
-    alias scstart='sudo systemctl start'
-    alias scstop='sudo systemctl stop'
-    alias scstat='systemctl status'
+    alias scst='sudo systemctl start'
+    alias scsp='sudo systemctl stop'
+    alias scr='sudo systemctl restart'
+    alias scs='systemctl status'
 fi
 
 # rsync
@@ -206,7 +217,7 @@ alias 9='cd -9'
 # ls, the common ones I use a lot shortened for rapid fire usage
 if has exa; then
     # exa is a modern ls replacement
-    alias ls='exa -b'  # binary size prefix
+    alias ls='exa -bg'  # binary size prefix, group
 elif [ "$ismacos" ]; then
     # colered, human readable
     # BSD-like systems have different arguments
@@ -215,10 +226,10 @@ else
     # colered, human readable
     alias ls='ls -h --color=auto'
 fi
-alias l='ls -la'        # long list, show all
+alias l='ls -laa'       # long list, show all
 alias ll='ls -l'        # long list
 alias lr='ls -R'        # recursive
-alias lt='ls -lat'      # sorted by date
+alias lt='ls -laat'     # sorted by date
 alias llt='ls -lt'      # sorted by date
 # alias l='ls -lFh'     #size,show type,human readable
 # alias la='ls -lAFh'   #long list,show almost all,show type,human readable

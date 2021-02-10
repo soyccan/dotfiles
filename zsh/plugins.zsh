@@ -28,12 +28,12 @@
 
 # z-a-bin-gem-node: Add the support of ice modifiers like sbin, fbin, etc.
 # so that binaries installed by Zinit requires no entry in $PATH
-zinit for zinit-zsh/z-a-bin-gem-node
+zinit for @zinit-zsh/z-a-bin-gem-node
 
 # z-a-man: A Zsh-Zinit extension that automatically generates man pages out of
 # plugin README.md files
 # command: `zman`
-zinit for zinit-zsh/z-a-man
+zinit for @zinit-zsh/z-a-man
 
 # z-a-test: Specify modifier 'test' to run 'make test'
 # zinit for zinit-zsh/z-a-test
@@ -50,18 +50,16 @@ zinit for zinit-zsh/z-a-man
 # fish-like features
 zinit wait lucid for \
   atinit"zicompinit; zicdreplay" \
-      zdharma/fast-syntax-highlighting \
+      @zdharma/fast-syntax-highlighting \
   atload"_zsh_autosuggest_start" \
-      zsh-users/zsh-autosuggestions \
+      @zsh-users/zsh-autosuggestions \
   blockf atpull'zinit creinstall -q .' \
-      zsh-users/zsh-completions
+      @zsh-users/zsh-completions
 # CTRL-r for searching history
 # zinit light zdharma/history-search-multi-word
 
 
 ## Oh My Zsh libraries and plugins
-# Most themes use this option
-setopt promptsubst
 # available libraries:
 # bzr.zsh
 # cli.zsh
@@ -83,43 +81,35 @@ setopt promptsubst
 # termsupport.zsh
 # theme-and-appearance.zsh
 zinit wait lucid for \
-    OMZL::completion.zsh \
-    OMZL::git.zsh \
+    @OMZL::completion.zsh \
+    @OMZL::git.zsh \
     \
-    OMZP::colored-man-pages \
-    OMZP::command-not-found \
-    OMZP::encode64 \
-    OMZP::pipenv \
-    OMZP::systemadmin \
-    OMZP::systemd \
-    OMZP::urltools \
-    OMZP::zsh_reload \
+    @OMZP::colored-man-pages \
+    @OMZP::command-not-found \
+    @OMZP::encode64 \
+    @OMZP::pipenv \
+    @OMZP::systemadmin \
+    @OMZP::systemd \
+    @OMZP::urltools \
+    @OMZP::zsh_reload \
     \
     atload"unalias grv" \
-        OMZP::git
-
-# completions
-zinit wait lucid as"completion" for \
-    OMZP::fd/_fd \
-    OMZP::docker/_docker \
-    OMZP::docker-compose/_docker-compose \
-    OMZP::pip/_pip \
-    OMZP::ripgrep/_ripgrep \
-    OMZP::gem/_gem \
-    OMZP::bundler/_bundler
+        @OMZP::git
 
 # following must not be delayed loading
 # if so, history.zsh will cause history of previous sessions unloaded
 # and key-binding will fail
 # key-bindings: ^N and ^P is originally bind to {up,down}-line-or-history
 zinit for \
-    OMZL::history.zsh \
+    @OMZL::history.zsh \
     atload'bindkey "^P" history-search-backward; \
            bindkey "^N" history-search-forward' \
-        OMZL::key-bindings.zsh
+        @OMZL::key-bindings.zsh
 
 
 ## Theme
+# Most themes use this option
+setopt promptsubst
 # Load the pure theme, with zsh-async library that's bundled with it.
 # zinit ice pick"async.zsh" src"pure.zsh"
 # zinit light sindresorhus/pure
@@ -133,9 +123,20 @@ zinit for \
 # wait'!' to reset prompt after loaded
 zinit for \
     src"$HOME/.p10k.zsh" \
-    romkatv/powerlevel10k
+        @romkatv/powerlevel10k
 
 
+## Additional Completions
+#     OMZP::autopep8/_autopep8 \
+#     OMZP::docker/_docker \
+#     OMZP::docker-compose/_docker-compose \
+#     OMZP::pip/_pip \
+#     OMZP::ripgrep/_ripgrep \
+#     OMZP::gem/_gem \
+#     OMZP::bundler/_bundler
+
+
+## Complex plugins
 # fzf (fuzzy searcher) and its intergration with fasd (recent dir jumper)
 # Binary release in archive, from GitHub-releases page.
 # After automatic unpacking it provides program "fzf".
@@ -146,12 +147,12 @@ zinit for \
 # ^G : Goto recent dir
 zinit wait lucid for \
     from"gh-r" sbin"fzf" \
-        junegunn/fzf-bin \
+        @junegunn/fzf-bin \
     multisrc'shell/completion.zsh shell/key-bindings.zsh' \
-        junegunn/fzf \
+        @junegunn/fzf \
     sbin'fasd' \
     atload'eval "$(./fasd --init auto)"; zle -N _z; bindkey "^G" _z' \
-        clvv/fasd
+        @clvv/fasd
 
 # TODO: ^G key binding not working, and causes problem when target dir is a
 # python virtualenv
@@ -204,26 +205,50 @@ _z() {
 #     trapd00r/LS_COLORS
 
 
-## Binaries
-# sharkdp/fd: A simple, fast and user-friendly alternative to 'find'
-# sharkdp/bat: A cat(1) clone with wings
-zinit wait lucid from"gh-r" as"null" for \
-     sbin"**/fd"        @sharkdp/fd \
-     sbin"**/bat"       @sharkdp/bat \
+## Binaries and Their Completions
+# ag: A fast alternative to grep
+# No GitHub release exist
+zinit wait lucid for \
+    as"completion" \
+        @ggreer/the_silver_searcher
 
-# ogham/exa: Replacement for ls
+# rg: A fast alternative to grep
+# along with completion
+zinit wait lucid for \
+    from"gh-r" sbin"**/rg" \
+        @BurntSushi/ripgrep \
+
+# fd: A simple, fast and user-friendly alternative to 'find'
+zinit wait lucid for \
+    from"gh-r" sbin"**/fd" id-as"sharkdp/fd-bin" \
+        @sharkdp/fd \
+    as"completion" \
+        @sharkdp/fd
+
+# bat: A cat(1) clone with wings
+zinit wait lucid for \
+    from"gh-r" sbin"**/bat" \
+        @sharkdp/bat
+
+# exa: Replacement for ls
 zinit wait lucid for \
     from"gh-r" sbin"exa* -> exa" id-as"ogham/exa-bin" \
-        ogham/exa \
+        @ogham/exa \
     as"completion" cp"completions/completions.zsh -> _exa" \
-        ogham/exa
+        @ogham/exa
 
-# docker-compose is usually bundled with docker on macOS and Windows
-# zinit wait lucid for \
+# Docker and docker-compose
+# Docker should be install by system
+# and docker-compose is usually bundled with Docker
+# so we do not install them here
+zinit wait lucid for \
+    as"completion" \
+        @docker/compose \
+        @docker/cli
 #     from"gh-r" as"program" mv"docker* -> docker-compose" \
 #     docker/compose
 
-# jarun/nnn: A terminal file browser
+# nnn: A terminal file browser
 # zinit pick"misc/quitcd/quitcd.zsh" sbin make for jarun/nnn
 
 # Build VIM from source
@@ -243,7 +268,7 @@ zinit wait lucid for \
 # gosh: A proof-of-concept shell
 zinit wait lucid for \
     from"gh-r" sbin"shfmt* -> shfmt" \
-    @mvdan/sh
+        @mvdan/sh
 
 # gotcha: A simple tool that grabs Go packages
 # zinit wait lucid for \
@@ -254,20 +279,20 @@ zinit wait lucid for \
 # Usage: some_commond | yank
 zinit wait lucid for \
     sbin"yank" make \
-    mptre/yank
+        @mptre/yank
 
 # Vramstep: Progress bar
 zinit wait lucid for \
     sbin'src/vramsteg' \
     atclone'cmake .' atpull'%atclone' make \
-    psprint/vramsteg-zsh
+        @psprint/vramsteg-zsh
 
 # pyenv: Simple Python version management
 zinit wait lucid for \
     atclone'PYENV_ROOT="$PWD" ./libexec/pyenv init - > zpyenv.zsh' \
     atinit'export PYENV_ROOT="$PWD"' atpull"%atclone" \
     sbin'bin/pyenv' src"zpyenv.zsh" nocompile'!' \
-    pyenv/pyenv
+        @pyenv/pyenv
 
 # asciinema: Terminal session recorder
 zinit wait lucid for \
@@ -276,7 +301,7 @@ zinit wait lucid for \
     python3 setup.py --quiet install --prefix $ZPFX" \
     atpull'%atclone' \
     sbin"$ZPFX/bin/asciinema" \
-    @asciinema/asciinema.git
+        @asciinema/asciinema.git
 
 # Whenever a manual build without Github repo is needed, zdharma/null serves as
 # a placeholder
