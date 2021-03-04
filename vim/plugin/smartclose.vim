@@ -118,14 +118,14 @@ function! s:SmartClose()
         let wincnt -= 1
         TagbarClose
     endif
-    if getqflist({ 'winid' : 1 }).winid != 0
+    if !empty(filter(range(1, winnr('$')), 'getwinvar(v:val, "&ft") == "qf"'))
         " if quickfix window exists
         let quickfix_exists = 1
         let wincnt -= 1
         cclose
     end
 
-    if wincnt == 1 && len(getbufinfo({ 'buflisted': 1 })) > 1
+    if wincnt == 1 && len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) > 1
         " if there is one window and multiple buffers
         bdelete
     else
