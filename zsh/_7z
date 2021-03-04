@@ -81,7 +81,7 @@ case $service in
         $commoncommands
     else
       _arguments -C -S \
-        '-p[set password]' \
+        '-p-[set password]:parameters:' \
         $commonswitches \
         "2: :_files" \
         '*: :->files_archived'

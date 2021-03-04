@@ -23,6 +23,10 @@
 "     let g:neomake_<ft>_<makername>_maker = {}
 "     let g:neomake_<ft>_enabled_makers = []
 
+" python3 maker
+let g:neomake_python_python3_maker = neomake#makers#ft#python#python()
+let g:neomake_python_enabled_makers = ['python3']
+
 " variants of shellcheck maker for different shells
 " Refer to: neomake#makers#ft#sh#shellcheck()
 let s:shellcheck = {

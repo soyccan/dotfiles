@@ -1,16 +1,10 @@
-# ${name:#pattern} tries to match $name with pattern
-# refer to:
-# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion
-#
-# (M) includes the matched portion in the result.
-# refer to:
-# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
-ismacos=${(M)OSTYPE:#*darwin*}
-
 # system commands
 alias cp='cp -irv' # --interactive --recursive --verbose
 alias mv='mv -iv' # --interactive --verbose
 alias rm='rm -i' # --interactive=always
+mdcd() {
+    mkdir -pv "$@" && cd "$@"
+}
 
 alias df='df -h' # --human-readable
 alias du='du -h'  # --human-readable --apparent-size(-A) ; -A connot be used in macOS
@@ -261,7 +255,10 @@ alias -g NUL="> /dev/null 2>&1"
 alias -g P="2>&1| pygmentize -l pytb"
 alias -g X='| xargs'
 alias -g XG='| xargs grep'
-has ag && { alias -g G='| ag'; alias -g XG='| xargs ag'; }
+if has ag; then
+    alias -g G='| ag'
+    alias -g XG='| xargs ag'
+fi
 
 # show files/directories by size
 # duf seems faster
@@ -269,33 +266,47 @@ alias dud='du -d 1 -h | sort -hr'
 alias duf='du -sh * | sort -hr'
 
 # show all files/directories recursively
-has fd || alias fd='find . -type d'
-alias ff='find . -type f'
+# see also `tree` function in OMZ/systemadmin
+alias fdd='find . -type d'
+alias fdf='find . -type f'
 
 alias h='history'
 alias hgrep="fc -El 0 | grep"
-alias help='man'
+
+# process status
+# -f : uid, pid, parent pid, recent CPU usage, process start time, controlling tty, elapsed CPU usage, command
+# -j : user, pid, ppid, pgid, sess, jobc, state, tt, time, command
+# -l : uid, pid, ppid, flags, cpu, pri, nice, vsz=SZ, rss, wchan, state=S, paddr=ADDR, tty, time, command=CMD
+# -v : pid, state, time, sl, re, pagein, vsz, rss, lim, tsiz, %cpu, %mem, and command
+# u (no hyphen) : user, pid, %cpu, %mem, vsz, rss, tt, state, start, time, and command
+# -e : all including terminal-less proccess
+# -a : all
+# -m : sorted by memory
+# -r : sorted by CPU
+# -E : show environment
+# -w -ww : wider output
 p() {
-    # -f : uid, pid, parent pid, recent CPU usage, process start time, controlling tty, elapsed CPU usage, command
-    # -j : user, pid, ppid, pgid, sess, jobc, state, tt, time, command
-    # -l : uid, pid, ppid, flags, cpu, pri, nice, vsz=SZ, rss, wchan, state=S, paddr=ADDR, tty, time, command=CMD
-    # -v : pid, state, time, sl, re, pagein, vsz, rss, lim, tsiz, %cpu, %mem, and command
-    # u (no hyphen) : user, pid, %cpu, %mem, vsz, rss, tt, state, start, time, and command
-    # -e : all including no-terminal proccess
-    # -a : all
-    # -m : sorted by memory
-    # -r : sorted by CPU
+    if has ag; then
+        _grep=ag
+    else
+        _grep=grep
+    fi
+
+    # $1 : pattern
+    # $2.. : options for ps
     # rss : resident set size = physical memory usage
     # first line is duplicated to stderr
     # it's convenient when piping result to grep
-    ps -eo pid,user,state,etime,command | tee >(sed -n '1p' >&2)
+    ps -eo pid,user,state,etime,command $@[2,$] | tee >(sed -n '1p' >&2) | $_grep $1
 }
+alias ps='ps -ef'
+alias psenv='ps -efEww'
 
 alias sortnr='sort -n -r'
-alias unexport='unset'
 
 # Make zsh know about hosts already accessed by SSH
-zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
+zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts \
+    'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 ## end oh-my-zsh/common-aliases.zsh
 
 

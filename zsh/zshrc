@@ -5,9 +5,10 @@
 # Check if command exists, return 0 on success
 # MUCH faster than external program `which` since this don't
 # require forking process
-# Bash equivalence: command -v
+# Bash equivalence: command -v / type
+# Zsh equivalence: whence
 has() {
-    whence "$1" &>/dev/null
+    return $+command[$1]
 }
 
 
@@ -27,7 +28,7 @@ fi
 # ignore error when globbing fails (/path/to/some/dir/* not exist)
 setopt null_glob
 
-paths=('/opt/brew/bin'
+_path=('/opt/brew/bin'
        '/snap/bin'
        "$HOME/go/bin"
        "$HOME/.rvm/bin"
@@ -35,25 +36,28 @@ paths=('/opt/brew/bin'
 
 # Ruby gems
 for x in "$HOME"/.gem/ruby/*; do
-    paths+=("$x/bin")
+    _path+=("$x/bin")
 done
 
 # Python pips
 # Linux
-paths+=("$HOME/.local/bin")
+_path+=("$HOME/.local/bin")
 # masOS
-paths+=(/Library/Frameworks/Python.framework/Versions/Current/bin)
+_path+=(/Library/Frameworks/Python.framework/Versions/Current/bin)
 for x in /Users/soyccan/Library/Python/*/bin; do
-    paths+=("$x")
+    _path+=("$x")
 done
 
 # Later elements in $path have priority
-for p in $paths; do
+for p in $_path; do
     [ -d "$p" ] && PATH="$p:$PATH"
 done
 
-unset paths
+unset _path
 export PATH
+
+# Man pages path
+# TODO
 
 # You may need to manually set your language environment
 export LANG=en_US.UTF-8
@@ -92,6 +96,15 @@ autoload -Uz _zinit
 # Plugin `colored-man-pages` requires this
 autoload -Uz colors
 colors
+
+# ${name:#pattern} tries to match $name with pattern
+# refer to:
+# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion
+#
+# (M) includes the matched portion in the result.
+# refer to:
+# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
+ismacos=${(M)OSTYPE:#*darwin*}
 
 # The inner expansion follows ${name:-word} form, so as the variable called
 # `name` (which is empty string) does not exist, the value will be given from

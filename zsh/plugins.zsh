@@ -206,6 +206,30 @@ _z() {
 
 
 ## Binaries and Their Completions
+# tmux: Terminal multiplexer
+if [[ $OSTYPE = linux ]]; then
+    zinit wait lucid for \
+        from"gh-r" bpick"tmux-3.1b-x86_64.AppImage" sbin"tmux* -> tmux" \
+            @tmux/tmux
+fi
+
+# NeoVim: Modern editor based on VIM
+if [[ $OSTYPE = linux ]]; then
+    zinit wait lucid for \
+        from"gh-r" bpick"nvim-linux64.tar.gz" sbin"*/bin/nvim" \
+            @neovim/neovim
+
+elif [[ $ismacos ]]; then
+    zinit wait lucid for \
+        from"gh-r" bpick"nvim-macos.tar.gz" sbin"*/bin/nvim" \
+            @neovim/neovim
+fi
+
+# shellcheck: Shell script linter
+zinit wait lucid for \
+    from"gh-r" sbin"**/shellcheck" \
+        @koalaman/shellcheck
+
 # ag: A fast alternative to grep
 # No GitHub release exist
 zinit wait lucid for \

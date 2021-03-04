@@ -50,7 +50,7 @@ Plug 'junegunn/vim-easy-align'
 " in search box:
 "   ctrl+j/k: up/down
 "   ctrl+c: quit
-Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 " fuzzy search with most-recently-used source
 Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/neomru.vim'
@@ -91,6 +91,7 @@ Plug 'zigford/vim-powershell'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/neoinclude.vim', { 'for': ['c', 'cpp'] }
 Plug 'Shougo/deoplete-clangx', { 'for': ['c', 'cpp'] }
+" Require: pip install jedi
 Plug 'deoplete-plugins/deoplete-jedi', { 'for': 'python' }
 "
 " TODO: YouCompleteMe vs. deoplete
@@ -129,9 +130,8 @@ endfor
 
 
 " Set project root
-if argc() == 0
-    let g:asyncrun_root = getcwd()
-else
+let g:asyncrun_root = getcwd()
+if argc() > 0
     let p = fnamemodify(argv()[0], ':p')
     if isdirectory(p)
         let g:asyncrun_root = p

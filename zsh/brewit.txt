@@ -3,3 +3,17 @@ htop
 neovim
 p7zip
 the_silver_searcher
+wget
+tig
+universal-ctags
+ripgrep
+fd
+bat
+exa
+shellcheck
+rar
+nmap
+coreutils
+node
+iverilog
+icarus-verilog
