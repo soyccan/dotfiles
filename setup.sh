@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-dotfiles="$(realpath "$(dirname "$0")")"
+dotfiles="$(dirname "$(readlink -f "$0")")"
 
 
 has() {
@@ -13,9 +13,11 @@ ln_confirm() {
     link="$2"
     mkdir -p "$(dirname "$link")"
     if [ -L "$link" ]; then
+        # if $link is a symbolic link, replace it
         rm "$link"
         ln -sv "$src" "$link"
     else
+        # otherwise, ask for overwriting
         ln -svi "$src" "$link"
     fi
 }
@@ -43,10 +45,10 @@ install_pkg() {
 setup_zsh() {
     echo Configuring ZSH
 
-    echo Installing ZSH
-    install_pkg zsh
+    # standalone version of zsh
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh-bin/master/install)"
 
-    if [ "$(awk -F':' "/^$USER/ { print \$7 }" /etc/passwd)" != '/bin/zsh' ]; then
+    if [ -x /bin/zsh ]; then
         sudo usermod "$USER" -s /bin/zsh
     fi
 
@@ -62,18 +64,11 @@ setup_zsh() {
     # powerlever10k
     # ln_confirm "$dotfiles/zsh/p10k.zsh" "$HOME/.p10k.zsh"
     p10k configure
-
-    # install my plugin
-    # mkdir -pv "$HOME/.oh-my-zsh/custom/plugins/urlencode"
-    # ln_confirm "$dotfiles/zsh/urlencode.sh" "$HOME/.oh-my-zsh/custom/plugins/urlencode/urlencode.plugin.zsh"
 }
 
 
 setup_fish() {
     echo Configuring FISH
-
-    echo Installing FISH
-    install_pkg fish
 
     if [ "$(awk -F':' "/^$USER/ { print \$7 }" /etc/passwd)" != '/bin/fish' ]; then
         sudo usermod "$USER" -s /bin/fish
@@ -90,9 +85,6 @@ setup_fish() {
 setup_tmux() {
     echo Configuring TMUX
 
-    echo Installing TMUX
-    install_pkg tmux
-
     # oh-my-tmux
     echo Installing Oh My TMUX
     ln_confirm "$dotfiles/tmux/oh-my-tmux" "$HOME/.tmux"
@@ -104,16 +96,13 @@ setup_tmux() {
 setup_vim() {
     echo Configuring Vim
 
-    echo Installing NeoVim
-    install_pkg neovim
-
     # neovim configurations
     ln_confirm "$dotfiles/vim" "$HOME/.config/nvim"
 
     # vim-plug
-    sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim \
-           --create-dirs \
-           https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    curl -fL --create-dirs \
+         -o "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim \
+         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
     # compatible with vim
     ln_confirm "$dotfiles/vim" "$HOME/.vim"
@@ -123,9 +112,6 @@ setup_vim() {
 
 setup_gdb() {
     echo Configuring GDB
-
-    echo Installing GDB
-    install_pkg gdb
 
     ln_confirm "$dotfiles/gdb" "$HOME/.gdb"
     ln_confirm "$dotfiles/gdb/gdbinit" "$HOME/.gdbinit"
@@ -141,7 +127,6 @@ setup_git() {
 
 main() {
     setup_tmux
-    # setup_fish
     setup_zsh
     setup_vim
     setup_git
