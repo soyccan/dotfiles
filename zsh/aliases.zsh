@@ -27,7 +27,7 @@ alias cl='clang'
 alias cll='clang++'
 
 # binutils
-if [ "$ismacos" ]; then
+if [ "$is_macos" ]; then
     alias objdump='objdump -x86-asm-syntax=intel'
     alias gobjdump='gobjdump -M intel'
 else
@@ -212,7 +212,7 @@ alias 9='cd -9'
 if has exa; then
     # exa is a modern ls replacement
     alias ls='exa -bg'  # binary size prefix, group
-elif [ "$ismacos" ]; then
+elif [ "$is_macos" ]; then
     # colered, human readable
     # BSD-like systems have different arguments
     alias ls='ls -hG'
@@ -325,7 +325,7 @@ bindkey " " globalias
 ## end oh-my-zsh/globalias.plugin.zsh
 
 
-if [ "$ismacos" ] && [ -e '/Applications/Turbo Boost Switcher.app' ]; then
+if [ "$is_macos" ] && [ -e '/Applications/Turbo Boost Switcher.app' ]; then
     # disable Turbo Boost on macOS
     # required to install Turbo Boost Switcher
     # or clone from:

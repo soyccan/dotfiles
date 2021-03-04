@@ -2,6 +2,44 @@
 # zmodload zsh/zprof
 
 
+# Launch tmux at start
+# This should be in the beginning of zshrc
+if [ -z "$TMUX" ] && [ "$HOST" != 'soyccanmac.local' ]; then
+    tmux a -d
+fi
+
+
+## Global varibales
+
+# ${name:#pattern} tries to match $name with pattern
+# refer to:
+# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion
+#
+# (M) includes the matched portion in the result.
+# refer to:
+# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
+is_macos=${(M)OSTYPE:#*darwin*}
+
+# The inner expansion follows ${name:-word} form, so as the variable called
+# `name` (which is empty string) does not exist, the value will be given from
+# `word` (which is "%x"). Refer to:
+# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion
+#
+# The %x is a prompt escape indicating the file being sourced. Refer to:
+# http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Shell-state
+#
+# And the (%) is a parameter expansion flag that expands the %x. Refer to:
+# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
+#
+# The outer expansion has P modifier that calls realpath() to obtain the
+# absolute path, and h modifier to obtain dirname. Refer to:
+# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Modifiers
+#
+source_dir="${${(%):-%x}:P:h}"
+
+
+## Global functions
+
 # Check if command exists, return 0 on success
 # MUCH faster than external program `which` since this don't
 # require forking process
@@ -12,27 +50,17 @@ has() {
 }
 
 
-# Launch tmux at start
-if [ -z "$TMUX" ] && [ "$HOST" != 'soyccanmac.local' ]; then
-    tmux a -d
-fi
+## Set environments
 
-# Pull new changes of dotfiles, in background
-(git -C "$HOME/dotfiles" pull &>/dev/null &)
-
-
-################
-# Environments #
-################
 # PATH
 # ignore error when globbing fails (/path/to/some/dir/* not exist)
 setopt null_glob
 
-_path=('/opt/brew/bin'
-       '/snap/bin'
+_path=('/snap/bin'
        "$HOME/go/bin"
        "$HOME/.rvm/bin"
-       "$HOME/.pyenv/bin")
+       "$HOME/.pyenv/bin"
+       "$HOME/.local/bin")
 
 # Ruby gems
 for x in "$HOME"/.gem/ruby/*; do
@@ -40,17 +68,16 @@ for x in "$HOME"/.gem/ruby/*; do
 done
 
 # Python pips
-# Linux
-_path+=("$HOME/.local/bin")
+# Linux: $HOME/.local/bin
 # masOS
 _path+=(/Library/Frameworks/Python.framework/Versions/Current/bin)
-for x in /Users/soyccan/Library/Python/*/bin; do
+for x in "$HOME"/Library/Python/*/bin; do
     _path+=("$x")
 done
 
-# Later elements in $path have priority
+# Prior elements in $path have priority
 for p in $_path; do
-    [ -d "$p" ] && PATH="$p:$PATH"
+    [ -d "$p" ] && PATH="$PATH:$p"
 done
 
 unset _path
@@ -75,9 +102,11 @@ fi
 export HOMEBREW_NO_AUTO_UPDATE=1
 
 
-###########
-# Plugins #
-###########
+## Begin of routine
+
+# Pull new changes of dotfiles, in background
+(git -C "$HOME/dotfiles" pull &>/dev/null &)
+
 ### Added by Zinit's installer
 if [ ! -f "$HOME/.zinit/bin/zinit.zsh" ]; then
     print -P "%F{33}▓▒░ %F{220}Installing %F{33}DHARMA%F{220} Initiative Plugin Manager (%F{33}zdharma/zinit%F{220})…%f"
@@ -97,40 +126,11 @@ autoload -Uz _zinit
 autoload -Uz colors
 colors
 
-# ${name:#pattern} tries to match $name with pattern
-# refer to:
-# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion
-#
-# (M) includes the matched portion in the result.
-# refer to:
-# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
-ismacos=${(M)OSTYPE:#*darwin*}
-
-# The inner expansion follows ${name:-word} form, so as the variable called
-# `name` (which is empty string) does not exist, the value will be given from
-# `word` (which is "%x"). Refer to:
-# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion
-#
-# The %x is a prompt escape indicating the file being sourced. Refer to:
-# http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Shell-state
-#
-# And the (%) is a parameter expansion flag that expands the %x. Refer to:
-# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
-#
-# The outer expansion has P modifier that calls realpath() to obtain the
-# absolute path, and h modifier to obtain dirname. Refer to:
-# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Modifiers
-#
-source_dir="${${(%):-%x}:P:h}"
-
+# Load additional config
 source "$source_dir/plugins.zsh"
 source "$source_dir/aliases.zsh"
 source "$source_dir/brewit.zsh"
 
-
-###############
-# Completions #
-###############
 # Completion Path
 # TODO: is this right
 fpath+=($HOME/dotfiles/zsh)

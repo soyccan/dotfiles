@@ -56,14 +56,8 @@ setup_zsh() {
     ln_confirm "$dotfiles/zsh/zshrc" "$HOME/.zshrc"
     ln_confirm "$dotfiles/zsh" "$HOME/.config/zsh"
 
-    # zinit - faster plugin manager
-    if [ ! -d "$HOME/.zinit" ]; then
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh)"
-    fi
-
     # powerlever10k
-    # ln_confirm "$dotfiles/zsh/p10k.zsh" "$HOME/.p10k.zsh"
-    p10k configure
+    ln_confirm "$dotfiles/zsh/p10k.zsh" "$HOME/.p10k.zsh"
 }
 
 
