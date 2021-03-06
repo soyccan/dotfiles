@@ -98,13 +98,8 @@ zinit wait lucid for \
 
 # following must not be delayed loading
 # if so, history.zsh will cause history of previous sessions unloaded
-# and key-binding will fail
-# key-bindings: ^N and ^P is originally bind to {up,down}-line-or-history
 zinit for \
     @OMZL::history.zsh \
-    atload'bindkey "^P" history-search-backward; \
-           bindkey "^N" history-search-forward' \
-        @OMZL::key-bindings.zsh
 
 
 ## Theme

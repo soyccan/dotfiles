@@ -121,15 +121,24 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 ### End of Zinit's installer chunk
 
+# Set background color
+# This is bg of Solorized Dark from iTerm2
+printf '\e]11;#002b36\a'
+
 # Load colors
 # Plugin `colored-man-pages` requires this
 autoload -Uz colors
 colors
 
 # Load additional config
+# since some plugin overrites key bindings
+# this should be first
+source "$source_dir/key-bindings.zsh"
+
 source "$source_dir/plugins.zsh"
 source "$source_dir/aliases.zsh"
 source "$source_dir/brewit.zsh"
+source "$source_dir/globalias.zsh"
 
 # Completion Path
 # TODO: is this right

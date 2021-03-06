@@ -310,21 +310,6 @@ zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts \
 ## end oh-my-zsh/common-aliases.zsh
 
 
-## oh-my-zsh/globalias.plugin.zsh
-# https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/globalias/globalias.plugin.zsh
-# expand alias to full command
-globalias() {
-    # expand wildchar * ? to file list
-    # zle expand-word
-
-    zle _expand_alias
-    zle self-insert
-}
-zle -N globalias
-bindkey " " globalias
-## end oh-my-zsh/globalias.plugin.zsh
-
-
 if [ "$is_macos" ] && [ -e '/Applications/Turbo Boost Switcher.app' ]; then
     # disable Turbo Boost on macOS
     # required to install Turbo Boost Switcher
