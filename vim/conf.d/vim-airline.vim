@@ -1,4 +1,4 @@
-let g:airline_theme='dark_minimal'
+" let g:airline_theme='dark_minimal'
 let g:airline_powerline_fonts = 1
 
 " * enable/disable enhanced tabline. (c) >

@@ -318,3 +318,9 @@ bind C-h previous-window
 bind C-[ previous-window
 bind C-] next-window
 bind C-l next-window
+
+# tmux-256color instead of screen-256color supports italic font
+set -g default-terminal "tmux-256color"
+
+# tell Tmux that outside terminal supports true color
+set -ga terminal-overrides ",xterm-256color*:Tc"

@@ -65,7 +65,8 @@ Plug 'easymotion/vim-easymotion'
 
 "" Looking
 " theme
-Plug 'jacoborus/tender.vim'
+Plug 'haishanh/night-owl.vim'
+Plug 'joshdick/onedark.vim'
 " beautiful tag bar on top
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -78,8 +79,8 @@ Plug 'Shougo/echodoc.vim'
 "" Syntax Highlighting
 " C++
 Plug 'octol/vim-cpp-enhanced-highlight'
-" Nginx config
-Plug 'chr4/nginx.vim'
+" Many languages
+Plug 'sheerun/vim-polyglot'
 " Zinit config
 Plug 'zinit-zsh/zinit-vim-syntax'
 " Powershell
