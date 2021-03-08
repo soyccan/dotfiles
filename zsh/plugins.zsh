@@ -201,6 +201,11 @@ _z() {
 
 
 ## Binaries and Their Completions
+# pastel: Color generater
+zinit wait lucid for \
+    from"gh-r" sbin"**/pastel" \
+        @sharkdp/pastel
+
 # tmux: Terminal multiplexer
 if [[ $OSTYPE = linux ]]; then
     zinit wait lucid for \

@@ -123,7 +123,7 @@ autoload -Uz _zinit
 
 # Set background color
 # This is bg of Solorized Dark from iTerm2
-printf '\e]11;#002b36\a'
+# printf '\e]11;#002b36\a'
 
 # Load colors
 # Plugin `colored-man-pages` requires this
@@ -132,13 +132,20 @@ colors
 
 # Load additional config
 # since some plugin overrites key bindings
-# this should be first
+# key bindings should be first
 source "$source_dir/key-bindings.zsh"
 
+# Zinit plugins
 source "$source_dir/plugins.zsh"
+
+# My command aliases
 source "$source_dir/aliases.zsh"
-source "$source_dir/brewit.zsh"
-source "$source_dir/globalias.zsh"
+
+# My plugins
+for x in $source_dir/*.plugin.zsh; do
+    source $x
+done
+
 
 # Completion Path
 # TODO: is this right
