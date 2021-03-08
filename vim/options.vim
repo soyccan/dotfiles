@@ -60,8 +60,16 @@ set timeoutlen=500
 " Ignore white space difference in diff mode
 set diffopt+=iwhite
 
-let g:python_host_prog = trim(system('which python'))
-let g:python3_host_prog = trim(system('which python3'))
+for name in ['python3', 'python']
+    if !exists('g:python_host_prog')
+        let g:python_host_prog = trim(exepath(name))
+    endif
+
+    if !exists('g:python3_host_prog')
+        let g:python3_host_prog = trim(exepath(name))
+    endif
+endfor
+
 
 " set syntax=sh default to posix
 " see: $VIM/runtime/syntax/sh.vim
