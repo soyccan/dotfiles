@@ -24,6 +24,13 @@ noremap <leader>qa :<C-U>qa<CR>
 noremap <leader>bd :<C-U>Bclose<CR>
 noremap Q q
 
+
+" 0 : Alternate between 0 and ^ and # (my plugin)
+" Don't map in operator-pending mode
+nnoremap 0 :<C-U>Smart0<CR>
+vnoremap 0 :<C-U>Smart0<CR>
+
+
 " Switch between windows, buffers ...
 " Inspired by: https://github.com/tpope/vim-unimpaired
 "              https://github.com/SpaceVim/SpaceVim
