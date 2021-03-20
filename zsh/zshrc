@@ -46,7 +46,7 @@ source_dir="${${(%):-%x}:P:h}"
 # Bash equivalence: command -v / type
 # Zsh equivalence: whence
 has() {
-    return $+command[$1]
+    [ $commands[$1] ]
 }
 
 
