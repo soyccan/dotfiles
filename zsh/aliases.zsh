@@ -211,20 +211,26 @@ alias 9='cd -9'
 # ls, the common ones I use a lot shortened for rapid fire usage
 if has exa; then
     # exa is a modern ls replacement
-    alias ls='exa -bg'  # binary size prefix, group
-elif [ "$is_macos" ]; then
-    # colered, human readable
-    # BSD-like systems have different arguments
-    alias ls='ls -hG'
-else
-    # colered, human readable
-    alias ls='ls -h --color=auto'
+    alias ls='exa -bg'        # binary size prefix, group
+    alias l='ls -laa'         # long list, show all
+    alias ll='ls -l'          # long list, ignore hidden files
+    alias lt='ls -laar -snew' # sorted by modified date, newest first
+    alias lr='ls -R'          # recursive
+else 
+    if [ "$is_macos" ]; then
+        # colered, human readable
+        # BSD-like systems have different arguments
+        alias ls='ls -hG'
+    else
+        # colered, human readable
+        alias ls='ls -h --color=auto'
+    fi
+
+    alias l='ls -la'       # long list, show all
+    alias ll='ls -l'       # long list, ignore hidden files
+    alias lt='ls -lat'     # sorted by date
+    alias lr='ls -R'       # recursive
 fi
-alias l='ls -laa'       # long list, show all
-alias ll='ls -l'        # long list
-alias lr='ls -R'        # recursive
-alias lt='ls -laat'     # sorted by date
-alias llt='ls -lt'      # sorted by date
 # alias l='ls -lFh'     #size,show type,human readable
 # alias la='ls -lAFh'   #long list,show almost all,show type,human readable
 # alias lr='ls -tRFh'   #sorted by date,recursive,show type,human readable
@@ -297,7 +303,11 @@ p() {
     # rss : resident set size = physical memory usage
     # first line is duplicated to stderr
     # it's convenient when piping result to grep
-    ps -eo pid,user,state,etime,command $@[2,$] | tee >(sed -n '1p' >&2) | $_grep $1
+    if [ $1 ]; then
+        ps -eo pid,user,state,etime,command $@[2,$] | tee >(sed -n '1p' >&2) | $_grep $1
+    else
+        ps -eo pid,user,state,etime,command $@[2,$]
+    fi
 }
 alias ps='ps -ef'
 alias psenv='ps -efEww'

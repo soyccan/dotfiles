@@ -4,7 +4,7 @@ function! s:Smart0()
         " if cursor is at end of line
         norm! 0
 
-    elseif match(strpart(getline('.'), 0, col('.')-1), '^\s\+$') != -1
+    elseif match(strpart(getline('.'), 0, col('.')), '^\s\+\S$') != -1
         " if cursor is at first non-space character
         norm! $
 

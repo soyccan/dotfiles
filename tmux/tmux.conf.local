@@ -320,7 +320,11 @@ bind C-] next-window
 bind C-l next-window
 
 # tmux-256color instead of screen-256color supports italic font
+# If not installed:
+#   curl -LO http://invisible-island.net/datafiles/current/terminfo.src.gz
+#   gunzip terminfo.src.gz
+#   tic -x terminfo.src
 set -g default-terminal "tmux-256color"
 
 # tell Tmux that outside terminal supports true color
-set -ga terminal-overrides ",xterm-256color*:Tc"
+#set -ga terminal-overrides ",xterm-256color*:Tc"

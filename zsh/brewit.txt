@@ -17,3 +17,5 @@ coreutils
 node
 iverilog
 icarus-verilog
+dos2unix
+clang-format
