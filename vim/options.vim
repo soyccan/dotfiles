@@ -3,6 +3,10 @@ set helplang=tw
 set nohlsearch incsearch
 set ignorecase smartcase
 
+" Shows the effects of a command incrementally, as you type
+" Works for |:substitute|, |:smagic|, |:snomagic|. |hl-Substitute|
+set inccommand=nosplit
+
 set cursorline
 set number
 set nowrap
@@ -111,6 +115,9 @@ autocmd filetype qf wincmd J
 
 " error format for quickfix
 autocmd FileType lua set errorformat=%[lua:\t]%#%f:%l:\ %m
+
+" Trim trailing whitespace
+autocmd BufWritePre * %s/\s\+$//ge
 
 packadd! termdebug
 

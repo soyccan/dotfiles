@@ -16,4 +16,4 @@
 	autocrlf = input
 	eol = lf
 	safecrlf = true
-	filemode = true
+	filemode = false
