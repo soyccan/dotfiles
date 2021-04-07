@@ -326,7 +326,9 @@ nnoremap <silent> <leader> :<C-U>WhichKey '<Space>'<CR>
 " NeoFormat "
 """""""""""""
 " Format and then save
-nnoremap <leader>w :Neoformat \| w<CR>
+" nnoremap <leader>w :Neoformat \| w<CR>
+" Just format
+nnoremap <leader>fm :Neoformat<CR>
 
 
 """"""""""""""
