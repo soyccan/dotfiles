@@ -40,6 +40,7 @@ set softtabstop=4
 set shiftwidth=4
 set expandtab " use space instead of tab; Ctrl-V + Tab to enter real tab
 set nofixendofline " no LF at file end
+set virtualedit=block " virtual edit in Visual-block mode
 
 set autochdir
 set autoread " auto reload when changed
