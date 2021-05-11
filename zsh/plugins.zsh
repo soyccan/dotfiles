@@ -93,7 +93,7 @@ zinit wait lucid for \
     @OMZP::urltools \
     @OMZP::zsh_reload \
     \
-    atload"unalias grv" \
+    atload"unalias grv; alias gc='git commit -m'" \
         @OMZP::git
 
 # following must not be delayed loading

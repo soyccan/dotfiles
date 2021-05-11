@@ -1,6 +1,6 @@
 [user]
-	email = soyccan@gmail.com
-	name = soyccan
+    email = soyccan@gmail.com
+    name = soyccan
 [difftool]
     prompt = false
 [merge]
@@ -8,12 +8,24 @@
 [mergetool "nvim"]
     cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED +'wincmd b' +'wincmd J'
 [filter "lfs"]
-	process = git-lfs filter-process
-	required = true
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+[init]
+    defaultBranch = main
+    templateDir = /home/soyccan/.git_template
 [core]
-	autocrlf = input
-	eol = lf
-	safecrlf = true
-	filemode = false
+    # autocrlf
+    #   true:  convert CRLF to LF when commit, and convert LF to CRLF when checkout
+    #   input: convert CRLF to LF when commit
+    #   false: (default) do nothing
+    autocrlf = input
+
+    # safecrlf
+    #   true:  reject on irreversible conversion
+    #   warn:  warn on irreversible conversion
+    #   false: do nothing
+    safecrlf = warn
+
+    filemode = false

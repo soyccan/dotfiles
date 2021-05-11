@@ -116,6 +116,7 @@ setup_gdb() {
 setup_git() {
     echo Configuring Git
     ln_confirm "$dotfiles/git/gitconfig" "$HOME/.gitconfig"
+    ln_confirm "$dotfiles/git/template" "$HOME/.git_template"
 }
 
 

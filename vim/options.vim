@@ -63,7 +63,10 @@ set completeopt-=preview
 set timeoutlen=500
 
 " Ignore white space difference in diff mode
-set diffopt+=iwhite
+set diffopt+=iwhiteall
+
+" default updatetime 4000ms is not good for async update
+set updatetime=100
 
 for name in ['python3', 'python']
     if !exists('g:python_host_prog')
@@ -78,8 +81,8 @@ endfor
 
 " set syntax=sh default to posix
 " see: $VIM/runtime/syntax/sh.vim
-" let g:is_bash = 1
-let g:is_posix = 1
+let g:is_bash = 1
+" let g:is_posix = 1
 
 " Clipboard for mac
 " This breaks block-mode paste

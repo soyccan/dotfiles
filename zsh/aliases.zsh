@@ -216,7 +216,7 @@ if has exa; then
     alias ll='ls -l'          # long list, ignore hidden files
     alias lt='ls -laar -snew' # sorted by modified date, newest first
     alias lr='ls -R'          # recursive
-else 
+else
     if [ "$is_macos" ]; then
         # colered, human readable
         # BSD-like systems have different arguments

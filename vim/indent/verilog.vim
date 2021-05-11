@@ -16,9 +16,11 @@
 "     b:verilog_indent_verbose : verbose to each indenting
 "
 
+let b:verilog_indent_verbose = 1
+
 " Only load this indent file when no other was loaded.
 if exists("b:did_indent")
-  finish
+  " finish
 endif
 let b:did_indent = 1
 
@@ -30,13 +32,13 @@ setlocal indentkeys+==`else,=`elsif,=`endif
 
 " Only define the function once.
 if exists("*GetVerilogIndent")
-  finish
+  " finish
 endif
 
 let s:cpo_save = &cpo
 set cpo&vim
 
-function GetVerilogIndent()
+function! GetVerilogIndent()
 
   if exists('b:verilog_indent_width')
     let offset = b:verilog_indent_width
@@ -205,8 +207,8 @@ function GetVerilogIndent()
       \ ( last_line2 =~ vlog_openstat . '\s*' . vlog_comment . '*$' &&
       \ last_line2 !~ ';\s*//.*$') &&
       \ last_line2 !~ '^\s*' . vlog_comment . '$'
-      return plindent
       if vverb | echo vverb_str "De-indent after a close statement." | endif
+      return plindent
 
   " `ifdef or `ifndef or `elsif or `else
   elseif last_line =~ '^\s*`\<\(ifn\?def\|elsif\|else\)\>'

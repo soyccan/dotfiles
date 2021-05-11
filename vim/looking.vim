@@ -40,6 +40,9 @@ colorscheme onedark
 " colorscheme PaperColor
 " colorscheme monokai
 
+highlight! link CursorLine Visual
+highlight! link ColorColumn Visual
+
 " hi Structure ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
 " hi StorageClass ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
 " hi SpecialChar ctermfg=141 ctermbg=NONE cterm=NONE guifg=#ae81ff guibg=NONE gui=NONE

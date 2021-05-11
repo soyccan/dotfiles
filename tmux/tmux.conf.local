@@ -324,7 +324,7 @@ bind C-l next-window
 #   curl -LO http://invisible-island.net/datafiles/current/terminfo.src.gz
 #   gunzip terminfo.src.gz
 #   tic -x terminfo.src
-set -g default-terminal "tmux-256color"
+# set -g default-terminal "tmux-256color"
 
 # tell Tmux that outside terminal supports true color
 #set -ga terminal-overrides ",xterm-256color*:Tc"

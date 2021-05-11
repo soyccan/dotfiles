@@ -108,7 +108,11 @@ Plug 'ludovicchabant/vim-gutentags'
 " key mapping cheatsheet
 Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 " highlight git difference
-Plug 'mhinz/vim-signify'
+if has('nvim') || has('patch-8.0.902')
+    Plug 'mhinz/vim-signify'
+else
+    Plug 'mhinz/vim-signify', { 'branch': 'legacy'  }
+endif
 " async run shell commands, and project root detection
 " set b:asyncrun_root to specify project root
 Plug 'skywind3000/asyncrun.vim'

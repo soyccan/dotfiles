@@ -330,6 +330,11 @@ nnoremap <silent> <leader> :<C-U>WhichKey '<Space>'<CR>
 " Just format
 nnoremap <leader>fm :Neoformat<CR>
 
+"""""""""""
+" NeoMake "
+"""""""""""
+nnoremap <leader>nm :Neomake<CR>
+
 
 """"""""""""""
 " easymotion "
