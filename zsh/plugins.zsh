@@ -207,19 +207,19 @@ zinit wait lucid for \
         @sharkdp/pastel
 
 # tmux: Terminal multiplexer
-if [[ $OSTYPE = linux ]]; then
+if is_linux; then
     zinit wait lucid for \
         from"gh-r" bpick"tmux-3.1b-x86_64.AppImage" sbin"tmux* -> tmux" \
             @tmux/tmux
 fi
 
 # NeoVim: Modern editor based on VIM
-if [[ $OSTYPE = linux ]]; then
+if is_linux; then
     zinit wait lucid for \
         from"gh-r" bpick"nvim-linux64.tar.gz" sbin"*/bin/nvim" \
             @neovim/neovim
 
-elif [[ $ismacos ]]; then
+elif is_macos; then
     zinit wait lucid for \
         from"gh-r" bpick"nvim-macos.tar.gz" sbin"*/bin/nvim" \
             @neovim/neovim

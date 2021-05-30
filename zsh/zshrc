@@ -11,15 +11,6 @@ fi
 
 ## Global varibales
 
-# ${name:#pattern} tries to match $name with pattern
-# refer to:
-# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion
-#
-# (M) includes the matched portion in the result.
-# refer to:
-# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
-is_macos=${(M)OSTYPE:#*darwin*}
-
 # The inner expansion follows ${name:-word} form, so as the variable called
 # `name` (which is empty string) does not exist, the value will be given from
 # `word` (which is "%x"). Refer to:
@@ -47,6 +38,25 @@ source_dir="${${(%):-%x}:P:h}"
 # Zsh equivalence: whence
 has() {
     [ $commands[$1] ]
+}
+
+# Determine OS
+is_macos() {
+    # ${name:#pattern} tries to match $name with pattern
+    # refer to:
+    # http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion
+    #
+    # (M) includes the matched portion in the result.
+    # refer to:
+    # http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
+    #
+    # The [[ ]] test a non-empty string
+    [[ ${(M)OSTYPE:#*darwin*} ]]
+}
+is_linux() {
+    # ${name##pattern} removes the longest prefix that matches pattern
+    # from $name
+    [[ ! ${OSTYPE##linux*} ]]
 }
 
 

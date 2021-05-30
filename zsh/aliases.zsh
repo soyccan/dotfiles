@@ -27,7 +27,7 @@ alias cl='clang'
 alias cll='clang++'
 
 # binutils
-if [ "$is_macos" ]; then
+if is_macos; then
     alias objdump='objdump -x86-asm-syntax=intel'
     alias gobjdump='gobjdump -M intel'
 else
@@ -217,7 +217,7 @@ if has exa; then
     alias lt='ls -laar -snew' # sorted by modified date, newest first
     alias lr='ls -R'          # recursive
 else
-    if [ "$is_macos" ]; then
+    if is_macos; then
         # colered, human readable
         # BSD-like systems have different arguments
         alias ls='ls -hG'
@@ -320,7 +320,7 @@ zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts \
 ## end oh-my-zsh/common-aliases.zsh
 
 
-if [ "$is_macos" ] && [ -e '/Applications/Turbo Boost Switcher.app' ]; then
+if is_macos && [ -e '/Applications/Turbo Boost Switcher.app' ]; then
     # disable Turbo Boost on macOS
     # required to install Turbo Boost Switcher
     # or clone from:

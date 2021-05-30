@@ -113,7 +113,7 @@ vnoremap < <gv
 autocmd BufEnter *
             \  if &modifiable
             \|     nnoremap <buffer> <CR> o<ESC>
-            \| elseif &filetype == 'help'
+            \| else
             \|     nnoremap <buffer> <CR> <C-]>
             \| endif
 
