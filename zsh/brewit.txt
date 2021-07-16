@@ -22,3 +22,7 @@ clang-format
 glances
 cmake
 boost
+imagemagick
+lua
+fzf
+opencc

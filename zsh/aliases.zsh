@@ -175,21 +175,21 @@ setopt auto_pushd
 setopt pushd_ignore_dups
 setopt pushdminus
 
-alias -g ...='../..'
-alias -g ....='../../..'
-alias -g .....='../../../..'
-alias -g ......='../../../../..'
+alias -g ..2='../..'
+alias -g ..3='../../..'
+alias -g ..4='../../../..'
+alias -g ..5='../../../../..'
 
 alias -- -='cd -'
-alias 1='cd -'
-alias 2='cd -2'
-alias 3='cd -3'
-alias 4='cd -4'
-alias 5='cd -5'
-alias 6='cd -6'
-alias 7='cd -7'
-alias 8='cd -8'
-alias 9='cd -9'
+alias -- -1='cd -'
+alias -- -2='cd -2'
+alias -- -3='cd -3'
+alias -- -4='cd -4'
+alias -- -5='cd -5'
+alias -- -6='cd -6'
+alias -- -7='cd -7'
+alias -- -8='cd -8'
+alias -- -9='cd -9'
 
 # function d () {
 #   if [[ -n $1 ]]; then
@@ -244,14 +244,13 @@ fi
 alias zshrc='${=EDITOR} ~/.zshrc' # Quick access to the ~/.zshrc file
 alias ez='exec zsh' # a not-so-good way to reload config
 
-alias grep='grep --color'
 alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
 
 alias t='tail -f'
 
 # Command line head / tail shortcuts
-alias -g H='| head'
-alias -g T='| tail'
+alias -g H='2>&1 | head'
+alias -g T='2>&1 | tail'
 alias -g G='| grep'
 alias -g L="2>&1 | less"
 alias -g M="2>&1 | most"
@@ -260,10 +259,8 @@ alias -g NE="2> /dev/null"
 alias -g NUL="> /dev/null 2>&1"
 alias -g P="2>&1| pygmentize -l pytb"
 alias -g X='| xargs'
-alias -g XG='| xargs grep'
 if has ag; then
     alias -g G='| ag'
-    alias -g XG='| xargs ag'
 fi
 
 # show files/directories by size

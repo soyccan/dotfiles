@@ -132,31 +132,25 @@ zinit for \
 
 
 ## Complex plugins
-# fzf (fuzzy searcher) and its intergration with fasd (recent dir jumper)
-# Binary release in archive, from GitHub-releases page.
-# After automatic unpacking it provides program "fzf".
-# as'program' will update $PATH
-# key bindings:
-# ^R : histoRy
-# ^T : files under directory Tree
-# ^G : Goto recent dir
+# fzf: fuzzy searcher
+# z.lua: Goto recent dir with fuzzy search
+# Aliases:
+#   zb : jump up to project root
+#   zb <prefix> : jump up to directory starting with <prefix>
+# Key bindings:
+#   ^R : histoRy
+#   ^T : files under directory Tree
+#   ^G : Goto recent dir
 zinit wait lucid for \
     from"gh-r" sbin"fzf" \
         @junegunn/fzf-bin \
     multisrc'shell/completion.zsh shell/key-bindings.zsh' \
         @junegunn/fzf \
-    sbin'fasd' \
-    atload'eval "$(./fasd --init auto)"; zle -N _z; bindkey "^G" _z' \
-        @clvv/fasd
-
-# TODO: ^G key binding not working, and causes problem when target dir is a
-# python virtualenv
-_z() {
-    # from: https://github.com/junegunn/fzf/wiki/Examples#z
-    [ $# -gt 0 ] && fasd_cd -d "$*" && return
-    local dir
-    dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
-}
+    atload'eval "$(lua z.lua --init zsh)"
+           zlua-goto() { _zlua -I . }
+           zle -N zlua-goto
+           bindkey "^G" zlua-goto' \
+        @skywind3000/z.lua
 
 
 ## Examples from README
@@ -201,10 +195,22 @@ _z() {
 
 
 ## Binaries and Their Completions
+# lua
+if is_linux; then
+    zinit wait lucid for \
+        as'command' extract sbin'lua54 -> lua' \
+        https://downloads.sourceforge.net/project/luabinaries/5.4.2/Tools%20Executables/lua-5.4.2_Linux54_64_bin.tar.gz
+
+elif is_macos; then
+    zinit wait lucid for \
+        as'command' extract sbin'lua53 -> lua' \
+        https://downloads.sourceforge.net/project/luabinaries/5.3.5/Tools%20Executables/lua-5.3.5_MacOS1013_bin.tar.gz
+fi
+
 # pastel: Color generater
-zinit wait lucid for \
-    from"gh-r" sbin"**/pastel" \
-        @sharkdp/pastel
+# zinit wait lucid for \
+#     from"gh-r" sbin"**/pastel" \
+#         @sharkdp/pastel
 
 # tmux: Terminal multiplexer
 if is_linux; then
@@ -301,15 +307,15 @@ zinit wait lucid for \
 
 # yank: Yank terminal output to clipboard
 # Usage: some_commond | yank
-zinit wait lucid for \
-    sbin"yank" make \
-        @mptre/yank
+# zinit wait lucid for \
+#     sbin"yank" make \
+#         @mptre/yank
 
 # Vramstep: Progress bar
-zinit wait lucid for \
-    sbin'src/vramsteg' \
-    atclone'cmake .' atpull'%atclone' make \
-        @psprint/vramsteg-zsh
+# zinit wait lucid for \
+#     sbin'src/vramsteg' \
+#     atclone'cmake .' atpull'%atclone' make \
+#         @psprint/vramsteg-zsh
 
 # pyenv: Simple Python version management
 zinit wait lucid for \
@@ -319,13 +325,13 @@ zinit wait lucid for \
         @pyenv/pyenv
 
 # asciinema: Terminal session recorder
-zinit wait lucid for \
-    atinit"export PYTHONPATH=$ZPFX/lib/python3.7/site-packages/" \
-    atclone"PYTHONPATH=$ZPFX/lib/python3.7/site-packages/ \
-    python3 setup.py --quiet install --prefix $ZPFX" \
-    atpull'%atclone' \
-    sbin"$ZPFX/bin/asciinema" \
-        @asciinema/asciinema.git
+# zinit wait lucid for \
+#     atinit"export PYTHONPATH=$ZPFX/lib/python3.7/site-packages/" \
+#     atclone"PYTHONPATH=$ZPFX/lib/python3.7/site-packages/ \
+#             python3 setup.py --quiet install --prefix $ZPFX" \
+#     atpull'%atclone' \
+#     sbin"$ZPFX/bin/asciinema" \
+#         @asciinema/asciinema.git
 
 # Whenever a manual build without Github repo is needed, zdharma/null serves as
 # a placeholder
@@ -467,71 +473,3 @@ zinit wait lucid for \
 
 ### end gallery
 
-return
-
-
-
-
-
-
-# antibody use oh-my-zsh
-
-# theme
-# antibody bundle romkatv/powerlevel10k powerlevel10k
-
-# fish-like features
-# antibody bundle zsh-users/zsh-autosuggestions
-# antibody bundle zsh-users/zsh-completions
-# antibody bundle zsh-users/zsh-history-substring-search
-# antibody bundle zsh-users/zsh-syntax-highlighting
-
-# completions
-antibody bundle django
-antibody bundle docker
-antibody bundle fd
-antibody bundle heroku
-antibody bundle httpie # coloured curl
-antibody bundle pip
-antibody bundle ripgrep # alternative to grep / ag / ack
-antibody bundle rvm
-
-# aliases
-antibody bundle brew # bubu = brew update|outdated|upgrade|cleanup
-antibody bundle docker-compose # dcb, dcup
-antibody bundle firewalld # fw / fwr / fwp / fwrp / fwl
-antibody bundle nmap # nmap_open_ports ...
-# antibody bundle git # ga, gc, gcl, gl, gp, ...
-antibody bundle pipenv # pi = pipenv install
-antibody bundle pylint # pylint-quick
-antibody bundle rsync # rsync-copy / rsync-move / rsync-update / rsync-synchronize
-antibody bundle systemd # sc-xxxx
-
-# functions
-antibody bundle cp # cpv = rsync -pogbr -hhh --backup-dir=/tmp/rsync -e /dev/null --progress
-antibody bundle encode64 # e64 / d64
-# antibody bundle extract # extract or x
-# antibody bundle colorize # ccat
-# antibody bundle jsontools # pp_json / is_json / urlencode_json / urldecode_json
-antibody bundle systemadmin # ping / mkdir / clr / path / pscpu / psmem...
-# antibody bundle vscode
-antibody bundle urltools # urlencode / urldecode
-# antibody bundle osx
-# antibody bundle xcode # xcb
-
-# plugins
-# antibody bundle autoenv
-# antibody bundle colored-man-pages
-# antibody bundle fasd # fuzzy searcher
-# antibody bundle fzf # fuzzy searcher
-antibody bundle globalias # expand alias to original commands
-antibody bundle pyenv # auto setup environment for pyenv
-# antibody bundle transfer # transfer.sh
-antibody bundle zsh_reload # src
-# antibody bundle z # easy jump
-
-# antibody bundle marlonrichert/zsh-autocomplete
-antibody bundle andrewferrier/fzf-z
-
-# disabled due to heavy start-up impact
-# command-not-found
-# thefuck
