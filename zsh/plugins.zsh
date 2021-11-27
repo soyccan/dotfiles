@@ -195,12 +195,12 @@ zinit wait lucid for \
 
 ## Binaries and Their Completions
 # lua
-if is_linux; then
+if is_linux && ! has lua; then
     zinit wait lucid for \
         as'command' extract sbin'lua54 -> lua' \
         https://downloads.sourceforge.net/project/luabinaries/5.4.2/Tools%20Executables/lua-5.4.2_Linux54_64_bin.tar.gz
 
-elif is_macos; then
+elif is_macos && ! has lua; then
     zinit wait lucid for \
         as'command' extract sbin'lua53 -> lua' \
         https://downloads.sourceforge.net/project/luabinaries/5.3.5/Tools%20Executables/lua-5.3.5_MacOS1013_bin.tar.gz
@@ -219,12 +219,12 @@ fi
 # fi
 
 # NeoVim: Modern editor based on VIM
-if is_linux; then
+if is_linux && ! has nvim; then
     zinit wait lucid for \
         from"gh-r" bpick"nvim-linux64.tar.gz" sbin"*/bin/nvim" \
             @neovim/neovim
 
-elif is_macos; then
+elif is_macos && ! has nvim; then
     zinit wait lucid for \
         from"gh-r" bpick"nvim-macos.tar.gz" sbin"*/bin/nvim" \
             @neovim/neovim
