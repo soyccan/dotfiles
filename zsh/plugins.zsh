@@ -91,7 +91,6 @@ zinit wait lucid for \
     @OMZP::systemadmin \
     @OMZP::systemd \
     @OMZP::urltools \
-    @OMZP::zsh_reload \
     \
     atload"unalias grv; alias gc='git commit -m'" \
         @OMZP::git
@@ -213,11 +212,11 @@ fi
 #         @sharkdp/pastel
 
 # tmux: Terminal multiplexer
-if is_linux; then
-    zinit wait lucid for \
-        from"gh-r" bpick"tmux-3.1b-x86_64.AppImage" sbin"tmux* -> tmux" \
-            @tmux/tmux
-fi
+# if is_linux; then
+#     zinit wait lucid for \
+#         from"gh-r" bpick"tmux-3.1b-x86_64.AppImage" sbin"tmux* -> tmux" \
+#             @tmux/tmux
+# fi
 
 # NeoVim: Modern editor based on VIM
 if is_linux; then
