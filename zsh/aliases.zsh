@@ -5,6 +5,7 @@ alias rm='rm -i' # --interactive=always
 mdcd() {
     mkdir -pv "$@" && cd "$@"
 }
+alias src='exec zsh' # reload shell
 
 alias df='df -h' # --human-readable
 alias du='du -h'  # --human-readable --apparent-size(-A) ; -A connot be used in macOS

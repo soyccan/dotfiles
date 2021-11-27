@@ -33,7 +33,7 @@ zinit for @zinit-zsh/z-a-bin-gem-node
 # z-a-man: A Zsh-Zinit extension that automatically generates man pages out of
 # plugin README.md files
 # command: `zman`
-zinit for @zinit-zsh/z-a-man
+# zinit for @zinit-zsh/z-a-man
 
 # z-a-test: Specify modifier 'test' to run 'make test'
 # zinit for zinit-zsh/z-a-test
@@ -212,11 +212,11 @@ fi
 #         @sharkdp/pastel
 
 # tmux: Terminal multiplexer
-# if is_linux; then
-#     zinit wait lucid for \
-#         from"gh-r" bpick"tmux-3.1b-x86_64.AppImage" sbin"tmux* -> tmux" \
-#             @tmux/tmux
-# fi
+if is_linux && ! has tmux; then
+    zinit wait lucid for \
+        from"gh-r" bpick"tmux-3.1b-x86_64.AppImage" sbin"tmux* -> tmux" \
+            @tmux/tmux
+fi
 
 # NeoVim: Modern editor based on VIM
 if is_linux && ! has nvim; then
@@ -261,7 +261,7 @@ zinit wait lucid for \
 
 # exa: Replacement for ls
 zinit wait lucid for \
-    from"gh-r" sbin"exa* -> exa" id-as"ogham/exa-bin" \
+    from"gh-r" sbin"**/exa -> exa" id-as"ogham/exa-bin" \
         @ogham/exa \
     as"completion" cp"completions/completions.zsh -> _exa" \
         @ogham/exa
@@ -317,11 +317,11 @@ zinit wait lucid for \
 #         @psprint/vramsteg-zsh
 
 # pyenv: Simple Python version management
-zinit wait lucid for \
-    atclone'PYENV_ROOT="$PWD" ./libexec/pyenv init - > zpyenv.zsh' \
-    atinit'export PYENV_ROOT="$PWD"' atpull"%atclone" \
-    sbin'bin/pyenv' src"zpyenv.zsh" nocompile'!' \
-        @pyenv/pyenv
+# zinit wait lucid for \
+#     atclone'PYENV_ROOT="$PWD" ./libexec/pyenv init - > zpyenv.zsh' \
+#     atinit'export PYENV_ROOT="$PWD"' atpull"%atclone" \
+#     sbin'bin/pyenv' src"zpyenv.zsh" nocompile'!' \
+#         @pyenv/pyenv
 
 # asciinema: Terminal session recorder
 # zinit wait lucid for \
