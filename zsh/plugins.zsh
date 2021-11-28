@@ -194,6 +194,10 @@ zinit wait lucid for \
 
 
 ## Binaries and Their Completions
+# lazygit
+zinit wait lucid for \
+    from'gh-r' sbin'lazygit' \
+        @jesseduffield/lazygit
 # lua
 if is_linux && ! has lua; then
     zinit wait lucid for \

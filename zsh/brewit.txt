@@ -26,3 +26,4 @@ imagemagick
 lua
 fzf
 opencc
+fuse-zip

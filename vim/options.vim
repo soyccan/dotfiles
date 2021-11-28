@@ -46,7 +46,9 @@ set expandtab " use space instead of tab; Ctrl-V + Tab to enter real tab
 set nofixendofline " no LF at file end
 set virtualedit=block " virtual edit in Visual-block mode
 
-set autochdir
+" When this option is on some plugins may not work
+" set autochdir
+
 set autoread " auto reload when changed
 
 " we don't use ctags but gtags, which is of cscope-like interface

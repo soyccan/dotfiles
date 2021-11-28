@@ -107,6 +107,8 @@ Plug 'ludovicchabant/vim-gutentags'
 "" Others
 " key mapping cheatsheet
 Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
+" Git wrapper
+Plug 'tpope/vim-fugitive'
 " highlight git difference
 if has('nvim') || has('patch-8.0.902')
     Plug 'mhinz/vim-signify'
@@ -129,6 +131,7 @@ call plug#end()
 runtime mapping.vim
 runtime options.vim
 runtime looking.vim
+runtime netrw.vim
 for plugin in g:plugs_order
     execute 'runtime conf.d/' . plugin . '.vim'
 endfor

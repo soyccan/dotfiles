@@ -332,3 +332,7 @@ if is_macos && [ -e '/Applications/Turbo Boost Switcher.app' ]; then
         sudo kextunload -b com.rugarciap.DisableTurboBoost
     }
 fi
+
+size-tree() {
+    du "$@" | tail -r | awk '{print $0 ":" $1}' | sed 's;[^/]*/;|____;g;s;____|; |;g'
+}

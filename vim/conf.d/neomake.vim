@@ -23,13 +23,13 @@
 "     let g:neomake_<ft>_<makername>_maker = {}
 "     let g:neomake_<ft>_enabled_makers = []
 
-" python3 maker
-" let g:neomake_python_python3_maker = neomake#makers#ft#python#python()
-
 let g:neomake_python_enabled_makers = neomake#makers#ft#python#EnabledMakers()
 " remove pydocstyle
 call filter(g:neomake_python_enabled_makers, 'v:val != "pydocstyle"')
-
+" python3
+let g:neomake_python_python_maker = neomake#makers#ft#python#python()
+let g:neomake_python_python_maker['exe'] = 'python3'
+" pylint
 let g:neomake_python_pylint_maker = neomake#makers#ft#python#pylint()
 let g:neomake_python_pylint_maker['args'] += ['--errors-only']
 

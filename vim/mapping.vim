@@ -113,8 +113,6 @@ vnoremap < <gv
 autocmd BufEnter *
             \  if &modifiable
             \|     nnoremap <buffer> <CR> o<ESC>
-            \| else
-            \|     nnoremap <buffer> <CR> <C-]>
             \| endif
 
 " Backspace: jump back
@@ -139,6 +137,12 @@ noremap <leader>nh :<C-U>noh<CR>
 " Alternate file (source / header)
 " inspired by a.vim
 noremap <leader>a :<C-U>AlternateFile<CR>
+
+" BRowse files under same dir as current file
+noremap <leader>br :<C-U>edit %:p:h<CR>
+
+" Browse nvim ConFig dir
+noremap <leader>cf :<C-U>execute 'edit ' . stdpath('config')<CR>
 
 " Search
 " Turn off highlight after cursor moves
