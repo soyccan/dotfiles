@@ -87,7 +87,6 @@ zinit wait lucid for \
     @OMZP::colored-man-pages \
     @OMZP::command-not-found \
     @OMZP::encode64 \
-    @OMZP::pipenv \
     @OMZP::systemadmin \
     @OMZP::systemd \
     @OMZP::urltools \

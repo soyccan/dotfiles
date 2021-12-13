@@ -27,3 +27,5 @@ lua
 fzf
 opencc
 fuse-zip
+libomp
+llvm
