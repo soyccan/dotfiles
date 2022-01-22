@@ -28,7 +28,7 @@
 
 # z-a-bin-gem-node: Add the support of ice modifiers like sbin, fbin, etc.
 # so that binaries installed by Zinit requires no entry in $PATH
-zinit for @zinit-zsh/z-a-bin-gem-node
+zinit for @z-shell/z-a-bin-gem-node
 
 # z-a-man: A Zsh-Zinit extension that automatically generates man pages out of
 # plugin README.md files
@@ -50,7 +50,7 @@ zinit for @zinit-zsh/z-a-bin-gem-node
 # fish-like features
 zinit wait lucid for \
   atinit"zicompinit; zicdreplay" \
-      @zdharma/fast-syntax-highlighting \
+      @zsh-users/zsh-syntax-highlighting \
   atload"_zsh_autosuggest_start" \
       @zsh-users/zsh-autosuggestions \
   blockf atpull'zinit creinstall -q .' \
@@ -194,9 +194,9 @@ zinit wait lucid for \
 
 ## Binaries and Their Completions
 # lazygit
-zinit wait lucid for \
-    from'gh-r' sbin'lazygit' \
-        @jesseduffield/lazygit
+#zinit wait lucid for \
+#    from'gh-r' sbin'lazygit' \
+#        @jesseduffield/lazygit
 # lua
 if is_linux && ! has lua; then
     zinit wait lucid for \

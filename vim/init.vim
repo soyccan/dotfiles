@@ -80,9 +80,7 @@ Plug 'Shougo/echodoc.vim'
 " C++
 Plug 'octol/vim-cpp-enhanced-highlight'
 " Many languages
-" Plug 'sheerun/vim-polyglot'
-" Zinit config
-Plug 'zinit-zsh/zinit-vim-syntax'
+Plug 'sheerun/vim-polyglot'
 " Powershell
 Plug 'zigford/vim-powershell'
 
