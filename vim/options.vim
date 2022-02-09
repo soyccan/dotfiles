@@ -88,10 +88,10 @@ let g:is_bash = 1
 
 " Clipboard for mac
 " This breaks block-mode paste
-" set clipboard=unnamed
+set clipboard=unnamed
 
 " Mouse
-" set mouse=a
+set mouse=a
 " set ttymouse=xterm
 
 " DANGEROUS!!!
