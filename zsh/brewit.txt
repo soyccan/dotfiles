@@ -29,3 +29,5 @@ opencc
 fuse-zip
 libomp
 llvm
+binwalk
+gcc

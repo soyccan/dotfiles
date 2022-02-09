@@ -129,7 +129,7 @@ source "$HOME/.zi/bin/zi.zsh"
 autoload -Uz _zi
 (( ${+_comps} )) && _comps[zi]=_zi
 # examples here -> https://z-shell.pages.dev/docs/gallery/collection
-zicompinit # <- https://z-shell.pages.dev/docs/gallery/collection#minimal
+# zicompinit # <- https://z-shell.pages.dev/docs/gallery/collection#minimal
 ### End of Zi installer chunk
 
 # Set background color
