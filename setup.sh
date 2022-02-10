@@ -26,15 +26,14 @@ remove_with_backup() {
 ln_safe() {
     target="$1"
     link="$2"
-    log Linking "$link" -> "$target" to link
     mkdir -p "$(dirname "$link")"
     if [[ -L "$link" ]]; then
         # if $link is a symbolic link, replace it
-        ln -svf "$target" "$link"
+        ln -svnf "$target" "$link"
     else
         # otherwise, make a backup before overwriting
         remove_with_backup "$link"
-        ln -svi "$target" "$link"
+        ln -svni "$target" "$link"
     fi
 }
 
@@ -68,7 +67,7 @@ setup_zsh() {
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh-bin/master/install)"
     fi
 
-    if [[ -x /bin/zsh ]]; then
+    if sudo -l && [[ -x /bin/zsh ]]; then
         log Setting default shell to ZSH
         sudo usermod "$USER" -s /bin/zsh
     fi
@@ -79,7 +78,7 @@ setup_zsh() {
     ln_safe "$dotfiles/zsh/zshrc" "$HOME/.zshrc"
     ln_safe "$dotfiles/zsh" "$HOME/.config/zsh"
 
-    # powerlever10k
+    # powerlevel10k
     ln_safe "$dotfiles/zsh/p10k.zsh" "$HOME/.p10k.zsh"
 }
 
