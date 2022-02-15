@@ -28,3 +28,4 @@
     safecrlf = warn
 
     filemode = false
+	pager = less -R

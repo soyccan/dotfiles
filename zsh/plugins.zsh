@@ -8,7 +8,7 @@
 #          (sometimes unnecessary as can be auto-detected)
 #
 # Modern for syntax:
-#   zi <modifiers> for \
+#   zi <modifiers> depth"1" for \
 #     <modifiers A> @<plugin A> \
 #     <modifiers B> @<plugin B> ...
 #
@@ -28,7 +28,7 @@
 
 # z-a-bin-gem-node: Add the support of ice modifiers like sbin, fbin, etc.
 # so that binaries installed by zi requires no entry in $PATH
-zi for @z-shell/z-a-bin-gem-node
+zi depth"1" for @z-shell/z-a-bin-gem-node
 
 # z-a-man: A Zsh-zi extension that automatically generates man pages out of
 # plugin README.md files
@@ -41,7 +41,7 @@ zi for @z-shell/z-a-bin-gem-node
 # zi for zi-zsh/z-a-submods
 
 # A ZI Annex (extension) that downloads files and applies patches.
-zi for @z-shell/z-a-patch-dl
+zi depth"1" for @z-shell/z-a-patch-dl
 
 # TUI
 # zi for zdharma/zui
@@ -52,7 +52,7 @@ zi for @z-shell/z-a-patch-dl
 # fish-like features
 # https://z-shell.pages.dev/docs/gallery/collection#minimal
 # F-Sy-H: fast-syntax-highlighting
-zi wait lucid for \
+zi wait lucid depth"1" for \
   atinit"zicompinit; zicdreplay" \
     @z-shell/F-Sy-H \
   atload"_zsh_autosuggest_start" \
@@ -84,7 +84,7 @@ zi wait lucid for \
 # spectrum.zsh
 # termsupport.zsh
 # theme-and-appearance.zsh
-zi wait lucid for \
+zi wait lucid depth"1" for \
     @OMZL::completion.zsh \
     @OMZL::git.zsh \
     \
@@ -100,7 +100,7 @@ zi wait lucid for \
 
 # following must not be delayed loading
 # if so, history.zsh will cause history of previous sessions unloaded
-zi for \
+zi depth"1" for \
     @OMZL::history.zsh \
 
 
@@ -112,13 +112,13 @@ setopt promptsubst
 # zi light sindresorhus/pure
 #
 # OMZ Theme
-# zi wait'!' lucid for \
+# zi wait'!' lucid depth"1" for \
 #     OMZL::prompt_info_functions.zsh \
 #     OMZT::gnzh
 #
 # Powerlevel10k
 # wait'!' to reset prompt after loaded
-zi for \
+zi depth"1" for \
     src"$HOME/.p10k.zsh" \
         @romkatv/powerlevel10k
 
@@ -143,12 +143,12 @@ zi for \
 #   ^R : histoRy
 #   ^T : files under directory Tree
 #   ^G : Goto recent dir
-zi wait lucid for \
+zi wait lucid depth"1" for \
     pack"bgn-binary+keys" \
         @fzf \
     pick"z.sh" \
         @rupa/z
-# zi wait lucid for \
+# zi wait lucid depth"1" for \
 #     from"gh-r" sbin"fzf" \
 #         @junegunn/fzf-bin \
 #     multisrc'shell/completion.zsh shell/key-bindings.zsh' \
@@ -190,7 +190,7 @@ zi wait lucid for \
 # For GNU ls (the binaries can be gls, gdircolors, e.g. on OS X when installing the
 # coreutils package from Homebrew; you can also use https://github.com/ogham/exa)
 # exa also uses LS_COLORS
-# zi wait"0c" lucid for \
+# zi wait"0c" lucid depth"1" for \
 #     reset \
 #     atclone"local P=${${(M)OSTYPE:#*darwin*}:+g}
 #             \${P}sed -i \
@@ -203,76 +203,76 @@ zi wait lucid for \
 
 ## Binaries and Their Completions
 # lazygit
-#zi wait lucid for \
+#zi wait lucid depth"1" for \
 #    from'gh-r' sbin'lazygit' \
 #        @jesseduffield/lazygit
 # lua
 # if is_linux && ! has lua; then
-#     zi wait lucid for \
+#     zi wait lucid depth"1" for \
 #         as'command' extract sbin'lua54 -> lua' \
 #         https://downloads.sourceforge.net/project/luabinaries/5.4.2/Tools%20Executables/lua-5.4.2_Linux54_64_bin.tar.gz
 #
 # elif is_macos && ! has lua; then
-#     zi wait lucid for \
+#     zi wait lucid depth"1" for \
 #         as'command' extract sbin'lua53 -> lua' \
 #         https://downloads.sourceforge.net/project/luabinaries/5.3.5/Tools%20Executables/lua-5.3.5_MacOS1013_bin.tar.gz
 # fi
 
 # pastel: Color generater
-# zi wait lucid for \
+# zi wait lucid depth"1" for \
 #     from"gh-r" sbin"**/pastel" \
 #         @sharkdp/pastel
 
 # tmux: Terminal multiplexer
 # if is_linux && ! has tmux; then
-#     zi wait lucid for \
+#     zi wait lucid depth"1" for \
 #         from"gh-r" bpick"tmux-3.1b-x86_64.AppImage" sbin"tmux* -> tmux" \
 #             @tmux/tmux
 # fi
 
 # NeoVim: Modern editor based on VIM
 # if is_linux && ! has nvim; then
-#     zi wait lucid for \
+#     zi wait lucid depth"1" for \
 #         from"gh-r" bpick"nvim-linux64.tar.gz" sbin"*/bin/nvim" \
 #             @neovim/neovim
 #
 # elif is_macos && ! has nvim; then
-#     zi wait lucid for \
+#     zi wait lucid depth"1" for \
 #         from"gh-r" bpick"nvim-macos.tar.gz" sbin"*/bin/nvim" \
 #             @neovim/neovim
 # fi
 
 # shellcheck: Shell script linter
-zi wait lucid for \
+zi wait lucid depth"1" for \
     from"gh-r" sbin"**/shellcheck" \
         @koalaman/shellcheck
 
 # ag: A fast alternative to grep
 # No GitHub release exist
-zi wait lucid for \
+zi wait lucid depth"1" for \
     as"completion" \
         @ggreer/the_silver_searcher
 
 # rg: A fast alternative to grep
 # along with completion
-zi wait lucid for \
+zi wait lucid depth"1" for \
     from"gh-r" sbin"**/rg" \
         @BurntSushi/ripgrep \
 
 # fd: A simple, fast and user-friendly alternative to 'find'
-zi wait lucid for \
+zi wait lucid depth"1" for \
     from"gh-r" sbin"**/fd" id-as"sharkdp/fd-bin" \
         @sharkdp/fd \
     as"completion" \
         @sharkdp/fd
 
 # bat: A cat(1) clone with wings
-# zi wait lucid for \
+# zi wait lucid depth"1" for \
 #     from"gh-r" sbin"**/bat" \
 #         @sharkdp/bat
 
 # exa: Replacement for ls
-zi wait lucid for \
+zi wait lucid depth"1" for \
     from"gh-r" sbin"**/exa -> exa" id-as"ogham/exa-bin" \
         @ogham/exa \
     as"completion" cp"completions/completions.zsh -> _exa" \
@@ -282,7 +282,7 @@ zi wait lucid for \
 # Docker should be install by system
 # and docker-compose is usually bundled with Docker
 # so we do not install them here
-# zi wait lucid for \
+# zi wait lucid depth"1" for \
 #     as"completion" \
 #         @docker/compose \
 #         @docker/cli
@@ -293,13 +293,13 @@ zi wait lucid for \
 # zi pick"misc/quitcd/quitcd.zsh" sbin make for jarun/nnn
 
 # Build VIM from source
-# zi wait lucid for \
+# zi wait lucid depth"1" for \
 #     as"program" atclone"rm -f src/auto/config.cache; ./configure" \
 #     atpull"%atclone" make pick"src/vim" \
 #     vim/vim
 
 # direnv: Dir-specific env vars, set/unset as dir changes
-# zi wait lucid for \
+# zi wait lucid depth"1" for \
 #     make'!' atclone'./direnv hook zsh > zhook.zsh' \
 #     atpull'%atclone' src"zhook.zsh" \
 #     sbin"direnv* -> direnv" \
@@ -307,36 +307,36 @@ zi wait lucid for \
 
 # shfmt: Format shell programs
 # gosh: A proof-of-concept shell
-# zi wait lucid for \
+# zi wait lucid depth"1" for \
 #     from"gh-r" sbin"shfmt* -> shfmt" \
 #         @mvdan/sh
 
 # gotcha: A simple tool that grabs Go packages
-# zi wait lucid for \
+# zi wait lucid depth"1" for \
 #     from"gh-r" as"program" mv"gotcha_* -> gotcha" \
 #     b4b4r07/gotcha
 
 # yank: Yank terminal output to clipboard
 # Usage: some_commond | yank
-# zi wait lucid for \
+# zi wait lucid depth"1" for \
 #     sbin"yank" make \
 #         @mptre/yank
 
 # Vramstep: Progress bar
-# zi wait lucid for \
+# zi wait lucid depth"1" for \
 #     sbin'src/vramsteg' \
 #     atclone'cmake .' atpull'%atclone' make \
 #         @psprint/vramsteg-zsh
 
 # pyenv: Simple Python version management
-# zi wait lucid for \
+# zi wait lucid depth"1" for \
 #     atclone'PYENV_ROOT="$PWD" ./libexec/pyenv init - > zpyenv.zsh' \
 #     atinit'export PYENV_ROOT="$PWD"' atpull"%atclone" \
 #     sbin'bin/pyenv' src"zpyenv.zsh" nocompile'!' \
 #         @pyenv/pyenv
 
 # asciinema: Terminal session recorder
-# zi wait lucid for \
+# zi wait lucid depth"1" for \
 #     atinit"export PYTHONPATH=$ZPFX/lib/python3.7/site-packages/" \
 #     atclone"PYTHONPATH=$ZPFX/lib/python3.7/site-packages/ \
 #             python3 setup.py --quiet install --prefix $ZPFX" \
@@ -348,7 +348,7 @@ zi wait lucid for \
 # a placeholder
 
 # SDKMAN! the Software Development Kit Manager
-# zi wait lucid for \
+# zi wait lucid depth"1" for \
 #     as"program" pick"$ZPFX/sdkman/bin/sdk" id-as'sdkman' run-atpull \
 #     atclone"wget https://get.sdkman.io/?rcupdate=false -O scr.sh; SDKMAN_DIR=$ZPFX/sdkman bash scr.sh" \
 #     atpull"SDKMAN_DIR=$ZPFX/sdkman sdk selfupdate" \
@@ -356,7 +356,7 @@ zi wait lucid for \
 #     zdharma/null
 
 # Installation of Rust compiler environment via the z-a-rust annex
-# zi wait"1" lucid for \
+# zi wait"1" lucid depth"1" for \
 #     id-as"rust" as"null" sbin"bin/*" rustup \
 #     atload="[[ ! -f ${zi[COMPLETIONS_DIR]}/_cargo ]] && zi creinstall -q rust; \
 #             export CARGO_HOME=\$PWD; export RUSTUP_HOME=\$PWD/rustup" \
