@@ -32,13 +32,17 @@ let g:onedark_termcolors = 256
 let g:onedark_terminal_italics = 1
 let g:airline_theme='onedark'
 
-colorscheme onedark
-" colorscheme night-owl
-" colorscheme tender
-" colorscheme minimalist
-" colorscheme material-theme
-" colorscheme PaperColor
-" colorscheme monokai
+try
+    colorscheme onedark
+    " colorscheme night-owl
+    " colorscheme tender
+    " colorscheme minimalist
+    " colorscheme material-theme
+    " colorscheme PaperColor
+    " colorscheme monokai
+catch
+    colorscheme default
+endtry
 
 highlight! link CursorLine Visual
 highlight! link ColorColumn Visual

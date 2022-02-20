@@ -1,3 +1,7 @@
+" TODO:
+" - has_key(g:plugs, ...) determines if a plugin is "plugged",
+"   but we want to check if "loaded"
+"   (a plugin may be plugged but unloaded before running :PlugInstall)
 let mapleader = ' '
 
 " w : Save
@@ -139,7 +143,7 @@ noremap <leader>nh :<C-U>noh<CR>
 noremap <leader>a :<C-U>AlternateFile<CR>
 
 " BRowse files under same dir as current file
-noremap <leader>br :<C-U>edit %:p:h<CR>
+noremap <leader>br :<C-U>Explore<CR>
 
 " Browse nvim ConFig dir
 noremap <leader>cf :<C-U>execute 'edit ' . stdpath('config')<CR>
@@ -193,69 +197,81 @@ endfunction
 
 
 
+"""""""""
+" netrw "
+"""""""""
+" See stdpath('config')/after/ftplugin/netrw.vim
+
 
 """""""""""""""""
 " NERDCommenter "
 """""""""""""""""
-" <C-_> means Ctrl + / in terminal
-" but Ctrl + / is not recoginzed in gVim
-" [N]<leader>/ for commenting N lines
-map <leader>/ <Plug>NERDCommenterToggle
+if has_key(g:plugs, 'nerdcommenter')
+    " <C-_> means Ctrl + / in terminal
+    " but Ctrl + / is not recoginzed in gVim
+    " [N]<leader>/ for commenting N lines
+    map <leader>/ <Plug>NERDCommenterToggle
+endif
 
 
 """""""""""""""""""""
 " Tagbar / NerdTree "
 """""""""""""""""""""
-noremap <leader>tt :<C-U>TagbarToggle<CR>
-noremap <leader>tn :<C-U>NerdTreeToggle<CR>
+if has_key(g:plugs, 'tagbar')
+    noremap <leader>tt :<C-U>TagbarToggle<CR>
+endif
 
 
 """""""""""
 " LeaderF "
 """""""""""
-" TODO: use Denite instead
-" g:Lf_ShortcutF                                  *g:Lf_ShortcutF*
-"     Use this option to set the mapping of searching files command.
-"     e.g. let g:Lf_ShortcutF = '<C-P>'
-"     Default value is '<leader>f'.
-let g:Lf_ShortcutF = ''
-" g:Lf_ShortcutB                                  *g:Lf_ShortcutB*
-"     Use this option to set the mapping of searching buffers command.
-"     Default value is '<leader>b'.
-let g:Lf_ShortcutB = '<leader>fb'
-" find (f)iles
-" ^N stands for "now": open file in current working dir
-noremap <silent> <leader>ff :execute ':Leaderf file --no-ignore ' . asyncrun#get_root('%')<CR>
-map <C-n> <leader>ff
-" find functions, i.e. (s)ymbols
-noremap <leader>fs :<C-U>LeaderfFunction<CR>
-" find most (r)ecently used
-" ^P stands for "previous": open a file among previous edited ones
-" and we use MRU as our startpoint
-" note ^N is same as j originally
-noremap <leader>fr :<C-U>LeaderfMru<CR>
-map <C-p> <leader>fr
-" find (t)ags
-noremap <leader>ft :<C-U>LeaderfTag<CR>
-" search in files by r(g)
-" ^F is like "find in files" in modern editors
-" Note: ^F scrolls a page down originally, this masks it
-noremap <silent> <leader>fg :<C-U>let g:Lf_WorkingDirectory = asyncrun#get_root('%') \| Leaderf rg<CR>
-map <C-f> <leader>fg
+if has_key(g:plugs, 'LeaderF')
+    " TODO: use Denite instead
+    " g:Lf_ShortcutF                                  *g:Lf_ShortcutF*
+    "     Use this option to set the mapping of searching files command.
+    "     e.g. let g:Lf_ShortcutF = '<C-P>'
+    "     Default value is '<leader>f'.
+    let g:Lf_ShortcutF = ''
+    " g:Lf_ShortcutB                                  *g:Lf_ShortcutB*
+    "     Use this option to set the mapping of searching buffers command.
+    "     Default value is '<leader>b'.
+    let g:Lf_ShortcutB = '<leader>fb'
+    " find (f)iles
+    " ^N stands for "now": open file in current working dir
+    noremap <silent> <leader>ff :execute ':Leaderf file --no-ignore ' . asyncrun#get_root('%')<CR>
+    map <C-n> <leader>ff
+    " find functions, i.e. (s)ymbols
+    noremap <leader>fs :<C-U>LeaderfFunction<CR>
+    " find most (r)ecently used
+    " ^P stands for "previous": open a file among previous edited ones
+    " and we use MRU as our startpoint
+    " note ^N is same as j originally
+    noremap <leader>fr :<C-U>LeaderfMru<CR>
+    map <C-p> <leader>fr
+    " find (t)ags
+    noremap <leader>ft :<C-U>LeaderfTag<CR>
+    " search in files by r(g)
+    " ^F is like "find in files" in modern editors
+    " Note: ^F scrolls a page down originally, this masks it
+    noremap <silent> <leader>fg :<C-U>let g:Lf_WorkingDirectory = asyncrun#get_root('%') \| Leaderf rg<CR>
+    map <C-f> <leader>fg
+endif
 
 
 """""""""""
 " Airline "
 """""""""""
-map <leader>1 <Plug>AirlineSelectTab1
-map <leader>2 <Plug>AirlineSelectTab2
-map <leader>3 <Plug>AirlineSelectTab3
-map <leader>4 <Plug>AirlineSelectTab4
-map <leader>5 <Plug>AirlineSelectTab5
-map <leader>6 <Plug>AirlineSelectTab6
-map <leader>7 <Plug>AirlineSelectTab7
-map <leader>8 <Plug>AirlineSelectTab8
-map <leader>9 <Plug>AirlineSelectTab9
+if has_key(g:plugs, 'vim-airline')
+    map <leader>1 <Plug>AirlineSelectTab1
+    map <leader>2 <Plug>AirlineSelectTab2
+    map <leader>3 <Plug>AirlineSelectTab3
+    map <leader>4 <Plug>AirlineSelectTab4
+    map <leader>5 <Plug>AirlineSelectTab5
+    map <leader>6 <Plug>AirlineSelectTab6
+    map <leader>7 <Plug>AirlineSelectTab7
+    map <leader>8 <Plug>AirlineSelectTab8
+    map <leader>9 <Plug>AirlineSelectTab9
+endif
 
 
 """"""""""
@@ -323,87 +339,95 @@ map <leader>9 <Plug>AirlineSelectTab9
 """""""""""""""""
 " vim-which-key "
 """""""""""""""""
-nnoremap <silent> <leader> :<C-U>WhichKey '<Space>'<CR>
+if has_key(g:plugs, 'vim-which-key')
+    nnoremap <silent> <leader> :<C-U>WhichKey '<Space>'<CR>
+endif
 
 
 """""""""""""
 " NeoFormat "
 """""""""""""
-" Format and then save
-" nnoremap <leader>w :Neoformat \| w<CR>
-" Just format
-nnoremap <leader>fm :Neoformat<CR>
+if has_key(g:plugs, 'neoformat')
+    " Format and then save
+    " nnoremap <leader>w :Neoformat \| w<CR>
+    " Just format
+    nnoremap <leader>fm :Neoformat<CR>
+endif
+
 
 """""""""""
 " NeoMake "
 """""""""""
-nnoremap <leader>nm :Neomake<CR>
+if has_key(g:plugs, 'neomake')
+    nnoremap <leader>nm :Neomake<CR>
+endif
 
 
 """"""""""""""
 " easymotion "
 """"""""""""""
-" function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
-"   num_strokes:
-"     The number of input characters. Currently provide 1, 2, or -1.
-"     '-1' means no limit.
-"   visualmode:
-"     Vim script couldn't detect the function is called in visual mode by
-"     mode(1), so tell whether it is in visual mode by argument explicitly
-"   direction:
-"     0 -> forward
-"     1 -> backward
-"     2 -> bi-direction (handle forward & backward at the same time) }}}
-"
-" function! EasyMotion#User(pattern, visualmode, direction, inclusive, ...) " {{{
-"   inclusive:
-"     usually 0
-"     'f' motion is inclusive but 'F' motion is exclusive
-"
-" function! EasyMotion#OverwinF(num_strokes) " {{{
-"   " no keeping last search pattern when <Plug>(easymotion-next) is invoked
-"
-" function! EasyMotion#NextPrevious(visualmode, direction) " {{{
+if has_key(g:plugs, 'vim-easymotion')
+    " function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
+    "   num_strokes:
+    "     The number of input characters. Currently provide 1, 2, or -1.
+    "     '-1' means no limit.
+    "   visualmode:
+    "     Vim script couldn't detect the function is called in visual mode by
+    "     mode(1), so tell whether it is in visual mode by argument explicitly
+    "   direction:
+    "     0 -> forward
+    "     1 -> backward
+    "     2 -> bi-direction (handle forward & backward at the same time) }}}
+    "
+    " function! EasyMotion#User(pattern, visualmode, direction, inclusive, ...) " {{{
+    "   inclusive:
+    "     usually 0
+    "     'f' motion is inclusive but 'F' motion is exclusive
+    "
+    " function! EasyMotion#OverwinF(num_strokes) " {{{
+    "   " no keeping last search pattern when <Plug>(easymotion-next) is invoked
+    "
+    " function! EasyMotion#NextPrevious(visualmode, direction) " {{{
 
-" Move around
-map <Leader>h <Plug>(easymotion-linebackward)
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
-map <Leader>l <Plug>(easymotion-lineforward)
+    " Move around
+    map <Leader>h <Plug>(easymotion-linebackward)
+    map <Leader>j <Plug>(easymotion-j)
+    map <Leader>k <Plug>(easymotion-k)
+    map <Leader>l <Plug>(easymotion-lineforward)
 
-" 2-character search, cross window
-nmap <silent> s :<C-U>call EasyMotion#OverwinF(2)<CR>
-omap <silent> s :<C-U>call EasyMotion#OverwinF(2)<CR>
-vmap s <ESC>s
+    " 2-character search, cross window
+    nmap <silent> s :<C-U>call EasyMotion#OverwinF(2)<CR>
+    omap <silent> s :<C-U>call EasyMotion#OverwinF(2)<CR>
+    vmap s <ESC>s
 
-" N-character search
-nmap <silent> / :<C-U>call EasyMotion#S(-1,0,2)<CR>
-omap <silent> / :<C-U>call EasyMotion#S(-1,0,2)<CR>
-vmap / <ESC>/
+    " N-character search
+    nmap <silent> / :<C-U>call EasyMotion#S(-1,0,2)<CR>
+    omap <silent> / :<C-U>call EasyMotion#S(-1,0,2)<CR>
+    vmap / <ESC>/
 
-" These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
-" Without these mappings, `n` & `N` works fine. (These mappings just provide
-" different highlight method and have some other features )
-map n <Plug>(easymotion-next)
-map N <Plug>(easymotion-prev)
+    " These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
+    " Without these mappings, `n` & `N` works fine. (These mappings just provide
+    " different highlight method and have some other features )
+    map n <Plug>(easymotion-next)
+    map N <Plug>(easymotion-prev)
 
-" Search the word under cursor
-function! s:AddSearchHistory(re)
-    " code is from Easymotion.s:findMotion()
-    if g:EasyMotion_add_search_history
-        let history_re = substitute(a:re, '\\c\|\\C', '', '')
-        let @/ = history_re "For textobject: 'gn'
-        call histadd('search', history_re)
-    endif
-endfunction
-function! s:EasyMotionFindCursor()
-    let re = '\<' . expand('<cword>') . '\>'
-    call <SID>AddSearchHistory(re)
-    call EasyMotion#User(re, 0, 2, 0)
-    call EasyMotion#highlight#attach_autocmd()
-    call EasyMotion#highlight#add_highlight(re, g:EasyMotion_hl_move)
-endfunction
-nmap <silent> * :<C-U>call <SID>EasyMotionFindCursor()<CR><ESC>
-omap <silent> * :<C-U>call <SID>EasyMotionFindCursor()<CR><ESC>
-vmap * <ESC>*
-
+    " Search the word under cursor
+    function! s:AddSearchHistory(re)
+        " code is from Easymotion.s:findMotion()
+        if g:EasyMotion_add_search_history
+            let history_re = substitute(a:re, '\\c\|\\C', '', '')
+            let @/ = history_re "For textobject: 'gn'
+            call histadd('search', history_re)
+        endif
+    endfunction
+    function! s:EasyMotionFindCursor()
+        let re = '\<' . expand('<cword>') . '\>'
+        call <SID>AddSearchHistory(re)
+        call EasyMotion#User(re, 0, 2, 0)
+        call EasyMotion#highlight#attach_autocmd()
+        call EasyMotion#highlight#add_highlight(re, g:EasyMotion_hl_move)
+    endfunction
+    nmap <silent> * :<C-U>call <SID>EasyMotionFindCursor()<CR><ESC>
+    omap <silent> * :<C-U>call <SID>EasyMotionFindCursor()<CR><ESC>
+    vmap * <ESC>*
+endif

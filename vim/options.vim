@@ -3,9 +3,11 @@ set helplang=tw
 set nohlsearch incsearch
 set ignorecase smartcase
 
-" Shows the effects of a command incrementally, as you type
-" Works for |:substitute|, |:smagic|, |:snomagic|. |hl-Substitute|
-set inccommand=nosplit
+if has('nvim')
+    " Shows the effects of a command incrementally, as you type
+    " Works for |:substitute|, |:smagic|, |:snomagic|. |hl-Substitute|
+    set inccommand=nosplit
+endif
 
 set cursorline
 set number
@@ -65,6 +67,7 @@ set completeopt-=preview
 set timeoutlen=500
 
 " Ignore white space difference in diff mode
+set diffopt-=internal
 set diffopt+=iwhiteall
 
 " default updatetime 4000ms is not good for async update

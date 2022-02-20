@@ -4,15 +4,16 @@
 " Plugins "
 """""""""""
 " Install Vim-Plug
-let s:vimplugdir = stdpath('data') . '/site/autoload/plug.vim'
-if empty(glob(s:vimplugdir))
-    execute 'silent !curl -fLo ' . s:vimplugdir .
+let s:data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+let s:vimplug_dir = s:data_dir . '/autoload/plug.vim'
+if empty(glob(s:vimplug_dir))
+    silent execute '!curl -fLo ' . s:vimplug_dir .
           \ ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 " TODO: replace vim-plug with dein
-call plug#begin(stdpath('data') . '/plugged')
+call plug#begin()
 
 " required plugin for Vim8
 if !has('nvim')
