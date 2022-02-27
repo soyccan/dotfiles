@@ -23,7 +23,6 @@ alias wget='wget -c' # --continue; (--timestamping)
 alias hd='hexdump -C' # hex+ascii
 
 alias py='python3'
-alias python='python3'
 alias cl='clang'
 alias cll='clang++'
 

@@ -135,7 +135,7 @@ zi depth"1" for \
 
 ## Complex plugins
 # fzf: fuzzy searcher. https://github.com/z-shell/fzf
-# z: Goto recent dir with fuzzy search
+# fasd -d: List recently visited dir
 # Aliases:
 #   zb : jump up to project root
 #   zb <prefix> : jump up to directory starting with <prefix>
@@ -143,11 +143,29 @@ zi depth"1" for \
 #   ^R : histoRy
 #   ^T : files under directory Tree
 #   ^G : Goto recent dir
+fzf-fasd-widget() {
+  setopt localoptions pipefail no_aliases 2> /dev/null
+  local dir="$(fasd -Rdl | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --bind=ctrl-z:ignore $FZF_DEFAULT_OPTS $FZF_ALT_C_OPTS" $(__fzfcmd) +m)"
+  if [[ -z "$dir" ]]; then
+    zle redisplay
+    return 0
+  fi
+  zle push-line # Clear buffer. Auto-restored on next prompt.
+  BUFFER="cd -- ${(q)dir}"
+  zle accept-line
+  local ret=$?
+  unset dir # ensure this doesn't end up appearing in prompt expansion
+  zle reset-prompt
+  return $ret
+}
+zle -N fzf-fasd-widget
 zi wait lucid depth"1" for \
     pack"bgn-binary+keys" \
         @fzf \
     pick"z.sh" \
-        @rupa/z
+    atload'eval "$(fasd --init auto)"
+           bindkey "^G" fzf-fasd-widget' \
+        @clvv/fasd
 # zi wait lucid depth"1" for \
 #     from"gh-r" sbin"fzf" \
 #         @junegunn/fzf-bin \
