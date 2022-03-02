@@ -162,7 +162,7 @@ zle -N fzf-fasd-widget
 zi wait lucid depth"1" for \
     pack"bgn-binary+keys" \
         @fzf \
-    pick"z.sh" \
+    sbin"fasd" \
     atload'eval "$(fasd --init auto)"
            bindkey "^G" fzf-fasd-widget' \
         @clvv/fasd

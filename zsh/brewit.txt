@@ -31,3 +31,5 @@ libomp
 llvm
 binwalk
 gcc
+smartmontools
+gsmartcontrol
