@@ -134,29 +134,54 @@ zi depth"1" for \
 
 
 ## Complex plugins
+#
 # fzf: fuzzy searcher. https://github.com/z-shell/fzf
-# fasd -d: List recently visited dir
-# Aliases:
-#   zb : jump up to project root
-#   zb <prefix> : jump up to directory starting with <prefix>
-# Key bindings:
-#   ^R : histoRy
-#   ^T : files under directory Tree
-#   ^G : Goto recent dir
+# fasd: access recently used files/dirs. https://github.com/clvv/fasd
+#
+# Default key bindings by fzf:
+#   ^R : paste selected command histo(r)y into command line
+#   ^T : paste selected file under current dir (t)ree into command line
+#   ALT-C / <ESC>+c : (c)d into selected dir under current tree
+#
+# My key bindings:
+#   ^G : 1. (g)oto recent dir
+#        2. paste selected file from recently used files into command line
+#
 fzf-fasd-widget() {
+  # Reference: https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh
   setopt localoptions pipefail no_aliases 2> /dev/null
-  local dir="$(fasd -Rdl | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --bind=ctrl-z:ignore $FZF_DEFAULT_OPTS $FZF_ALT_C_OPTS" $(__fzfcmd) +m)"
-  if [[ -z "$dir" ]]; then
-    zle redisplay
-    return 0
+  if [[ -n "$LBUFFER" ]]; then
+    # if user have typed something when pressing ^G,
+    # select from recently used files and insert into command line
+    local item
+    local opts="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --bind=ctrl-z:ignore $FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS"
+    local file="$(fasd -Rlf | FZF_DEFAULT_OPTS="$opts" $(__fzfcmd) -m | while read item; do
+      echo -n "${(q)item} "
+    done)"
+    local ret=$?
+    if [[ -z "$file" ]]; then
+      zle redisplay
+      return 0
+    fi
+    LBUFFER="${LBUFFER}${file}"
+    zle reset-prompt
+    return $ret
+  else
+    # if cursor is at head when pressing ^G, select and goto recent dir
+    local opts="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --bind=ctrl-z:ignore $FZF_DEFAULT_OPTS $FZF_ALT_C_OPTS"
+    local dir="$(fasd -Rld | FZF_DEFAULT_OPTS="$opts" $(__fzfcmd) +m)"
+    if [[ -z "$dir" ]]; then
+      zle redisplay
+      return 0
+    fi
+    zle push-line # Clear buffer. Auto-restored on next prompt.
+    BUFFER="cd -- ${(q)dir}"
+    zle accept-line
+    local ret=$?
+    unset dir # ensure this doesn't end up appearing in prompt expansion
+    zle reset-prompt
+    return $ret
   fi
-  zle push-line # Clear buffer. Auto-restored on next prompt.
-  BUFFER="cd -- ${(q)dir}"
-  zle accept-line
-  local ret=$?
-  unset dir # ensure this doesn't end up appearing in prompt expansion
-  zle reset-prompt
-  return $ret
 }
 zle -N fzf-fasd-widget
 zi wait lucid depth"1" for \
@@ -285,9 +310,9 @@ zi wait lucid depth"1" for \
         @sharkdp/fd
 
 # bat: A cat(1) clone with wings
-# zi wait lucid depth"1" for \
-#     from"gh-r" sbin"**/bat" \
-#         @sharkdp/bat
+zi wait lucid depth"1" for \
+    from"gh-r" sbin"**/bat" \
+        @sharkdp/bat
 
 # exa: Replacement for ls
 zi wait lucid depth"1" for \
