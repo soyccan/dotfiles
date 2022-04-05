@@ -153,27 +153,34 @@ fzf-fasd-widget() {
   if [[ -n "$LBUFFER" ]]; then
     # if user have typed something when pressing ^G,
     # select from recently used files and insert into command line
+
     local item
     local opts="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --bind=ctrl-z:ignore $FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS"
-    local file="$(fasd -Rlf | FZF_DEFAULT_OPTS="$opts" $(__fzfcmd) -m | while read item; do
+    # -m : multiple select
+    local files="$(fasd -Rlf | FZF_DEFAULT_OPTS="$opts" $(__fzfcmd) -m | while read item; do
       echo -n "${(q)item} "
     done)"
     local ret=$?
-    if [[ -z "$file" ]]; then
+
+    if [[ -z "$files" ]]; then
       zle redisplay
       return 0
     fi
-    LBUFFER="${LBUFFER}${file}"
+
+    LBUFFER="${LBUFFER}${files}"
     zle reset-prompt
     return $ret
   else
     # if cursor is at head when pressing ^G, select and goto recent dir
+
     local opts="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --bind=ctrl-z:ignore $FZF_DEFAULT_OPTS $FZF_ALT_C_OPTS"
     local dir="$(fasd -Rld | FZF_DEFAULT_OPTS="$opts" $(__fzfcmd) +m)"
+
     if [[ -z "$dir" ]]; then
       zle redisplay
       return 0
     fi
+
     zle push-line # Clear buffer. Auto-restored on next prompt.
     BUFFER="cd -- ${(q)dir}"
     zle accept-line
@@ -183,12 +190,53 @@ fzf-fasd-widget() {
     return $ret
   fi
 }
+fzf-file-widget-smarter() {
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  if [[ "${LBUFFER[-1]}" = ' ' ]]; then
+    # fallback to cwd
+    local dir=./
+  else
+    # used last word in command line as target dir
+    # (z) splits string into words
+    # use eval to glob & expand pathname
+    eval "local dir=${${(z)LBUFFER}[-1]}"
+  fi
+
+  local cmd="${FZF_CTRL_T_COMMAND:-"command find -L '$dir' \
+    -mindepth 1 \
+    '(' \
+      -path '*/\\.*' \
+      -o -fstype sysfs \
+      -o -fstype devfs \
+      -o -fstype devtmpfs \
+      -o -fstype proc \
+    ')' \
+    -prune \
+    -o -type f -print \
+    -o -type d -print \
+    -o -type l -print 2> /dev/null"}"
+
+  local item
+  local opts="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --bind=ctrl-z:ignore $FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS"
+  # -m : multiple select
+  local files="$(eval "$cmd" | FZF_DEFAULT_OPTS="$opts" $(__fzfcmd) -m "$@" | while read item; do
+    echo -n "${(q)item#${dir}} "
+  done)"
+  local ret=$?
+
+  LBUFFER="${LBUFFER}${files}"
+  zle reset-prompt
+  return $ret
+}
 zle -N fzf-fasd-widget
+zle -N fzf-file-widget-smarter
 zi wait lucid depth"1" for \
     pack"bgn-binary+keys" \
         @fzf \
     sbin"fasd" \
     atload'eval "$(fasd --init auto)"
+           bindkey "^T" fzf-file-widget-smarter
            bindkey "^G" fzf-fasd-widget' \
         @clvv/fasd
 # zi wait lucid depth"1" for \

@@ -62,6 +62,8 @@ Plug 'majutsushi/tagbar'
 " fast motions
 " jump to a search match by one single key
 Plug 'easymotion/vim-easymotion'
+" jump to position where last time the file is edited
+Plug 'farmergreg/vim-lastplace'
 
 
 "" Looking
