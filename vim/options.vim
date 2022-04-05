@@ -53,9 +53,16 @@ set virtualedit=block " virtual edit in Visual-block mode
 
 set autoread " auto reload when changed
 
+" GNU GLOBAL: a source code tag system
+" global installs plugins:
+"   /usr/share/vim/addons/plugin/gtags-cscope.vim
+"   /usr/share/vim/addons/plugin/gtags.vim
 " we don't use ctags but gtags, which is of cscope-like interface
 " (gtags-cscope)
 set cscopetag
+set cscopeprg=gtags-cscope
+let GtagsCscope_Auto_Load = 1
+let GtagsCscope_Auto_Map = 1
 
 " Buffers
 " allow buffer to be hidden without being saved

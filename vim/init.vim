@@ -100,7 +100,7 @@ Plug 'deoplete-plugins/deoplete-jedi', { 'for': 'python' }
 " Completion / go-to-definition
 " Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --clangd-completer' }
 " tags manager
-Plug 'ludovicchabant/vim-gutentags'
+" Plug 'ludovicchabant/vim-gutentags'
 " auto connect cscope database and define :GscopeFind command
 " Plug 'skywind3000/gutentags_plus', { 'for': ['c', 'cpp'] }
 
@@ -135,6 +135,15 @@ runtime looking.vim
 runtime netrw.vim
 for plugin in g:plugs_order
     execute 'runtime conf.d/' . plugin . '.vim'
+endfor
+" GNU GLOBAL
+let s:global_plugins = [
+\  '/usr/share/vim/addons/plugin/gtags-cscope.vim',
+\  '/usr/share/vim/addons/plugin/gtags.vim']
+for plugin in s:global_plugins
+    if filereadable(plugin)
+        execute 'source ' . plugin
+    endif
 endfor
 
 
