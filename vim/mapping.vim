@@ -14,18 +14,18 @@ autocmd FileType vim nnoremap <buffer> w :<C-U>w \| source %<CR>
 autocmd FileType vim vnoremap <buffer> w <ESC>:<C-U>w \| source %<CR>
 
 
-" Z or <leader>bd : Close buffer while keeping window (my plugin)
-" q or <leader>qs : Smart quit (close buffer or window) (my plugin)
-" Q : Record macro
-" gQ : Ex mode (originally Q)
-" Notice: this masks ZZ and ZQ
-" TODO: this will quit vim when only main window and tagbar window exists
-"       even if there is other buffers
-noremap q :<C-U>SmartClose<CR>
-noremap Z :<C-U>Bclose<CR>
-noremap <leader>qs :<C-U>SmartClose<CR>
-noremap <leader>qa :<C-U>qa<CR>
-noremap <leader>bd :<C-U>Bclose<CR>
+" Closing & Quitting
+" Replaces default mappings:
+" ZZ (write & quit), ZQ (force quit)
+"   -> Z : Close buffer while keeping window (my plugin: bclose.vim)
+" q (record macro)
+"   -> Smart quit (close buffer or window) (my plugin: smartclose.vim)
+" Q (switch to Ex mode)
+"   -> Record macro
+" gQ (Ex mode)
+"   -> (unchanged)
+noremap <silent> q :<C-U>if exists(':SmartClose') == 2<CR>SmartClose<CR>endif<CR>
+noremap <silent> Z :<C-U>if exists(':Bclose') == 2<CR>Bclose<CR>endif<CR>
 noremap Q q
 
 
@@ -214,11 +214,12 @@ if has_key(g:plugs, 'nerdcommenter')
 endif
 
 
-"""""""""""""""""""""
-" Tagbar / NerdTree "
-"""""""""""""""""""""
-if has_key(g:plugs, 'tagbar')
-    noremap <leader>tt :<C-U>TagbarToggle<CR>
+""""""""""
+" Tagbar "
+""""""""""
+" Vista is replacement for NerdTree and Tagbar
+if has_key(g:plugs, 'vista.vim')
+    noremap <leader>t :<C-U>Vista<CR>
 endif
 
 
@@ -255,6 +256,24 @@ if has_key(g:plugs, 'LeaderF')
     " Note: ^F scrolls a page down originally, this masks it
     noremap <silent> <leader>fg :<C-U>let g:Lf_WorkingDirectory = asyncrun#get_root('%') \| Leaderf rg<CR>
     map <C-f> <leader>fg
+endif
+
+
+"""""""
+" fzf "
+"""""""
+if has_key(g:plugs, 'fzf') && has_key(g:plugs, 'fzf.vim')
+    " (f)ind (f)iles
+    noremap <silent> <leader>ff :<C-U>Files<CR>
+
+    " (f)ind (h)istory (recently opened files)
+    noremap <silent> <leader>fh :<C-U>History<CR>
+
+    " (f)ind (t)ags in current buffer
+    noremap <silent> <leader>ft :<C-U>BTags<CR>
+
+    " search in (f)iles by (g)rep
+    noremap <silent> <leader>fg :<C-U>Rg<CR>
 endif
 
 

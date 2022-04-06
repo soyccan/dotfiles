@@ -109,6 +109,7 @@ function! s:SmartClose()
     " wincnt: #windows that are normal buffers
     " (other than quickfix, location list, tagbar...)
     let wincnt = winnr('$')
+    let vista_exists = 0
     let tagbar_exists = 0
     let quickfix_exists = 0
 
@@ -118,12 +119,20 @@ function! s:SmartClose()
         let wincnt -= 1
         TagbarClose
     endif
+
+    if exists('*vista#sidebar#IsOpen') && vista#sidebar#IsOpen()
+        " if vista sidebar is open
+        let vista_exists = 1
+        let wincnt -= 1
+        call vista#sidebar#Close()
+    endif
+
     if !empty(filter(range(1, winnr('$')), 'getwinvar(v:val, "&ft") == "qf"'))
         " if quickfix window exists
         let quickfix_exists = 1
         let wincnt -= 1
         cclose
-    end
+    endif
 
     if wincnt == 1 && len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) > 1
         " if there is one window and multiple buffers
@@ -133,6 +142,11 @@ function! s:SmartClose()
     endif
 
     " reopen quickfix or tagbar
+    if vista_exists
+        let curwin = winnr()
+        call vista#sidebar#Open()
+        execute curwin . 'wincmd w'
+    endif
     if tagbar_exists
         let curwin = winnr()
         TagbarOpen

@@ -81,11 +81,22 @@ Plug 'Yggdroot/LeaderF',  { 'do': './install.sh' }
 " fuzzy search many things
 if has('nvim')
     Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
+
+    " fuzzy search with most-recently-used source
+    Plug 'Shougo/neomru.vim'
 else
     Plug 'Shougo/denite.nvim'
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
 endif
+" search in files
+Plug 'mileszs/ack.vim'
+" symbol list / tag bar
+Plug 'majutsushi/tagbar'
+
+" TODO: YouCompleteMe vs. deoplete
+" Completion / go-to-definition
+Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --clangd-completer' }
 
 "" others
 Plug 'dbgx/lldb.nvim'

@@ -47,18 +47,35 @@ Plug 'junegunn/vim-easy-align'
 
 "" Navigation
 " fuzzy search
-" TODO: replace with denite
-" in search box:
-"   ctrl+j/k: up/down
-"   ctrl+c: quit
-Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
-" fuzzy search with most-recently-used source
-Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'Shougo/neomru.vim'
-" search in files
-Plug 'mileszs/ack.vim'
+" Commands:
+"   :Files [PATH]	Files (runs $FZF_DEFAULT_COMMAND if defined)
+"   :GFiles [OPTS]	Git files (git ls-files)
+"   :GFiles?	Git files (git status)
+"   :Buffers	Open buffers
+"   :Colors	Color schemes
+"   :Ag [PATTERN]	ag search result (ALT-A to select all, ALT-D to deselect all)
+"   :Rg [PATTERN]	rg search result (ALT-A to select all, ALT-D to deselect all)
+"   :Lines [QUERY]	Lines in loaded buffers
+"   :BLines [QUERY]	Lines in the current buffer
+"   :Tags [QUERY]	Tags in the project (ctags -R)
+"   :BTags [QUERY]	Tags in the current buffer
+"   :Marks	Marks
+"   :Windows	Windows
+"   :Locate PATTERN	locate command output
+"   :History	v:oldfiles and open buffers
+"   :History:	Command history
+"   :History/	Search history
+"   :Snippets	Snippets (UltiSnips)
+"   :Commits	Git commits (requires fugitive.vim)
+"   :BCommits	Git commits for the current buffer; visual-select lines to track changes in the range
+"   :Commands	Commands
+"   :Maps	Normal mode mappings
+"   :Helptags	Help tags 1
+"   :Filetypes	File types
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 " symbol list
-Plug 'majutsushi/tagbar'
+Plug 'liuchengxu/vista.vim'
 " fast motions
 " jump to a search match by one single key
 Plug 'easymotion/vim-easymotion'
@@ -74,7 +91,12 @@ Plug 'joshdick/onedark.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 " indention guide
-Plug 'Yggdroot/indentLine'
+" Plug 'Yggdroot/indentLine'
+if has('nvim-0.5.0')
+    Plug 'lukas-reineke/indent-blankline.nvim'
+else
+    Plug 'lukas-reineke/indent-blankline.nvim', { 'branch': 'version-1'  }
+endif
 " pop-up window support
 Plug 'Shougo/echodoc.vim'
 
@@ -95,10 +117,6 @@ Plug 'Shougo/neoinclude.vim', { 'for': ['c', 'cpp'] }
 Plug 'Shougo/deoplete-clangx', { 'for': ['c', 'cpp'] }
 " Require: pip install jedi
 Plug 'deoplete-plugins/deoplete-jedi', { 'for': 'python' }
-"
-" TODO: YouCompleteMe vs. deoplete
-" Completion / go-to-definition
-" Plug 'ycm-core/YouCompleteMe', { 'do': './install.py --clangd-completer' }
 " tags manager
 " Plug 'ludovicchabant/vim-gutentags'
 " auto connect cscope database and define :GscopeFind command
