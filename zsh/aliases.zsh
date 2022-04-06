@@ -277,17 +277,19 @@ alias h='history'
 alias hgrep="fc -El 0 | grep"
 
 # process status
-# -f : uid, pid, parent pid, recent CPU usage, process start time, controlling tty, elapsed CPU usage, command
+# -f (full format): uid, pid, parent pid, recent CPU usage, process start time, controlling tty, elapsed CPU usage, command
 # -j : user, pid, ppid, pgid, sess, jobc, state, tt, time, command
 # -l : uid, pid, ppid, flags, cpu, pri, nice, vsz=SZ, rss, wchan, state=S, paddr=ADDR, tty, time, command=CMD
 # -v : pid, state, time, sl, re, pagein, vsz, rss, lim, tsiz, %cpu, %mem, and command
-# u (no hyphen) : user, pid, %cpu, %mem, vsz, rss, tt, state, start, time, and command
-# -e : all including terminal-less proccess
-# -a : all
+# u (user-oriented): user, pid, %cpu, %mem, vsz, rss, tt, state, start, time, and command
+# a : all users
+# x : include tty-less
+# -A / -e : all
+# -a : all except tty-less
 # -m : sorted by memory
 # -r : sorted by CPU
 # -E : show environment
-# -w -ww : wider output
+# -w / -ww : wider output
 p() {
     if has ag; then
         _grep=ag
@@ -298,12 +300,12 @@ p() {
     # $1 : pattern
     # $2.. : options for ps
     # rss : resident set size = physical memory usage
-    # first line is duplicated to stderr
-    # it's convenient when piping result to grep
-    if [ $1 ]; then
-        ps -eo pid,user,state,etime,command $@[2,$] | tee >(sed -n '1p' >&2) | $_grep $1
+    # first line is duplicated to stderr, useful when piping result to grep
+    if [[ "$1" ]]; then
+        ps -eo user,pid,ppid,lwp,state,start,time,etime,command "$@[2,$]" \
+            | tee >(sed -n '1p' >&2) | "$_grep" -i "$1"
     else
-        ps -eo pid,user,state,etime,command $@[2,$]
+        ps -eo user,pid,ppid,lwp,state,start,time,etime,command
     fi
 }
 alias ps='ps -ef'
