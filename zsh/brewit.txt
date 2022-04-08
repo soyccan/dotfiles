@@ -33,3 +33,4 @@ binwalk
 gcc
 smartmontools
 gsmartcontrol
+gdb

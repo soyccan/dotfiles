@@ -195,7 +195,7 @@ fzf-file-widget-smarter() {
 
   if [[ "${LBUFFER[-1]}" = ' ' ]]; then
     # fallback to cwd
-    local dir=./
+    local dir=.
   else
     # used last word in command line as target dir
     # (z) splits string into words
@@ -221,7 +221,7 @@ fzf-file-widget-smarter() {
   local opts="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --bind=ctrl-z:ignore $FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS"
   # -m : multiple select
   local files="$(eval "$cmd" | FZF_DEFAULT_OPTS="$opts" $(__fzfcmd) -m "$@" | while read item; do
-    echo -n "${(q)item#${dir}} "
+    echo -n "${${(q)item#./}#${dir}} "
   done)"
   local ret=$?
 
@@ -373,10 +373,10 @@ zi wait lucid depth"1" for \
 # Docker should be install by system
 # and docker-compose is usually bundled with Docker
 # so we do not install them here
-# zi wait lucid depth"1" for \
-#     as"completion" \
-#         @docker/compose \
-#         @docker/cli
+zi wait lucid depth"1" for \
+    as"completion" \
+        @docker/compose \
+        @docker/cli
 #     from"gh-r" as"program" mv"docker* -> docker-compose" \
 #     docker/compose
 
