@@ -24,8 +24,8 @@ autocmd FileType vim vnoremap <buffer> w <ESC>:<C-U>w \| source %<CR>
 "   -> Record macro
 " gQ (Ex mode)
 "   -> (unchanged)
-noremap <silent> q :<C-U>if exists(':SmartClose') == 2<CR>SmartClose<CR>endif<CR>
-noremap <silent> Z :<C-U>if exists(':Bclose') == 2<CR>Bclose<CR>endif<CR>
+noremap <expr> q exists(':SmartClose') == 2 ? ':<C-U>SmartClose<CR>' : ''
+noremap <expr> Z exists(':Bclose') == 2 ? ':<C-U>Bclose<CR>' : ''
 noremap Q q
 
 
@@ -269,8 +269,11 @@ if has_key(g:plugs, 'fzf') && has_key(g:plugs, 'fzf.vim')
     " (f)ind (h)istory (recently opened files)
     noremap <silent> <leader>fh :<C-U>History<CR>
 
-    " (f)ind (t)ags in current buffer
+    " (f)ind (t)ag in current buffer
     noremap <silent> <leader>ft :<C-U>BTags<CR>
+
+    " (f)ind the tag under (c)ursor in current buffer
+    noremap <expr> <leader>fc !empty(expand('<cword>')) ? ':<C-U>BTags '.expand('<cword>').'<CR>' : ':<C-U>BTags<CR>'
 
     " search in (f)iles by (g)rep
     noremap <silent> <leader>fg :<C-U>Rg<CR>
