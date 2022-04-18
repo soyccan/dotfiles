@@ -157,7 +157,9 @@ endfor
 " GNU GLOBAL
 let s:global_plugins = [
 \  '/usr/share/vim/addons/plugin/gtags-cscope.vim',
-\  '/usr/share/vim/addons/plugin/gtags.vim']
+\  '/usr/share/vim/addons/plugin/gtags.vim',
+\  '/usr/local/opt/global/share/gtags/gtags-cscope.vim',
+\  '/usr/local/opt/global/share/gtags/gtags.vim']
 for plugin in s:global_plugins
     if filereadable(plugin)
         execute 'source ' . plugin
