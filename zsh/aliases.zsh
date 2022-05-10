@@ -302,7 +302,7 @@ p() {
     # rss : resident set size = physical memory usage
     # first line is duplicated to stderr, useful when piping result to grep
     if [[ "$1" ]]; then
-        ps -eo user,pid,ppid,lwp,state,start,time,etime,command "$@[2,$]" \
+        ps -eo user,pid,ppid,lwp,state,start,time,etime,command $@[2,$] \
             | tee >(sed -n '1p' >&2) | "$_grep" -i "$1"
     else
         ps -eo user,pid,ppid,lwp,state,start,time,etime,command
