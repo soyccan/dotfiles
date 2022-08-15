@@ -63,8 +63,8 @@ setup_zsh() {
     log Configuring ZSH
 
     if ! has zsh; then
-        log Installing standalone version of ZSH
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh-bin/master/install)"
+        log You can installing standalone version of ZSH by:
+        log 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh-bin/master/install)"'
     fi
 
     if sudo -l && [[ -x /bin/zsh ]]; then
@@ -141,8 +141,31 @@ setup_git() {
     ln_safe "$dotfiles/git/template" "$HOME/.git_template"
 }
 
+_check_dep() {
+    if has "$1"; then
+        log "Checking if $1 exists... YES"
+        return 0
+    else
+        log "Checking if $1 exists... NO"
+        return 1
+    fi
+}
+
+check_deps() {
+    ok=1
+    deps=(tmux zsh nvim git unzip)
+    for d in $deps; do
+        if ! _check_dep $d; then
+            ok=0
+        fi
+    done
+    if [[ $ok == 0 ]]; then
+    	exit 1
+    fi
+}
 
 main() {
+    check_deps
     setup_tmux
     setup_zsh
     setup_vim

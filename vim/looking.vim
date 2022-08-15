@@ -33,19 +33,19 @@ let g:onedark_terminal_italics = 1
 let g:airline_theme='onedark'
 
 try
-    colorscheme onedark
+    " colorscheme onedark
     " colorscheme night-owl
     " colorscheme tender
     " colorscheme minimalist
     " colorscheme material-theme
-    " colorscheme PaperColor
+    colorscheme PaperColor
     " colorscheme monokai
 catch
     colorscheme default
 endtry
 
-highlight! link CursorLine Visual
-highlight! link ColorColumn Visual
+" highlight! link CursorLine Visual
+highlight! link ColorColumn CursorLine
 
 " hi Structure ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE
 " hi StorageClass ctermfg=197 ctermbg=NONE cterm=NONE guifg=#f92672 guibg=NONE gui=NONE

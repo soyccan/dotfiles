@@ -1,6 +1,6 @@
 set backspace=indent,eol,start
 set helplang=tw
-set nohlsearch incsearch
+set hlsearch incsearch
 set ignorecase smartcase
 
 if has('nvim')
@@ -145,3 +145,6 @@ endif
 " start from choosing recent files
 " TODO: this breaks syntax highlighting, fix it
 " autocmd BufEnter * if argc() == 0 | LeaderfMru | endif
+
+" restore buffers
+" set viminfo^=%

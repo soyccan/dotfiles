@@ -35,11 +35,13 @@ Plug 'sickill/vim-monokai'
 Plug 'dikiaap/minimalist'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'jdkanani/vim-material-theme'
+Plug 'joshdick/onedark.vim'
 " syntax
 
 "" editing
 Plug 'Valloric/YouCompleteMe', { 'do': './install.py --all --clangd-completer' }
 Plug 'Shougo/echodoc.vim'
+" select text and :EasyAlign N<char> or :EasyAlign N/<regex>/
 Plug 'junegunn/vim-easy-align'
 Plug 'sirver/UltiSnips'
 Plug 'honza/vim-snippets'
@@ -57,6 +59,8 @@ Plug 'kana/vim-textobj-function', { 'for': ['c', 'cpp', 'vim', 'java'] }
 Plug 'sgur/vim-textobj-parameter'
 
 "" navigating
+" jump to a search match by one single key
+" Plug 'easymotion/vim-easymotion'
 " Async syntax checking, auto formatting
 " (I don't use its completion or go-to-definiton feature,
 " YouCompleteMe or deoplete is better)

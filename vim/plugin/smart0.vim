@@ -2,11 +2,11 @@
 function! s:Smart0()
     if col('.') == len(getline('.'))
         " if cursor is at end of line
-        norm! 0
+        norm! ^
 
     elseif match(strpart(getline('.'), 0, col('.')), '^\s\+\S$') != -1
         " if cursor is at first non-space character
-        norm! $
+        norm! 0
 
     else
         norm! ^

@@ -43,6 +43,7 @@ Plug 'sbdchd/neoformat'
 " align around any character
 " select text and :EasyAlign N<char> or :EasyAlign N/<regex>/
 Plug 'junegunn/vim-easy-align'
+Plug 'godlygeek/tabular'
 
 
 "" Navigation
@@ -76,17 +77,13 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 " symbol list
 Plug 'liuchengxu/vista.vim'
-" fast motions
-" jump to a search match by one single key
-Plug 'easymotion/vim-easymotion'
 " jump to position where last time the file is edited
 Plug 'farmergreg/vim-lastplace'
 
 
 "" Looking
 " theme
-Plug 'haishanh/night-owl.vim'
-Plug 'joshdick/onedark.vim'
+Plug 'NLKNguyen/papercolor-theme'
 " beautiful tag bar on top
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'

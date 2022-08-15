@@ -95,7 +95,7 @@ zi wait lucid depth"1" for \
     @OMZP::systemd \
     @OMZP::urltools \
     \
-    atload"unalias grv; alias gc='git commit -m'" \
+    atload"unalias grv; alias gc='git commit'" \
         @OMZP::git
 
 # following must not be delayed loading

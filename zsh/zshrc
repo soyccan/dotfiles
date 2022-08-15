@@ -4,9 +4,9 @@
 
 # Launch tmux at start
 # This should be in the beginning of zshrc
-if [[ -z "$TMUX" ]] && [[ "$HOST" != 'soyccanmac'* ]]; then
-    tmux a -d
-fi
+# if [[ -z "$TMUX" ]] && [[ "$HOST" != 'soyccanmac'* ]]; then
+#     tmux a -d
+# fi
 
 
 ## Global varibales

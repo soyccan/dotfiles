@@ -152,23 +152,23 @@ noremap <leader>cf :<C-U>execute 'edit ' . stdpath('config')<CR>
 " Turn off highlight after cursor moves
 " Inspired by: https://github.com/easymotion/vim-easymotion
 "              https://github.com/justinmk/vim-sneak
-" function! s:SmartHighlightAttachAutocmd()
-"     " following code is from Easymotion#highlight#attach_autocmd()
-"     augroup smart-highlight
-"         autocmd!
-"         autocmd InsertEnter,WinLeave,BufLeave <buffer>
-"             \ silent! set nohlsearch
-"             \  | autocmd! smart-highlight * <buffer>
-"         autocmd CursorMoved <buffer>
-"             \ autocmd smart-highlight CursorMoved <buffer>
-"             \ silent! set nohlsearch
-"             \  | autocmd! smart-highlight * <buffer>
-"     augroup END
-" endfunction
-" noremap * :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>*
-" noremap / :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>/
-" noremap n :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>n
-" noremap N :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>N
+function! s:SmartHighlightAttachAutocmd()
+    " following code is from Easymotion#highlight#attach_autocmd()
+    augroup smart-highlight
+        autocmd!
+        autocmd InsertEnter,WinLeave,BufLeave <buffer>
+            \ silent! set nohlsearch
+            \  | autocmd! smart-highlight * <buffer>
+        autocmd CursorMoved <buffer>
+            \ autocmd smart-highlight CursorMoved <buffer>
+            \ silent! set nohlsearch
+            \  | autocmd! smart-highlight * <buffer>
+    augroup END
+endfunction
+noremap * :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>*
+noremap / :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>/
+noremap n :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>n
+noremap N :<C-U>set hlsearch \| call <SID>SmartHighlightAttachAutocmd()<CR>N
 
 " Replace motion with recently yanked/deleted text
 " Inspired by: https://github.com/inkarkat/vim-ReplaceWithRegister
@@ -277,6 +277,9 @@ if has_key(g:plugs, 'fzf') && has_key(g:plugs, 'fzf.vim')
 
     " search in (f)iles by (g)rep
     noremap <silent> <leader>fg :<C-U>Rg<CR>
+
+    " (f)ind in (b)uffers
+    noremap <silent> <leader>fb :<C-U>Buffers<CR>
 endif
 
 

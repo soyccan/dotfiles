@@ -11,7 +11,12 @@ let g:NERDDefaultAlign = 'left'
 let g:NERDAltDelims_c = 1
 
 " Add your own custom formats or override the defaults
-let g:NERDCustomDelimiters = { 'html': {'left': '<!--', 'right': '-->'}, 'xml': {'left': '<!--', 'right': '-->'}}
+let g:NERDCustomDelimiters = {
+\    'html': { 'left': '<!--', 'right': '-->' },
+\    'xml': { 'left': '<!--', 'right': '-->' },
+\    'tablegen': { 'left': '//' },
+\    'mlir': { 'left': '//' }
+\}
 
 " Allow commenting and inverting empty lines (useful when commenting a region)
 let g:NERDCommentEmptyLines = 1
