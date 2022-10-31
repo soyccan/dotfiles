@@ -26,9 +26,11 @@
 # Load a few important annexes (zi extension)
 # currently annexes require the absence of "wait"
 
-# z-a-bin-gem-node: Add the support of ice modifiers like sbin, fbin, etc.
-# so that binaries installed by zi requires no entry in $PATH
-zi depth"1" for @z-shell/z-a-bin-gem-node
+# bin-gem-node: Add the support of ice modifiers like sbin, fbin, etc.
+#               so that binaries installed by zi requires no entry in $PATH
+# patch-dl: A ZI Annex (extension) that downloads files and applies patches.
+zi light-mode depth"1" for \
+  @zdharma-continuum/zinit-annex-{'readurl','bin-gem-node','patch-dl','rust'}
 
 # z-a-man: A Zsh-zi extension that automatically generates man pages out of
 # plugin README.md files
@@ -39,9 +41,6 @@ zi depth"1" for @z-shell/z-a-bin-gem-node
 # zi for zi-zsh/z-a-test
 
 # zi for zi-zsh/z-a-submods
-
-# A ZI Annex (extension) that downloads files and applies patches.
-zi depth"1" for @z-shell/z-a-patch-dl
 
 # TUI
 # zi for zdharma/zui
@@ -110,12 +109,20 @@ setopt promptsubst
 # Load the pure theme, with zsh-async library that's bundled with it.
 # zi ice pick"async.zsh" src"pure.zsh"
 # zi light sindresorhus/pure
-#
+
 # OMZ Theme
 # zi wait'!' lucid depth"1" for \
 #     OMZL::prompt_info_functions.zsh \
 #     OMZT::gnzh
-#
+
+# Powerlevel10k dependencies
+zi for \
+    as'null' \
+    from'gh-r' \
+    if"(( ! ${+commands[jq]} ))" \
+    sbin'jq-* -> jq' \
+  @stedolan/jq
+
 # Powerlevel10k
 # wait'!' to reset prompt after loaded
 zi depth"1" for \

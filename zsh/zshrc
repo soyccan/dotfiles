@@ -72,6 +72,10 @@ _path=('/snap/bin'
        "$HOME/.pyenv/bin"
        "$HOME/.local/bin")
 
+# Haskell
+_path+=("$HOME/.ghcup/bin"
+        "$HOME/.cabal/bin")
+
 # Ruby gems
 for x in "$HOME"/.gem/ruby/*; do
     _path+=("$x/bin")
@@ -111,26 +115,16 @@ fi
 # Homebrew
 export HOMEBREW_NO_AUTO_UPDATE=1
 
-
-## Begin of routine
-
-# Pull new changes of dotfiles, in background
+# Pull dotfiles in background
 (git -C "$HOME/dotfiles" pull &>/dev/null &)
 
-### Added by Zi installer
-if [[ ! -f $HOME/.zi/bin/zi.zsh ]]; then
-  print -P "%F{33}▓▒░ %F{160}Installing (%F{33}z-shell/zi%F{160})…%f"
-  command mkdir -p "$HOME/.zi" && command chmod g-rwX "$HOME/.zi"
-  command git clone -q --depth=1 --branch "main" https://github.com/z-shell/zi "$HOME/.zi/bin" && \
-    print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
-    print -P "%F{160}▓▒░ The clone has failed.%f%b"
-fi
-source "$HOME/.zi/bin/zi.zsh"
-autoload -Uz _zi
-(( ${+_comps} )) && _comps[zi]=_zi
-# examples here -> https://z-shell.pages.dev/docs/gallery/collection
-# zicompinit # <- https://z-shell.pages.dev/docs/gallery/collection#minimal
-### End of Zi installer chunk
+# Install zinit
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+mkdir -p "$(dirname $ZINIT_HOME)"
+git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME" 2>/dev/null
+source "${ZINIT_HOME}/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
 
 # Set background color
 # This is bg of Solorized Dark from iTerm2
