@@ -115,7 +115,13 @@ fi
 # Homebrew
 export HOMEBREW_NO_AUTO_UPDATE=1
 
-# Pull dotfiles in background
+# Haskell
+[ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env" # ghcup-env
+
+
+## Begin of routine
+
+# Pull new changes of dotfiles, in background
 (git -C "$HOME/dotfiles" pull &>/dev/null &)
 
 # Install zinit
