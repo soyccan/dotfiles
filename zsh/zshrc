@@ -1,104 +1,130 @@
 # Profiling begin
 # zmodload zsh/zprof
 
-
-# Launch tmux at start
-# This should be in the beginning of zshrc
-# if [[ -z "$TMUX" ]] && [[ "$HOST" != 'soyccanmac'* ]]; then
-#     tmux a -d
-# fi
+## If connected from remote & not in tmux, start tmux.
+if [[ $SSH_CONNECTION && -z ${TMUX+X}${ZSH_SCRIPT+X}${ZSH_EXECUTION_STRING+X} ]]; then
+    tmux a -d
+fi
 
 
-## Global varibales
+## Global variables & functions for zshrc
+ZSH=$HOME/dotfiles/zsh
+ZSH_PLUGGED=$ZSH/plugged
 
-# The inner expansion follows ${name:-word} form, so as the variable called
-# `name` (which is empty string) does not exist, the value will be given from
-# `word` (which is "%x"). Refer to:
-# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion
-#
-# The %x is a prompt escape indicating the file being sourced. Refer to:
-# http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html#Shell-state
-#
-# And the (%) is a parameter expansion flag that expands the %x. Refer to:
-# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
-#
-# The outer expansion has P modifier that calls realpath() to obtain the
-# absolute path, and h modifier to obtain dirname. Refer to:
-# http://zsh.sourceforge.net/Doc/Release/Expansion.html#Modifiers
-#
-source_dir="${${(%):-%x}:P:h}"
+gbl_funcs=()
 
+function zcompile-many {
+    local f
+    for f; do zcompile -R -- "$f".zwc "$f"; done
+}
+gbl_funcs+=zcompile-many
 
-## Global functions
+# Clone plugins included as submodules of my dotfiles repo
+# return 1 if already cloned, 0 otherwise
+function clone-plugin {
+    local name=$1
+    if [[ "$(<$ZSH/../.git/config)" != *$name* ]]; then
+        # if .git/config contains no $name string
+        # we say the submodule is not cloned, and clone it
+        git -C $ZSH_PLUGGED submodule update --init --depth=1 $name
+        return 0
+    fi
+    return 1
+}
+gbl_funcs+=clone-plugin
 
 # Check if command exists, return 0 on success
-# MUCH faster than external program `which` since this don't
-# require forking process
-# Bash equivalence: command -v / type
-# Zsh equivalence: whence
-has() {
-    [ $commands[$1] ]
-}
+# much faster than external program `which` as no forking is needed
+# instead, it searches in the external commands hash table
+# unlike `command -v`, `type` or `whence -v`, it excludes aliases
+# https://zsh.sourceforge.io/Doc/Release/Zsh-Modules.html#index-commands
+function has { [[ $commands[$1] ]] }
+gbl_funcs+=has
 
 # Determine OS
-is_macos() {
-    # ${name:#pattern} tries to match $name with pattern
-    # refer to:
-    # http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion
-    #
-    # (M) includes the matched portion in the result.
-    # refer to:
-    # http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion-Flags
-    #
-    # The [[ ]] test a non-empty string
-    [[ ${(M)OSTYPE:#*darwin*} ]]
-}
-is_linux() {
-    # ${name##pattern} removes the longest prefix that matches pattern
-    # from $name
-    [[ ! ${OSTYPE##linux*} ]]
-}
+function is_macos { [[ $OSTYPE = darwin* ]] }
+function is_linux { [[ $OSTYPE = linux* ]] }
+gbl_funcs+=(is_macos is_linux)
 
 
-## Set environments
+## Clone and compile to wordcode missing plugins
+clone-plugin fast-syntax-highlighting &&
+    zcompile-many $ZSH_PLUGGED/fast-syntax-highlighting/**/*.zsh
+
+clone-plugin zsh-autosuggestions &&
+    zcompile-many $ZSH_PLUGGED/zsh-autosuggestions/**/*.zsh
+
+clone-plugin powerlevel10k &&
+    make -C $ZSH_PLUGGED/powerlevel10k pkg
+
+clone-plugin zsh-completions &&
+    zcompile-many $ZSH_PLUGGED/zsh-completions/**/*.zsh
+
+clone-plugin ohmyzsh &&
+    zcompile-many $ZSH_PLUGGED/ohmyzsh/lib/*.zsh
+
+# TODO: include fzf, fasd, exa, bat... binaries in PATH
+# may refer to zinit annex bin-gem-node
+clone-plugin fzf &&
+    $ZSH_PLUGGED/fzf/install --bin
+
+clone-plugin fasd
+
+
+## Activate Powerlevel10k Instant Prompt
+[[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]] &&
+    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+
+
+## Environments
 
 # PATH
-# ignore error when globbing fails (/path/to/some/dir/* not exist)
-setopt null_glob
+function {
+    # null_glob: ignore error when globbing fails (/path/to/some/dir/* not exist)
+    [[ -o null_glob ]] && local null_glob_set=1 || local null_glob_set=
+    setopt null_glob
 
-_path=('/snap/bin'
-       "$HOME/go/bin"
-       "$HOME/.rvm/bin"
-       "$HOME/.pyenv/bin"
-       "$HOME/.local/bin")
+    local cur_path=(${(s.:.)PATH})
+    local new_path=()
+    local p
 
-# Haskell
-_path+=("$HOME/.ghcup/bin"
-        "$HOME/.cabal/bin")
+    # Snap
+    new_path+=/snap/bin
 
-# Ruby gems
-for x in "$HOME"/.gem/ruby/*; do
-    _path+=("$x/bin")
-done
+    # Go
+    new_path+=$HOME/go/bin
 
-# Python pips
-# Linux: $HOME/.local/bin
-# masOS
-_path+=(/Library/Frameworks/Python.framework/Versions/Current/bin)
-for x in "$HOME"/Library/Python/*/bin; do
-    _path+=("$x")
-done
+    # Haskell
+    new_path+=($HOME/.ghcup/bin $HOME/.cabal/bin)
 
-# Prior elements in $path have priority
-for p in $_path; do
-    [ -d "$p" ] && PATH="$PATH:$p"
-done
+    # Ruby rvm & gems
+    new_path+=$HOME/.rvm/bin
+    for p in $HOME/.gem/ruby/*; do
+        new_path+=$p/bin
+    done
 
-unset _path
-export PATH
+    # Python pyenv & pips
+    # Linux
+    new_path+=$HOME/.pyenv/bin
+    new_path+=$HOME/.local/bin
+    # masOS
+    new_path+=(/Library/Frameworks/Python.framework/Versions/Current/bin)
+    for p in $HOME/Library/Python/*/bin; do
+        new_path+=$p
+    done
+
+    # update PATH env var
+    for p in $new_path; do
+        # if $p exists as a dir & not in current $PATH, prepend it to $PATH
+        [[ -d $p && ! ${cur_path[(r)$p]} ]] && PATH=$p:$PATH
+    done
+
+    export PATH
+    [[ ! $null_glob_set ]] && unsetopt null_glob
+}
 
 # Man pages path
-# TODO
+# export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
 export LANG=en_US.UTF-8
@@ -115,52 +141,79 @@ fi
 # Homebrew
 export HOMEBREW_NO_AUTO_UPDATE=1
 
-# Haskell
-[ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env" # ghcup-env
+
+## Pre-Plugin settings
+# configs that need to be loaded before plugins are loaded
+
+# key bindings need to be loaded before zsh-syntax-highlighting
+source $ZSH/key-bindings.zsh
 
 
-## Begin of routine
+## Load plugins
+# remember to clone them first
 
-# Pull new changes of dotfiles, in background
+# Fast Syntax Highlighting: Feature rich syntax highlighting for Zsh
+source $ZSH_PLUGGED/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+
+# zsh-autosuggestions: Fish-like fast/unobtrusive autosuggestions for zsh
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+source $ZSH_PLUGGED/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# Powerlevel10k: A theme for Zsh
+source $ZSH_PLUGGED/powerlevel10k/powerlevel10k.zsh-theme
+source $ZSH/p10k.zsh
+
+# zsh-completions: Additional completion definitions for Zsh
+fpath+=$ZSH_PLUGGED/zsh-completions/src
+
+# Oh My Zsh
+source $ZSH_PLUGGED/ohmyzsh/lib/completion.zsh
+source $ZSH_PLUGGED/ohmyzsh/lib/history.zsh
+function {
+    # Load colors
+    # Plugin `colored-man-pages` requires this
+    autoload -Uz colors
+    colors
+
+    local name
+    for name in colored-man-pages \
+                command-not-found \
+                encode64 \
+                systemadmin \
+                systemd \
+                git; do
+        source $ZSH_PLUGGED/ohmyzsh/plugins/$name/$name.plugin.zsh
+    done
+}
+
+# globalias: expand glob & alias in command line
+source $ZSH/globalias.plugin.zsh
+
+# fasd & fzf
+[[ $- == *i* ]] && \
+    source "/home/soyccan/dotfiles/zsh/plugged/fzf/shell/completion.zsh" 2> /dev/null
+source $ZSH_PLUGGED/fzf/shell/key-bindings.zsh
+source $ZSH/fzf.plugin.zsh
+
+
+## Epilogue
+
+# Load my configs (overrides loaded plugins)
+source $ZSH/commands.zsh
+source $ZSH/aliases.zsh
+
+# my completions
+fpath+=$ZSH
+
+# Enable the "new" completion system (compsys)
+autoload -Uz compinit && compinit
+[[ ~/.zcompdump.zwc -nt ~/.zcompdump ]] || zcompile-many ~/.zcompdump
+
+unfunction $gbl_funcs
+unset gbl_funcs
+
+# Pull new changes of dotfiles in background
 (git -C "$HOME/dotfiles" pull &>/dev/null &)
-
-# Install zinit
-ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-mkdir -p "$(dirname $ZINIT_HOME)"
-git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME" 2>/dev/null
-source "${ZINIT_HOME}/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
-
-# Set background color
-# This is bg of Solorized Dark from iTerm2
-# printf '\e]11;#002b36\a'
-
-# Load colors
-# Plugin `colored-man-pages` requires this
-autoload -Uz colors
-colors
-
-# Load additional config
-# since some plugin overrites key bindings
-# key bindings should be first
-source "$source_dir/key-bindings.zsh"
-
-# Zinit plugins
-source "$source_dir/plugins.zsh"
-
-# My command aliases
-source "$source_dir/aliases.zsh"
-
-# My plugins
-for x in $source_dir/*.plugin.zsh; do
-    source $x
-done
-
-
-# Completion Path
-# TODO: is this right
-fpath+=($HOME/dotfiles/zsh)
 
 
 # Profiling end

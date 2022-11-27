@@ -2,9 +2,6 @@
 alias cp='cp -irv' # --interactive --recursive --verbose
 alias mv='mv -iv' # --interactive --verbose
 alias rm='rm -i' # --interactive=always
-mdcd() {
-    mkdir -pv "$@" && cd "$@"
-}
 alias src='exec zsh' # reload shell
 
 alias df='df -h' # --human-readable
@@ -241,8 +238,7 @@ fi
 # alias lart='ls -1Fcart'
 # alias lrt='ls -1Fcrt'
 
-alias zshrc='${=EDITOR} ~/.zshrc' # Quick access to the ~/.zshrc file
-alias ez='exec zsh' # a not-so-good way to reload config
+alias zshrc='${=EDITOR} ${ZDOTDIR:-$HOME}/.zshrc' # Quick access to the .zshrc file
 
 alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
 
@@ -276,38 +272,6 @@ alias fdf='find . -type f'
 alias h='history'
 alias hgrep="fc -El 0 | grep"
 
-# process status
-# -f (full format): uid, pid, parent pid, recent CPU usage, process start time, controlling tty, elapsed CPU usage, command
-# -j : user, pid, ppid, pgid, sess, jobc, state, tt, time, command
-# -l : uid, pid, ppid, flags, cpu, pri, nice, vsz=SZ, rss, wchan, state=S, paddr=ADDR, tty, time, command=CMD
-# -v : pid, state, time, sl, re, pagein, vsz, rss, lim, tsiz, %cpu, %mem, and command
-# u (user-oriented): user, pid, %cpu, %mem, vsz, rss, tt, state, start, time, and command
-# a : all users
-# x : include tty-less
-# -A / -e : all
-# -a : all except tty-less
-# -m : sorted by memory
-# -r : sorted by CPU
-# -E : show environment
-# -w / -ww : wider output
-p() {
-    if has ag; then
-        _grep=ag
-    else
-        _grep=grep
-    fi
-
-    # $1 : pattern
-    # $2.. : options for ps
-    # rss : resident set size = physical memory usage
-    # first line is duplicated to stderr, useful when piping result to grep
-    if [[ "$1" ]]; then
-        ps -eo user,pid,ppid,lwp,state,start,time,etime,command $@[2,$] \
-            | tee >(sed -n '1p' >&2) | "$_grep" -i "$1"
-    else
-        ps -eo user,pid,ppid,lwp,state,start,time,etime,command
-    fi
-}
 alias ps='ps -ef'
 alias psenv='ps -efEww'
 
@@ -318,22 +282,3 @@ zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts \
     'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 ## end oh-my-zsh/common-aliases.zsh
 
-
-if is_macos && [ -e '/Applications/Turbo Boost Switcher.app' ]; then
-    # disable Turbo Boost on macOS
-    # required to install Turbo Boost Switcher
-    # or clone from:
-    # https://github.com/nanoant/DisableTurboBoost.kext
-    # https://github.com/rugarciap/Turbo-Boost-Switcher
-    turbooff() {
-        sudo kextunload -b com.rugarciap.DisableTurboBoost
-        sudo kextload '/Applications/Turbo Boost Switcher.app/Contents/Resources/DisableTurboBoost.64bits.kext'
-    }
-    turboon() {
-        sudo kextunload -b com.rugarciap.DisableTurboBoost
-    }
-fi
-
-size-tree() {
-    du "$@" | tail -r | awk '{print $0 ":" $1}' | sed 's;[^/]*/;|____;g;s;____|; |;g'
-}
