@@ -76,7 +76,7 @@ setup_zsh() {
 
     # config files
     ln_safe "$dotfiles/zsh/zshrc" "$HOME/.zshrc"
-    ln_safe "$dotfiles/zsh" "$HOME/.config/zsh"
+    ln_safe "$dotfiles/zsh/zshenv" "$HOME/.zshenv"
 
     # powerlevel10k
     ln_safe "$dotfiles/zsh/p10k.zsh" "$HOME/.p10k.zsh"
@@ -164,12 +164,17 @@ check_deps() {
     fi
 }
 
+setup_pam() {
+    ln_safe "$dotfiles/pam_environment" "$HOME/.pam_environment"
+}
+
 main() {
     check_deps
     setup_tmux
     setup_zsh
     setup_vim
     setup_git
+    setup_pam
     log Voila! Setup Finished!
 }
 

@@ -76,72 +76,6 @@ clone-plugin fasd
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 
 
-## Environments
-
-# PATH
-function {
-    # null_glob: ignore error when globbing fails (/path/to/some/dir/* not exist)
-    [[ -o null_glob ]] && local null_glob_set=1 || local null_glob_set=
-    setopt null_glob
-
-    local cur_path=(${(s.:.)PATH})
-    local new_path=()
-    local p
-
-    # Snap
-    new_path+=/snap/bin
-
-    # Go
-    new_path+=$HOME/go/bin
-
-    # Haskell
-    new_path+=($HOME/.ghcup/bin $HOME/.cabal/bin)
-
-    # Ruby rvm & gems
-    new_path+=$HOME/.rvm/bin
-    for p in $HOME/.gem/ruby/*; do
-        new_path+=$p/bin
-    done
-
-    # Python pyenv & pips
-    # Linux
-    new_path+=$HOME/.pyenv/bin
-    new_path+=$HOME/.local/bin
-    # masOS
-    new_path+=(/Library/Frameworks/Python.framework/Versions/Current/bin)
-    for p in $HOME/Library/Python/*/bin; do
-        new_path+=$p
-    done
-
-    # update PATH env var
-    for p in $new_path; do
-        # if $p exists as a dir & not in current $PATH, prepend it to $PATH
-        [[ -d $p && ! ${cur_path[(r)$p]} ]] && PATH=$p:$PATH
-    done
-
-    export PATH
-    [[ ! $null_glob_set ]] && unsetopt null_glob
-}
-
-# Man pages path
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-if has nvim; then
-    export EDITOR='nvim'
-elif has vim; then
-    export EDITOR='vim'
-elif has vi; then
-    export EDITOR='vi'
-fi
-
-# Homebrew
-export HOMEBREW_NO_AUTO_UPDATE=1
-
-
 ## Pre-Plugin settings
 # configs that need to be loaded before plugins are loaded
 
@@ -168,7 +102,9 @@ fpath+=$ZSH_PLUGGED/zsh-completions/src
 
 # Oh My Zsh
 source $ZSH_PLUGGED/ohmyzsh/lib/completion.zsh
+source $ZSH_PLUGGED/ohmyzsh/lib/functions.zsh
 source $ZSH_PLUGGED/ohmyzsh/lib/history.zsh
+source $ZSH_PLUGGED/ohmyzsh/lib/theme-and-appearance.zsh
 function {
     # Load colors
     # Plugin `colored-man-pages` requires this
@@ -199,7 +135,6 @@ source $ZSH/fzf.plugin.zsh
 ## Epilogue
 
 # Load my configs (overrides loaded plugins)
-source $ZSH/commands.zsh
 source $ZSH/aliases.zsh
 
 # my completions
