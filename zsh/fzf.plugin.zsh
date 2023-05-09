@@ -11,7 +11,9 @@
 #        2. paste selected file from recently used files into command line
 
 # This file requires fzf/shell/key-bindings.zsh to be loaded first
-# Reference: https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh
+# Reference:
+# - https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh
+# - https://github.com/wookayin/fzf-fasd/blob/master/fzf-fasd.plugin.zsh
 
 fzf-fasd-widget() {
   setopt localoptions pipefail no_aliases 2> /dev/null
@@ -55,6 +57,8 @@ fzf-fasd-widget() {
     return $ret
   fi
 }
+zle -N fzf-fasd-widget
+bindkey "^G" fzf-fasd-widget
 
 fzf-file-widget-smarter() {
   setopt localoptions pipefail no_aliases 2> /dev/null
@@ -95,10 +99,6 @@ fzf-file-widget-smarter() {
   zle reset-prompt
   return $ret
 }
-
-zle -N fzf-fasd-widget
 zle -N fzf-file-widget-smarter
-
 bindkey "^T" fzf-file-widget-smarter
-bindkey "^G" fzf-fasd-widget
 

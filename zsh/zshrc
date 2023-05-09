@@ -1,8 +1,11 @@
 # Profiling begin
 # zmodload zsh/zprof
 
-## If connected from remote & not in tmux, start tmux.
-if [[ $SSH_CONNECTION && -z ${TMUX+X}${ZSH_SCRIPT+X}${ZSH_EXECUTION_STRING+X} ]]; then
+## If connected from remote & not in tmux & not from VS Code, start tmux.
+if [[ ${SSH_CONNECTION+X}
+        && -z ${VSCODE_INJECTION+X}
+        && -z ${VSCODE_IPC_HOOK_CLI+X}
+        && -z ${TMUX+X}${ZSH_SCRIPT+X}${ZSH_EXECUTION_STRING+X} ]]; then
     tmux a -d
 fi
 
@@ -32,6 +35,18 @@ function clone-plugin {
     return 1
 }
 gbl_funcs+=clone-plugin
+
+# make a shim: a wrapper script that forwards the call to the actual binary,
+# which may be located in a user dir
+function make-shim {
+    local name=$1
+    local binpath=$2
+
+    mkdir -p $HOME/.local/bin
+    echo -e "#!/bin/sh\n$binpath \"\$@\"" > $HOME/.local/bin/$name &&
+    chmod +x $HOME/.local/bin/$name
+}
+gbl_funcs+=make-shim
 
 # Check if command exists, return 0 on success
 # much faster than external program `which` as no forking is needed
@@ -68,7 +83,8 @@ clone-plugin ohmyzsh &&
 clone-plugin fzf &&
     $ZSH_PLUGGED/fzf/install --bin
 
-clone-plugin fasd
+clone-plugin fasd &&
+    make-shim fasd $ZSH_PLUGGED/fasd/fasd
 
 
 ## Activate Powerlevel10k Instant Prompt
@@ -126,10 +142,28 @@ function {
 source $ZSH/globalias.plugin.zsh
 
 # fasd & fzf
-[[ $- == *i* ]] && \
-    source "/home/soyccan/dotfiles/zsh/plugged/fzf/shell/completion.zsh" 2> /dev/null
-source $ZSH_PLUGGED/fzf/shell/key-bindings.zsh
-source $ZSH/fzf.plugin.zsh
+[[ $- == *i* ]] && function {
+    # if shell is interactive
+
+    # usage: $ <cmd> **<tab>
+    source $ZSH_PLUGGED/fzf/shell/completion.zsh
+
+    # ^R : paste selected command histo(r)y into command line
+    # ^T : paste selected file/dir under current path (t)ree into command line
+    # ALT-C / <ESC>C : (c)d into selected dir under current tree
+    source $ZSH_PLUGGED/fzf/shell/key-bindings.zsh
+
+    # override with my widgets & key bindings
+    source $ZSH/fzf.plugin.zsh
+
+    # init fasd
+    local fasd_cache=$HOME/.fasd-init-zsh
+    if [[ $(command -v fasd) -nt $fasd_cache || ! -s $fasd_cache ]]; then
+        fasd --init zsh-hook zsh-ccomp zsh-ccomp-install \
+            zsh-wcomp zsh-wcomp-install >| $fasd_cache
+    fi
+    source $fasd_cache
+}
 
 
 ## Epilogue
@@ -137,8 +171,9 @@ source $ZSH/fzf.plugin.zsh
 # Load my configs (overrides loaded plugins)
 source $ZSH/aliases.zsh
 
-# my completions
-fpath+=$ZSH
+# my functions & completions
+fpath+=$ZSH/functions
+fpath+=$ZSH/functions/Completion
 
 # Enable the "new" completion system (compsys)
 autoload -Uz compinit && compinit

@@ -49,20 +49,21 @@ fi
 # docker
 if has docker; then
     alias dat='docker attach'
-    alias dbd='docker build'
+    alias db='docker buildx'
+    alias dbr='docker run --rm -it $(docker build -q .)'
     alias dcon='docker container'
     alias dex='docker exec -it'
     alias dim='docker image'
     alias diml='docker image ls'
     alias dimp='docker image prune'
     alias dl='docker pull'
-    alias dps='docker ps'
-    alias dpsa='docker ps -a'
+    alias dps='docker ps -a'
     alias drm='docker rm'
     alias drmi='docker rmi'
-    alias drun='docker run -it'
+    alias dr='docker run --rm -it'
     alias dst='docker start -ai'
     alias dstp='docker stop'
+    alias dk='docker kill'
     alias dv='docker volume'
     alias dvl='docker volume ls'
     alias dvp='docker volume prune'
@@ -72,21 +73,49 @@ fi
 # docker-compose
 # Refer to: oh-my-zsh/docker-compose.plugin.zsh
 if has docker-compose; then
+    # Docker Compose V1
     alias dcb='docker-compose build'
     alias dce='docker-compose exec'
     alias dcps='docker-compose ps'
     alias dcrst='docker-compose restart'
     alias dcrm='docker-compose rm'
     alias dcr='docker-compose run'
-    alias dcsto='docker-compose stop'
+    alias dcstp='docker-compose stop'
     alias dcup='docker-compose up'
+    alias dcupb='docker-compose up --build'
     alias dcupd='docker-compose up -d'
+    alias dcupdb='docker-compose up -d --build'
     alias dcdn='docker-compose down'
     alias dcl='docker-compose logs'
     alias dclf='docker-compose logs -f'
     alias dcpl='docker-compose pull'
     alias dcsta='docker-compose start'
     alias dck='docker-compose kill'
+fi
+if has docker && docker compose &>/dev/null; then
+    # Docker Compose V2
+    alias dcb='docker compose build'
+    alias dce='docker compose exec'
+    alias dcps='docker compose ps'
+    alias dcrst='docker compose restart'
+    alias dcrm='docker compose rm'
+    alias dcr='docker compose run'
+    alias dcstp='docker compose stop'
+    alias dcup='docker compose up'
+    alias dcupb='docker compose up --build'
+    alias dcupd='docker compose up -d'
+    alias dcupdb='docker compose up -d --build'
+    alias dcdn='docker compose down'
+    alias dcl='docker compose logs'
+    alias dclf='docker compose logs -f'
+    alias dcpl='docker compose pull'
+    alias dcsta='docker compose start'
+    alias dck='docker compose kill'
+fi
+
+# kubectl
+if has kubectl; then
+    alias kc='kubectl'
 fi
 
 # brew
@@ -150,9 +179,12 @@ if has systemctl; then
     alias scd='sudo systemctl disable'
     alias scdn='sudo systemctl disable --now'
     alias scst='sudo systemctl start'
-    alias scsp='sudo systemctl stop'
+    alias scstp='sudo systemctl stop'
     alias scr='sudo systemctl restart'
     alias scs='systemctl status'
+fi
+if has journalctl; then
+    alias jc='journalctl -xeu'
 fi
 
 # rsync
@@ -269,6 +301,7 @@ alias duf='du -sh * | sort -hr'
 # see also `tree` function in OMZ/systemadmin
 alias fdd='find . -type d'
 alias fdf='find . -type f'
+has fdfind && alias fd='fdfind'
 
 alias h='history'
 alias hgrep="fc -El 0 | grep"
@@ -406,3 +439,8 @@ shell-speed-test() {
     for i in $(seq 1 10); do time $SHELL -i -c exit; done
 }
 
+if ! has yq && has docker; then
+    yq() {
+        docker run --rm -i -v "${PWD}":/workdir mikefarah/yq yq "$@"
+    }
+fi

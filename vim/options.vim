@@ -59,10 +59,11 @@ set autoread " auto reload when changed
 "   /usr/share/vim/addons/plugin/gtags.vim
 " we don't use ctags but gtags, which is of cscope-like interface
 " (gtags-cscope)
-set cscopetag
-set cscopeprg=gtags-cscope
-let GtagsCscope_Auto_Load = 1
-let GtagsCscope_Auto_Map = 1
+" Update: NeoVim 0.9 removed Cscope support
+" set cscopetag
+" set cscopeprg=gtags-cscope
+" let GtagsCscope_Auto_Load = 1
+" let GtagsCscope_Auto_Map = 1
 
 " Buffers
 " allow buffer to be hidden without being saved
