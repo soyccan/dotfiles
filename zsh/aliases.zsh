@@ -133,6 +133,12 @@ if has lsof; then
     }
 fi
 
+# network
+if has dig; then
+    alias myip='dig +short myip.opendns.com @resolver1.opendns.com'
+    alias myip1='dig +short txt ch whoami.cloudflare @1.0.0.1'
+fi
+
 # packet filter
 if has pfctl; then
     alias pf-enable='sudo pfctl -ef /etc/pf.conf'
