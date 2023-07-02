@@ -49,7 +49,7 @@ fi
 # docker
 if has docker; then
     alias dat='docker attach'
-    alias db='docker buildx'
+    alias db='docker build'
     alias dbr='docker run --rm -it $(docker build -q .)'
     alias dcon='docker container'
     alias dex='docker exec -it'
@@ -57,6 +57,7 @@ if has docker; then
     alias diml='docker image ls'
     alias dimp='docker image prune'
     alias dl='docker pull'
+    alias dlg='docker logs -f'
     alias dps='docker ps -a'
     alias drm='docker rm'
     alias drmi='docker rmi'
@@ -72,46 +73,35 @@ fi
 
 # docker-compose
 # Refer to: oh-my-zsh/docker-compose.plugin.zsh
-if has docker-compose; then
-    # Docker Compose V1
-    alias dcb='docker-compose build'
-    alias dce='docker-compose exec'
-    alias dcps='docker-compose ps'
-    alias dcrst='docker-compose restart'
-    alias dcrm='docker-compose rm'
-    alias dcr='docker-compose run'
-    alias dcstp='docker-compose stop'
-    alias dcup='docker-compose up'
-    alias dcupb='docker-compose up --build'
-    alias dcupd='docker-compose up -d'
-    alias dcupdb='docker-compose up -d --build'
-    alias dcdn='docker-compose down'
-    alias dcl='docker-compose logs'
-    alias dclf='docker-compose logs -f'
-    alias dcpl='docker-compose pull'
-    alias dcsta='docker-compose start'
-    alias dck='docker-compose kill'
-fi
-if has docker && docker compose &>/dev/null; then
-    # Docker Compose V2
-    alias dcb='docker compose build'
-    alias dce='docker compose exec'
-    alias dcps='docker compose ps'
-    alias dcrst='docker compose restart'
-    alias dcrm='docker compose rm'
-    alias dcr='docker compose run'
-    alias dcstp='docker compose stop'
-    alias dcup='docker compose up'
-    alias dcupb='docker compose up --build'
-    alias dcupd='docker compose up -d'
-    alias dcupdb='docker compose up -d --build'
-    alias dcdn='docker compose down'
-    alias dcl='docker compose logs'
-    alias dclf='docker compose logs -f'
-    alias dcpl='docker compose pull'
-    alias dcsta='docker compose start'
-    alias dck='docker compose kill'
-fi
+function {
+    if has docker && docker compose &>/dev/null; then
+        # Docker Compose V2
+        local _dc='docker compose'
+    elif has docker-compose; then
+        # Docker Compose V1
+        local _dc='docker-compose'
+    fi
+
+    if [ "$_dc" ]; then
+        alias dcb="$_dc build"
+        alias dce="$_dc exec"
+        alias dcps="$_dc ps"
+        alias dcrst="$_dc restart"
+        alias dcrm="$_dc rm"
+        alias dcr="$_dc run --rm"
+        alias dcstp="$_dc stop"
+        alias dcup="$_dc up"
+        alias dcupb="$_dc up --build"
+        alias dcupd="$_dc up -d"
+        alias dcupdb="$_dc up -d --build"
+        alias dcdn="$_dc down"
+        alias dcl="$_dc logs"
+        alias dclf="$_dc logs -f"
+        alias dcpl="$_dc pull"
+        alias dcsta="$_dc start"
+        alias dck="$_dc kill"
+    fi
+}
 
 # kubectl
 if has kubectl; then
@@ -152,24 +142,17 @@ if has pfctl; then
     alias pf-dryrun='pfctl -vnf /etc/pf.conf'
 fi
 
-# pipenv
-# Refer to: oh-my-zsh/pipenv.plugin.zsh
-# if has pipenv; then
-#     alias pch='pipenv check'
-#     alias pcl='pipenv clean'
-#     alias pgr='pipenv graph'
-#     alias pi='pipenv install --skip-lock --verbose'
-#     alias pidev='pipenv install --skip-lock --verbose --dev'
-#     alias pl='pipenv lock'
-#     alias po='pipenv open'
-#     alias ppy='pipenv --py'
-#     alias prun='pipenv run'
-#     alias psh='pipenv shell'
-#     alias psy='pipenv sync'
-#     alias pu='pipenv uninstall'
-#     alias pvenv='pipenv --venv'
-#     alias pwh='pipenv --where'
-# fi
+# Poetry
+if has poetry; then
+    alias pt='poetry'
+    alias pta='poetry add'
+    alias ptad='poetry add -D'
+    alias ptd='poetry remove'
+    alias ptdd='poetry remove -D'
+    alias pti='poetry install'
+    alias ptl='poetry show'
+    alias ptu='poetry env use'
+fi
 
 # systemd
 # Refer to: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/systemd/systemd.plugin.zsh

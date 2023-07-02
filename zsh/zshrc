@@ -139,7 +139,7 @@ function {
 }
 
 # globalias: expand glob & alias in command line
-source $ZSH/globalias.plugin.zsh
+source $ZSH/plugins/globalias.plugin.zsh
 
 # fasd & fzf
 [[ $- == *i* ]] && function {
@@ -154,7 +154,7 @@ source $ZSH/globalias.plugin.zsh
     source $ZSH_PLUGGED/fzf/shell/key-bindings.zsh
 
     # override with my widgets & key bindings
-    source $ZSH/fzf.plugin.zsh
+    source $ZSH/plugins/fzf.plugin.zsh
 
     # init fasd
     local fasd_cache=$HOME/.fasd-init-zsh
@@ -173,7 +173,7 @@ source $ZSH/aliases.zsh
 
 # my functions & completions
 fpath+=$ZSH/functions
-fpath+=$ZSH/functions/Completion
+fpath+=$ZSH/functions/vendor-completions
 
 # Enable the "new" completion system (compsys)
 autoload -Uz compinit && compinit
