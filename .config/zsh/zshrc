@@ -11,7 +11,7 @@ fi
 
 
 ## Global variables & functions for zshrc
-ZSH=$HOME/dotfiles/zsh
+ZSH=$HOME/.config/zsh
 ZSH_PLUGGED=$ZSH/plugged
 
 gbl_funcs=()
@@ -26,7 +26,7 @@ gbl_funcs+=zcompile-many
 # return 1 if already cloned, 0 otherwise
 function clone-plugin {
     local name=$1
-    if [[ "$(<$ZSH/../.git/config)" != *$name* ]]; then
+    if [[ "$(<$HOME/.local/share/yadm/repo.git/config)" != *$name* ]]; then
         # if .git/config contains no $name string
         # we say the submodule is not cloned, and clone it
         git -C $ZSH_PLUGGED submodule update --init --depth=1 $name
@@ -43,7 +43,7 @@ function make-shim {
     local binpath=$2
 
     mkdir -p $HOME/.local/bin
-    echo -e "#!/bin/sh\n$binpath \"\$@\"" > $HOME/.local/bin/$name &&
+    echo -e "#!/bin/sh\n$binpath \"\$@\"" > $HOME/.local/bin/$name
     chmod +x $HOME/.local/bin/$name
 }
 gbl_funcs+=make-shim
@@ -179,11 +179,11 @@ fpath+=$ZSH/functions/vendor-completions
 autoload -Uz compinit && compinit
 [[ ~/.zcompdump.zwc -nt ~/.zcompdump ]] || zcompile-many ~/.zcompdump
 
+# Pull new changes of dotfiles in background
+has yadm && (yadm pull &>/dev/null &)
+
 unfunction $gbl_funcs
 unset gbl_funcs
-
-# Pull new changes of dotfiles in background
-(git -C "$HOME/dotfiles" pull &>/dev/null &)
 
 
 # Profiling end
