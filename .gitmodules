@@ -1,42 +1,42 @@
 [submodule "gdb/libheap"]
-	path = gdb/libheap
+	path = .config/gdb/libheap
 	url = https://github.com/cloudburst/libheap
 [submodule "gdb/peda"]
-	path = gdb/peda
+	path = .config/gdb/peda
 	url = https://github.com/longld/peda
 [submodule "gdb/Pwngdb"]
-	path = gdb/Pwngdb
+	path = .config/gdb/Pwngdb
 	url = https://github.com/scwuaptx/Pwngdb
 [submodule "gdb/pwndbg"]
-	path = gdb/pwndbg
+	path = .config/gdb/pwndbg
 	url = https://github.com/pwndbg/pwndbg
 [submodule "tmux/oh-my-tmux"]
-	path = tmux/oh-my-tmux
+	path = .config/tmux/oh-my-tmux
 	url = https://github.com/gpakosz/.tmux
 [submodule "vim/no_plugins.git"]
 	path = vim/no_plugins.git
 	url = https://github.com/changemewtf/no_plugins
 [submodule "zsh/plugged/powerlevel10k"]
-	path = zsh/plugged/powerlevel10k
+	path = .config/zsh/plugged/powerlevel10k
 	url = https://github.com/romkatv/powerlevel10k
 [submodule "zsh/plugged/zsh-syntax-highlighting"]
-	path = zsh/plugged/zsh-syntax-highlighting
+	path = .config/zsh/plugged/zsh-syntax-highlighting
 	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
 [submodule "zsh/plugged/zsh-autosuggestions"]
-	path = zsh/plugged/zsh-autosuggestions
+	path = .config/zsh/plugged/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions
 [submodule "zsh/plugged/fast-syntax-highlighting"]
-	path = zsh/plugged/fast-syntax-highlighting
+	path = .config/zsh/plugged/fast-syntax-highlighting
 	url = https://github.com/zdharma-continuum/fast-syntax-highlighting
 [submodule "zsh/plugged/zsh-completions"]
-	path = zsh/plugged/zsh-completions
+	path = .config/zsh/plugged/zsh-completions
 	url = https://github.com/zsh-users/zsh-completions.git
 [submodule "zsh/plugged/ohmyzsh"]
-	path = zsh/plugged/ohmyzsh
+	path = .config/zsh/plugged/ohmyzsh
 	url = https://github.com/ohmyzsh/ohmyzsh/
 [submodule "zsh/plugged/fzf"]
-	path = zsh/plugged/fzf
+	path = .config/zsh/plugged/fzf
 	url = https://github.com/junegunn/fzf
 [submodule "zsh/plugged/fasd"]
-	path = zsh/plugged/fasd
+	path = .config/zsh/plugged/fasd
 	url = https://github.com/clvv/fasd
