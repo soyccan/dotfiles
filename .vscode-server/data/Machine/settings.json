@@ -1,0 +1,42 @@
+{
+    "editor.fontFamily": "'Cascadia Code', Consolas, 'Courier New', monospace",
+    "editor.fontLigatures": true,
+    "editor.inlayHints.enabled": "offUnlessPressed",
+    "editor.rulers": [100],
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "workbench.editor.revealIfOpen": true,
+
+    // C/C++
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "clangd.path": "/home/soyccan/.vscode-server/data/User/globalStorage/llvm-vs-code-extensions.vscode-clangd/install/16.0.2/clangd_16.0.2/bin/clangd",
+
+    // Python
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8CategorySeverity.E": "Warning",
+    "python.linting.flake8CategorySeverity.F": "Warning",
+    "flake8.severity": {
+        "E": "Warning",
+        "F": "Warning"
+    },
+    "python.linting.mypyEnabled": true,
+    "python.linting.pylintEnabled": false,
+    "black-formatter.args": [
+        "--config", "${workspaceFolder}/pyproject.toml"
+    ],
+    "isort.args": [
+        "--settings-path", "${workspaceFolder}/pyproject.toml"
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },
+    },
+
+    // Go
+    "[go]": {
+        "editor.tabSize": 8,
+    }
+}
