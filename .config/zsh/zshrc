@@ -1,6 +1,8 @@
 # Profiling begin
 # zmodload zsh/zprof
 
+setopt -o nullglob
+
 ## If connected from remote & not in tmux & not from VS Code, start tmux.
 if [[ ${SSH_CONNECTION+X}
         && -z ${VSCODE_INJECTION+X}
@@ -21,6 +23,10 @@ function zcompile-many {
     for f; do zcompile -R -- "$f".zwc "$f"; done
 }
 gbl_funcs+=zcompile-many
+
+# Enable the "new" completion system (compsys)
+autoload -Uz compinit && compinit
+[[ ~/.zcompdump.zwc -nt ~/.zcompdump ]] || zcompile-many ~/.zcompdump
 
 # Clone plugins included as submodules of my dotfiles repo
 # return 1 if already cloned, 0 otherwise
@@ -174,10 +180,6 @@ source $ZSH/aliases.zsh
 # my functions & completions
 fpath+=$ZSH/functions
 fpath+=$ZSH/functions/vendor-completions
-
-# Enable the "new" completion system (compsys)
-autoload -Uz compinit && compinit
-[[ ~/.zcompdump.zwc -nt ~/.zcompdump ]] || zcompile-many ~/.zcompdump
 
 # Pull new changes of dotfiles in background
 has yadm && (yadm pull &>/dev/null &)
