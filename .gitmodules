@@ -1,42 +1,42 @@
 [submodule "gdb/libheap"]
-	path = .config/gdb/libheap
+	path = .local/share/gdb/plugged/libheap
 	url = https://github.com/cloudburst/libheap
 [submodule "gdb/peda"]
-	path = .config/gdb/peda
+	path = .local/share/gdb/plugged/peda
 	url = https://github.com/longld/peda
 [submodule "gdb/Pwngdb"]
-	path = .config/gdb/Pwngdb
+	path = .local/share/gdb/plugged/Pwngdb
 	url = https://github.com/scwuaptx/Pwngdb
 [submodule "gdb/pwndbg"]
-	path = .config/gdb/pwndbg
+	path = .local/share/gdb/plugged/pwndbg
 	url = https://github.com/pwndbg/pwndbg
 [submodule "tmux/oh-my-tmux"]
-	path = .tmux
+	path = .config/tmux/oh-my-tmux
 	url = https://github.com/gpakosz/.tmux
 [submodule "vim/no_plugins.git"]
 	path = vim/no_plugins.git
 	url = https://github.com/changemewtf/no_plugins
 [submodule "zsh/plugged/powerlevel10k"]
-	path = .config/zsh/plugged/powerlevel10k
+	path = .local/share/zsh/plugged/powerlevel10k
 	url = https://github.com/romkatv/powerlevel10k
 [submodule "zsh/plugged/zsh-syntax-highlighting"]
-	path = .config/zsh/plugged/zsh-syntax-highlighting
+	path = .local/share/zsh/plugged/zsh-syntax-highlighting
 	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
 [submodule "zsh/plugged/zsh-autosuggestions"]
-	path = .config/zsh/plugged/zsh-autosuggestions
+	path = .local/share/zsh/plugged/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions
 [submodule "zsh/plugged/fast-syntax-highlighting"]
-	path = .config/zsh/plugged/fast-syntax-highlighting
+	path = .local/share/zsh/plugged/fast-syntax-highlighting
 	url = https://github.com/zdharma-continuum/fast-syntax-highlighting
 [submodule "zsh/plugged/zsh-completions"]
-	path = .config/zsh/plugged/zsh-completions
+	path = .local/share/zsh/plugged/zsh-completions
 	url = https://github.com/zsh-users/zsh-completions.git
 [submodule "zsh/plugged/ohmyzsh"]
-	path = .config/zsh/plugged/ohmyzsh
+	path = .local/share/zsh/plugged/ohmyzsh
 	url = https://github.com/ohmyzsh/ohmyzsh/
 [submodule "zsh/plugged/fzf"]
-	path = .config/zsh/plugged/fzf
+	path = .local/share/zsh/plugged/fzf
 	url = https://github.com/junegunn/fzf
 [submodule "zsh/plugged/fasd"]
-	path = .config/zsh/plugged/fasd
+	path = .local/share/zsh/plugged/fasd
 	url = https://github.com/clvv/fasd

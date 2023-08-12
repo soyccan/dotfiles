@@ -23,10 +23,10 @@
     "python.linting.mypyEnabled": true,
     "python.linting.pylintEnabled": false,
     "black-formatter.args": [
-        "--config", "${workspaceFolder}/pyproject.toml"
+        // "--config", "${workspaceFolder}/pyproject.toml"
     ],
     "isort.args": [
-        "--settings-path", "${workspaceFolder}/pyproject.toml"
+        // "--settings-path", "${workspaceFolder}/pyproject.toml"
     ],
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter",

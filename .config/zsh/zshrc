@@ -1,20 +1,22 @@
 # Profiling begin
 # zmodload zsh/zprof
 
-setopt -o nullglob
 
-## If connected from remote & not in tmux & not from VS Code, start tmux.
+## If connected from remote & not in tmux & not from VS Code, enter tmux.
+# Attach any existing session (-A). If not available, create a new session
+# with the first window running htop.
 if [[ ${SSH_CONNECTION+X}
-        && -z ${VSCODE_INJECTION+X}
-        && -z ${VSCODE_IPC_HOOK_CLI+X}
+        && -z ${VSCODE_INJECTION+X}${VSCODE_IPC_HOOK_CLI+X}
         && -z ${TMUX+X}${ZSH_SCRIPT+X}${ZSH_EXECUTION_STRING+X} ]]; then
-    tmux a -d
+    tmux new-session -dAD "exec htop"
+    tmux new-window
+    tmux attach
 fi
 
 
 ## Global variables & functions for zshrc
-ZSH=$HOME/.config/zsh
-ZSH_PLUGGED=$ZSH/plugged
+ZSH=$XDG_CONFIG_HOME/zsh
+ZSH_PLUGGED=$XDG_DATA_HOME/zsh/plugged
 
 gbl_funcs=()
 

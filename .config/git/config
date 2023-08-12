@@ -1,19 +1,24 @@
 [user]
     email = soyccan@gmail.com
     name = soyccan
+
 [difftool]
     prompt = false
+
 [merge]
     tool = nvim
 [mergetool "nvim"]
     cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED +'wincmd b' +'wincmd J'
+
 [filter "lfs"]
     process = git-lfs filter-process
     required = true
     clean = git-lfs clean -- %f
     smudge = git-lfs smudge -- %f
+
 [init]
     defaultBranch = main
+
 [core]
     # autocrlf
     #   true:  convert CRLF to LF when commit, and convert LF to CRLF when checkout
@@ -28,4 +33,4 @@
     safecrlf = warn
 
     filemode = false
-	pager = less -R
+    pager = less -R
