@@ -40,10 +40,16 @@ if has nvim; then
 fi
 
 # git
-# https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
 if has git; then
-    # together with ohmyzsh git plugin
-    alias gcll='git clone --recurse-submodules --depth 1'
+    # overwrite ohmyzsh git plugin:
+    # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
+    alias gcl='git clone --recurse-submodules --depth 1'
+    alias gf='git fetch --all'
+    alias gr='git remote -v'
+    git-add-downstream() {
+        git remote rename origin upstream
+        git remote add origin "$1"
+    }
 fi
 
 # docker

@@ -34,3 +34,7 @@
 
     filemode = false
     pager = less -R
+
+[push]
+    # push the current branch to the same name on remote
+    default = current
