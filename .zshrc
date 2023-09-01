@@ -119,7 +119,7 @@ source $ZSH_PLUGGED/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # Powerlevel10k: A theme for Zsh
 source $ZSH_PLUGGED/powerlevel10k/powerlevel10k.zsh-theme
-source $ZSH/p10k.zsh
+source $HOME/.p10k.zsh
 
 # zsh-completions: Additional completion definitions for Zsh
 fpath+=$ZSH_PLUGGED/zsh-completions/src
