@@ -89,7 +89,10 @@ clone-plugin ohmyzsh &&
 # TODO: include fzf, fasd, exa, bat... binaries in PATH
 # may refer to zinit annex bin-gem-node
 clone-plugin fzf
-has fzf || $ZSH_PLUGGED/fzf/install --bin
+if ! has fzf; then
+    $ZSH_PLUGGED/fzf/install --bin
+    make-shim fzf $ZSH_PLUGGED/fzf/bin/fzf
+fi
 
 clone-plugin fasd
 has fasd || make-shim fasd $ZSH_PLUGGED/fasd/fasd
