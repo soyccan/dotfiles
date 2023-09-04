@@ -46,7 +46,7 @@ gbl_funcs+=clone-plugin
 
 # make a shim: a wrapper script that forwards the call to the actual binary,
 # which may be located in a user dir
-function make-shim {
+function mkshim {
     local name=$1
     local binpath=$2
 
@@ -54,7 +54,19 @@ function make-shim {
     echo -e "#!/bin/sh\n$binpath \"\$@\"" > $HOME/.local/bin/$name
     chmod +x $HOME/.local/bin/$name
 }
-gbl_funcs+=make-shim
+gbl_funcs+=mkshim
+
+function download_bin {
+    local binname=$1
+    local url=$2
+    (
+        cd $(mktemp -d) || exit
+        curl -fLO $url
+        extract ${url##*/}
+        cp -f **/$binname $HOME/.local/bin/$binname
+    )
+}
+gbl_funcs+=download_bin
 
 # Check if command exists, return 0 on success
 # much faster than external program `which` as no forking is needed
@@ -91,11 +103,11 @@ clone-plugin ohmyzsh &&
 clone-plugin fzf
 if ! has fzf; then
     $ZSH_PLUGGED/fzf/install --bin
-    make-shim fzf $ZSH_PLUGGED/fzf/bin/fzf
+    mkshim fzf $ZSH_PLUGGED/fzf/bin/fzf
 fi
 
 clone-plugin fasd
-has fasd || make-shim fasd $ZSH_PLUGGED/fasd/fasd
+has fasd || mkshim fasd $ZSH_PLUGGED/fasd/fasd
 
 
 ## Activate Powerlevel10k Instant Prompt
@@ -144,10 +156,15 @@ function {
                 encode64 \
                 systemadmin \
                 systemd \
+                extract \
                 git; do
         source $ZSH_PLUGGED/ohmyzsh/plugins/$name/$name.plugin.zsh
     done
 }
+
+# require ohmyzsh plugin `extract`
+has bat || download_bin bat https://github.com/sharkdp/bat/releases/download/v0.23.0/bat-v0.23.0-x86_64-unknown-linux-musl.tar.gz
+has exa || download_bin exa https://github.com/ogham/exa/releases/download/v0.10.1/exa-linux-x86_64-musl-v0.10.1.zip
 
 # globalias: expand glob & alias in command line
 source $ZSH/plugins/globalias.plugin.zsh
