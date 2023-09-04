@@ -128,31 +128,37 @@ if has gdb; then
     alias pwndbg='gdb -q -ex init-pwndbg'
 fi
 
-# lsof
-# raw hostname(-n), raw port number(-P), inet4(-i4)
-# port is placeholder
-if has lsof; then
-    alias lsof-listen='lsof -nP -sTCP:LISTEN -i4TCP'
-    alias lsof-connect='lsof -nP -i4TCP'
-    lsof-port() {
-        lsof -nP -i4TCP:$1
-    }
-fi
-
 # network
-if has dig; then
-    alias myip='dig +short myip.opendns.com @resolver1.opendns.com'
-    alias myip1='dig +short txt ch whoami.cloudflare @1.0.0.1'
-fi
+function {
+    # lsof
+    # raw hostname(-n), raw port number(-P), inet4(-i4)
+    if has lsof; then
+        alias lsof-listen='lsof -nP -sTCP:LISTEN -i4TCP'
+        alias lsof-connect='lsof -nP -i4TCP'
+        lsof-port() {
+            lsof -nP -i4TCP:$1
+        }
+    fi
 
-# packet filter
-if has pfctl; then
-    alias pf-enable='sudo pfctl -ef /etc/pf.conf'
-    alias pf-disable='sudo pfctl -d'
-    alias pf-reload='sudo pfctl -F all -f /etc/pf.conf'
-    alias pf-state='sudo pfctl -s state'
-    alias pf-dryrun='pfctl -vnf /etc/pf.conf'
-fi
+    if has dig; then
+        alias myip='dig +short myip.opendns.com @resolver1.opendns.com'
+        alias myip1='dig +short txt ch whoami.cloudflare @1.0.0.1'
+    fi
+
+    if has nettop; then
+        # macOS; show delta(-d), per-process(-P)
+        alias nettop='nettop -Pd'
+    fi
+
+    # packet filter
+    if has pfctl; then
+        alias pf-enable='sudo pfctl -ef /etc/pf.conf'
+        alias pf-disable='sudo pfctl -d'
+        alias pf-reload='sudo pfctl -F all -f /etc/pf.conf'
+        alias pf-state='sudo pfctl -s state'
+        alias pf-dryrun='pfctl -vnf /etc/pf.conf'
+    fi
+}
 
 # Poetry
 if has poetry; then
