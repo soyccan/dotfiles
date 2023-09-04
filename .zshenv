@@ -1,11 +1,5 @@
 function has { [[ $commands[$1] ]] }
 
-# XDG
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
-
 # PATH
 function {
     # null_glob: ignore error when globbing fails (/path/to/some/dir/* not exist)
@@ -97,6 +91,10 @@ if has aws && has aws_completer; then
     autoload -Uz compinit && compinit
     complete -C $(which aws_completer) aws # TODO: this does not work
 fi
+
+# pagers
+export LESSOPEN="|/bin/lesspipe %s"
+export BAT_PAGER="/usr/bin/less -RFi" # ignore case
 
 unfunction has
 

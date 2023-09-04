@@ -15,8 +15,8 @@ fi
 
 
 ## Global variables & functions for zshrc
-ZSH=$XDG_CONFIG_HOME/zsh
-ZSH_PLUGGED=$XDG_DATA_HOME/zsh/plugged
+ZSH=${XDG_CONFIG_HOME:-$HOME/.config}/zsh
+ZSH_PLUGGED=${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugged
 
 gbl_funcs=()
 
@@ -88,11 +88,11 @@ clone-plugin ohmyzsh &&
 
 # TODO: include fzf, fasd, exa, bat... binaries in PATH
 # may refer to zinit annex bin-gem-node
-clone-plugin fzf &&
-    $ZSH_PLUGGED/fzf/install --bin
+clone-plugin fzf
+has fzf || $ZSH_PLUGGED/fzf/install --bin
 
-clone-plugin fasd &&
-    make-shim fasd $ZSH_PLUGGED/fasd/fasd
+clone-plugin fasd
+has fasd || make-shim fasd $ZSH_PLUGGED/fasd/fasd
 
 
 ## Activate Powerlevel10k Instant Prompt

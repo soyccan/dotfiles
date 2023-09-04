@@ -14,8 +14,10 @@ alias untar='tar -vxf' # extract
 alias lzip='unzip -lv'
 alias lrar='unrar l'
 
-has batcat && alias bat='batcat'
-alias less='less -Ri' # -R: reads color codes; -i: ignore case
+has batcat && bat() {
+    batcat "$@"
+}
+alias less='less -RFi' # -R: reads color codes; -i: ignore case
 alias ln='ln -s' # --symbolic
 alias wget='wget -c' # --continue; (--timestamping)
 alias hd='hexdump -C' # hex+ascii
@@ -43,7 +45,8 @@ fi
 if has git; then
     # overwrite ohmyzsh git plugin:
     # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
-    alias gcl='git clone --recurse-submodules --depth 1'
+    alias gcl='git clone'
+    alias gcl1='git clone --depth 1'
     alias gf='git fetch --all'
     alias gr='git remote -v'
     git-add-downstream() {
@@ -101,8 +104,7 @@ function {
         alias dcupd="$_dc up -d"
         alias dcupdb="$_dc up -d --build"
         alias dcdn="$_dc down"
-        alias dcl="$_dc logs"
-        alias dclf="$_dc logs -f"
+        alias dcl="$_dc logs -f"
         alias dcpl="$_dc pull"
         alias dcsta="$_dc start"
         alias dck="$_dc kill"
