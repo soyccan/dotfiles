@@ -160,6 +160,22 @@ function {
         alias pf-state='sudo pfctl -s state'
         alias pf-dryrun='pfctl -vnf /etc/pf.conf'
     fi
+
+    if has ss; then
+        alias sst='ss -lnpt4'
+        alias ssu='ss -lnpu4'
+    elif has netstat; then
+        alias sst='netstat -lnpt4'
+        alias ssu='netstat -lnpu4'
+    fi
+
+    if has ufw; then
+        alias ufwl='sudo ufw status verbose'
+    fi
+
+    if has nft; then
+        alias nftl='sudo nft --handle list ruleset'
+    fi
 }
 
 # Poetry
