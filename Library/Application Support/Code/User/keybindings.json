@@ -1,0 +1,22 @@
+// Place your key bindings in this file to override the defaults
+[
+    {
+        "key": "ctrl+`",
+        "command": "-workbench.action.terminal.toggleTerminal",
+        "when": "terminal.active"
+    },
+    {
+        "key": "ctrl+`",
+        "command": "workbench.action.terminal.focus",
+    },
+    {
+        "key": "ctrl+`",
+        "command": "workbench.action.focusActiveEditorGroup",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "shift+cmd+space",
+        "command": "-editor.action.smartSelect.grow",
+        "when": "editorTextFocus"
+    }
+]

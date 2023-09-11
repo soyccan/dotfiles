@@ -1,1 +1,43 @@
-../../../../.vscode-server/data/Machine/settings.json
+{
+    "editor.fontFamily": "'Cascadia Code', Consolas, 'Courier New', monospace",
+    "editor.fontLigatures": true,
+    "editor.inlayHints.enabled": "offUnlessPressed",
+    "editor.rulers": [100],
+    "editor.tabSize": 8,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "git.autofetch": "all",
+    "workbench.editor.revealIfOpen": true,
+    "remote.SSH.remotePlatform": {
+        "nslab5": "linux"
+    },
+
+    // C/C++
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "clangd.path": "/home/soyccan/.vscode-server/data/User/globalStorage/llvm-vs-code-extensions.vscode-clangd/install/16.0.2/clangd_16.0.2/bin/clangd",
+    "cmake.configureOnOpen": false,
+
+    // Python
+    "flake8.severity": {
+        "E": "Warning",
+        "F": "Warning"
+    },
+    "black-formatter.args": [
+        // "--config", "${workspaceFolder}/pyproject.toml"
+    ],
+    "isort.args": [
+        // "--settings-path", "${workspaceFolder}/pyproject.toml"
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },
+    },
+
+    // Javascript
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+}
