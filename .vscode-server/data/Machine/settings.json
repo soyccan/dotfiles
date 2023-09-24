@@ -12,7 +12,7 @@
     "remote.SSH.remotePlatform": {
         "nslab5": "linux"
     },
-    // ---
+
     // C/C++
     "C_Cpp.intelliSenseEngine": "disabled",
     "cmake.configureOnOpen": false,
@@ -22,7 +22,7 @@
             "source.organizeIncludes": true
         },
     },
-    // ---
+
     // Python
     "flake8.severity": {
         "E": "Warning",
@@ -42,13 +42,13 @@
             "source.organizeImports": true
         },
     },
-    // ---
+
     // Go
     "[go]": {
         "editor.tabSize": 8,
         "editor.insertSpaces": false,
     },
-    // ---
+
     // Javascript
     "[javascript][jsonc]": {
         "editor.tabSize": 2,
