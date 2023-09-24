@@ -105,6 +105,8 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'sheerun/vim-polyglot'
 " Powershell
 Plug 'zigford/vim-powershell'
+" nftables
+Plug 'nfnty/vim-nftables'
 
 
 "" Sementic

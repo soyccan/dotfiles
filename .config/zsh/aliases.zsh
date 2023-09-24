@@ -45,10 +45,28 @@ fi
 if has git; then
     # overwrite ohmyzsh git plugin:
     # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
+    alias gb='git branch -avv'
     alias gcl='git clone'
     alias gcl1='git clone --depth 1'
+
+    # git checkout is being replaced by git restore & git switch
+    unalias gco &> /dev/null
+    unalias gcor &> /dev/null
+    unalias gcb &> /dev/null
+    unalias gcd &> /dev/null
+    unalias gcm &> /dev/null
+
+    # checkpointing, overrides git cherry-pick
+    alias gcp='git stash && git stash apply'
+
     alias gf='git fetch --all'
     alias gr='git remote -v'
+
+    # by default to discard worktree changes, so make a checkpoint to prevent loss
+    alias grs='gcp && git restore'
+
+    alias gsti='git status --ignored'
+
     git-add-downstream() {
         git remote rename origin upstream
         git remote add origin "$1"
@@ -62,6 +80,7 @@ if has docker; then
     alias dbr='docker run --rm -it $(docker build -q .)'
     alias dcon='docker container'
     alias dex='docker exec -it'
+    alias di='docker inspect'
     alias dim='docker image'
     alias diml='docker image ls'
     alias dimp='docker image prune'
@@ -320,7 +339,8 @@ alias duf='du -sh * | sort -hr'
 # see also `tree` function in OMZ/systemadmin
 alias fdd='find . -type d'
 alias fdf='find . -type f'
-has fdfind && alias fd='fdfind'
+has fd && alias fd='fd -I'
+has fdfind && alias fd='fdfind -I'
 
 alias h='history'
 alias hgrep="fc -El 0 | grep"
