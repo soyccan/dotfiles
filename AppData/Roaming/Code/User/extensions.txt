@@ -1,12 +1,17 @@
+dan-c-underwood.arm
+dbaeumer.vscode-eslint
 eamodio.gitlens
 GitHub.copilot
+GitHub.copilot-chat
 haskell.haskell
 justusadam.language-haskell
+Layle.idacode
 llvm-vs-code-extensions.vscode-clangd
 mads-hartmann.bash-ide-vscode
 ms-python.black-formatter
 ms-python.flake8
 ms-python.isort
+ms-python.mypy-type-checker
 ms-python.pylint
 ms-python.python
 ms-python.vscode-pylance
@@ -26,5 +31,9 @@ ms-vscode.cpptools-extension-pack
 ms-vscode.cpptools-themes
 ms-vscode.remote-explorer
 ms-vscode.remote-server
+ms-vscode.sublime-keybindings
+timonwong.shellcheck
 tintinweb.vscode-solidity-language
 twxs.cmake
+vscodevim.vim
+zhuangtongfa.material-theme
