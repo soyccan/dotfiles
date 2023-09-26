@@ -56,15 +56,11 @@
     },
     // ---
     // Rust
-    "rust-analyzer.rustfmt.extraArgs": ["+nightly"],
+    "rust-analyzer.rustfmt.extraArgs": [
+        "+nightly"
+    ],
     "[rust]": {
         "editor.defaultFormatter": "rust-lang.rust-analyzer",
         "editor.formatOnSave": true,
     },
-    "gitlens.gitCommands.skipConfirmations": [
-        "fetch:command",
-        "stash-push:command",
-        "switch:command",
-        "branch-create:command"
-    ],
 }
