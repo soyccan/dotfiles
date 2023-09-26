@@ -16,6 +16,7 @@
     // C/C++
     "C_Cpp.intelliSenseEngine": "disabled",
     "cmake.configureOnOpen": false,
+    "mesonbuild.configureOnOpen": false,
     "[c][cpp]": {
         "editor.tabSize": 8,
         "editor.codeActionsOnSave": {
@@ -53,4 +54,17 @@
     "[javascript][jsonc]": {
         "editor.tabSize": 2,
     },
+    // ---
+    // Rust
+    "rust-analyzer.rustfmt.extraArgs": ["+nightly"],
+    "[rust]": {
+        "editor.defaultFormatter": "rust-lang.rust-analyzer",
+        "editor.formatOnSave": true,
+    },
+    "gitlens.gitCommands.skipConfirmations": [
+        "fetch:command",
+        "stash-push:command",
+        "switch:command",
+        "branch-create:command"
+    ],
 }
