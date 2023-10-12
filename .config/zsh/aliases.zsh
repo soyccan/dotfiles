@@ -14,9 +14,16 @@ alias untar='tar -vxf' # extract
 alias lzip='unzip -lv'
 alias lrar='unrar l'
 
-has batcat && bat() {
-    batcat "$@"
-}
+has batcat && ! has bat && bat() { batcat "$@"; }
+if type bat >/dev/null; then
+    # if bat exists as a command or a function
+    batf() {
+        local file="$1"
+        shift
+        tail -f "$file" | bat --paging=never --file-name="$file" "$@"
+    }
+fi
+
 alias less='less -RFi' # -R: reads color codes; -i: ignore case
 alias ln='ln -s' # --symbolic
 alias wget='wget -c' # --continue; (--timestamping)
@@ -25,14 +32,6 @@ alias hd='hexdump -C' # hex+ascii
 alias py='python3'
 alias cl='clang'
 alias cll='clang++'
-
-# binutils
-if is_macos; then
-    alias objdump='objdump -x86-asm-syntax=intel'
-    alias gobjdump='gobjdump -M intel'
-else
-    alias objdump='objdump -M intel'
-fi
 
 # vim
 if has nvim; then
@@ -45,7 +44,9 @@ fi
 if has git; then
     # overwrite ohmyzsh git plugin:
     # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
+
     alias gb='git branch -avv'
+    alias gbk=git-backup
     alias gcl='git clone'
     alias gcl1='git clone --depth 1'
 
@@ -56,20 +57,60 @@ if has git; then
     unalias gcd &> /dev/null
     unalias gcm &> /dev/null
 
-    # checkpointing, overrides git cherry-pick
-    alias gcp='git stash && git stash apply'
-
     alias gf='git fetch --all'
     alias gr='git remote -v'
-
-    # by default to discard worktree changes, so make a checkpoint to prevent loss
-    alias grs='gcp && git restore'
-
+    alias gsa='git submodule add'
     alias gsti='git status --ignored'
 
+    git() {
+        # hooks to prevent dangerous commands
+
+        if [ "$1" = reset ] && [ "$2" = --hard ] &&
+            [ "$(command git status --short --untracked-files=no)" ]
+        then
+            echo "\"git reset --hard\" is dangerous, don't do that!"
+            echo "Consider backing up & dropping local changes using \"git stash\""
+            return 1
+        fi
+
+        if [ "$1" = restore ] && [ "$2" != --worktree ] &&
+            [ "$(command git diff --diff-filter=M --name-only -- "$2")" ]
+        then
+            shift
+            echo "\"git restore\" discards local changes of specified files: $*"
+            echo "If you are sure want to proceed, type \"git restore --worktree\""
+            return 1
+        fi
+
+        command git "$@"
+    }
+    git-backup() {
+        if [ "$(git stash)" != 'No local changes to save' ]; then
+            git stash apply
+        fi
+    }
     git-add-downstream() {
         git remote rename origin upstream
         git remote add origin "$1"
+    }
+    git-lazypull() {
+        # git pull without switching branch
+        if [ $# = 1 ]; then
+            repo=origin
+            refspec="$1"
+        else
+            repo="$1"
+            refspec="$2"
+        fi
+        git fetch "$repo" "$refspec"
+        git update-ref "refs/heads/$refspec" "$repo/$refspec"
+    }
+    git-sync-upstream() {
+        # sync upstream with origin without switching branch
+        default_branch="$(git remote show upstream | sed -n '/HEAD branch/s/.*: //p')"
+        git fetch upstream "$default_branch"
+        git update-ref "refs/heads/$default_branch" "upstream/$default_branch"
+        git push origin "$default_branch"
     }
 fi
 

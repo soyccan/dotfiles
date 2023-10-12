@@ -1,0 +1,2 @@
+# ln -s /usr/share/doc/git/contrib/diff-highlight/diff-highlight /usr/local/bin/
+set diff-highlight = true
