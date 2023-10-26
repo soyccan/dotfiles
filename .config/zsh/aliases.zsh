@@ -29,9 +29,13 @@ alias ln='ln -s' # --symbolic
 alias wget='wget -c' # --continue; (--timestamping)
 alias hd='hexdump -C' # hex+ascii
 
-alias py='python3'
 alias cl='clang'
 alias cll='clang++'
+
+if has python3; then
+    alias py='python3'
+    alias ipy='python3 -m IPython'
+fi
 
 # vim
 if has nvim; then
@@ -59,8 +63,12 @@ if has git; then
 
     alias gf='git fetch --all'
     alias gr='git remote -v'
+    alias grb='git rebase --rebase-merges'
+    alias grbi='git rebase --rebase-merges --interactive'
+    alias grbir='git rebase --rebase-merges --interactive --root'
     alias gsa='git submodule add'
     alias gsti='git status --ignored'
+    alias gswd='git switch --detach'
 
     git() {
         # hooks to prevent dangerous commands
@@ -92,6 +100,14 @@ if has git; then
     git-add-downstream() {
         git remote rename origin upstream
         git remote add origin "$1"
+    }
+    git-fastswitch() {
+        if [ "$(git stash)" != 'No local changes to save' ]; then
+            git switch "$@"
+            git stash pop
+        else
+            git switch "$@"
+        fi
     }
     git-lazypull() {
         # git pull without switching branch
@@ -266,6 +282,11 @@ if has journalctl; then
     alias jc='journalctl -xeu'
 fi
 
+# radare2
+if has radare2 && ! has r2; then
+    alias r2='radare2'
+fi
+
 # rsync
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/rsync/rsync.plugin.zsh
 if has rsync; then
@@ -380,8 +401,8 @@ alias duf='du -sh * | sort -hr'
 # see also `tree` function in OMZ/systemadmin
 alias fdd='find . -type d'
 alias fdf='find . -type f'
-has fd && alias fd='fd -I'
-has fdfind && alias fd='fdfind -I'
+has fd && alias fd='fd -IHg'
+has fdfind && alias fd='fdfind -IHg'
 
 alias h='history'
 alias hgrep="fc -El 0 | grep"
@@ -404,6 +425,7 @@ size-tree() {
 }
 
 # process status
+#
 # -f (full format): uid, pid, parent pid, recent CPU usage, process start time, controlling tty, elapsed CPU usage, command
 # -j : user, pid, ppid, pgid, sess, jobc, state, tt, time, command
 # -l : uid, pid, ppid, flags, cpu, pri, nice, vsz=SZ, rss, wchan, state=S, paddr=ADDR, tty, time, command=CMD
@@ -417,23 +439,37 @@ size-tree() {
 # -r : sorted by CPU
 # -E : show environment
 # -w / -ww : wider output
+#
+# Arguments
+#   $1 : pattern to find
+#   $2 : columns that are changed for display, separated by commas. e.g. +etime,-ppid
+#   $3.. : options for ps
 p() {
-    if has ag; then
-        _grep=ag
-    else
-        _grep=grep
-    fi
+    [ $# -lt 1 ] && echo "Usage: $0 pattern +column1,-column2,..."
 
-    # $1 : pattern
-    # $2.. : options for ps
-    # rss : resident set size = physical memory usage
-    # first line is duplicated to stderr, useful when piping result to grep
-    if [[ "$1" ]]; then
-        ps -eo user,pid,ppid,lwp,state,start,time,etime,command $@[2,$] \
-            | tee >(sed -n '1p' >&2) | "$_grep" -i "$1"
-    else
-        ps -eo user,pid,ppid,lwp,state,start,time,etime,command
-    fi
+    pattern=$1
+    change_cols=(${(s:,:)2})
+
+    defaults=(user pid ppid stime etime cmd)
+
+    add=()
+    del=()
+    for col in $change_cols; do
+        action=${col:0:1}
+        name=${col:1}
+        [ $action = + ] && add+=$name
+        [ $action = - ] && del+=$name
+    done
+
+    columns=()
+    for col in $defaults; do
+        [ ! $del[(r)$col] ] && columns+=$col
+    done
+    columns+=($add)
+
+    result=$(command ps -eo ${(j:,:)columns} $@[3,$])
+    echo $result | head -n 1
+    echo $result | grep --ignore-case --text --color=always $pattern
 }
 
 # Show colorbar to test terminal color
