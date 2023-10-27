@@ -14,6 +14,11 @@ if [[ ${SSH_CONNECTION+X}
 fi
 
 
+# test if a command exists
+# this is used in subsequent scripts to be sourced
+function has { [[ $commands[$1] ]] }
+
+
 ## Global variables & functions for zshrc
 ZSH=${XDG_CONFIG_HOME:-$HOME/.config}/zsh
 ZSH_PLUGGED=${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugged
@@ -117,6 +122,9 @@ has fasd || mkshim fasd $ZSH_PLUGGED/fasd/fasd
 
 ## Pre-Plugin settings
 # configs that need to be loaded before plugins are loaded
+
+# setup environment
+source $ZSH/env.zsh
 
 # key bindings need to be loaded before zsh-syntax-highlighting
 source $ZSH/key-bindings.zsh

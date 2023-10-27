@@ -445,7 +445,10 @@ size-tree() {
 #   $2 : columns that are changed for display, separated by commas. e.g. +etime,-ppid
 #   $3.. : options for ps
 p() {
-    [ $# -lt 1 ] && echo "Usage: $0 pattern +column1,-column2,..."
+    if [[ $# -lt 1 ]]; then
+        echo "Usage: $0 pattern +column1,-column2,..."
+        return 1
+    fi
 
     pattern=$1
     change_cols=(${(s:,:)2})
