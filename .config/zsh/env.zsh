@@ -51,18 +51,18 @@ function {
 export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-if has nvim; then
+if zshrc_has nvim; then
     export EDITOR='nvim'
-elif has vim; then
+elif zshrc_has vim; then
     export EDITOR='vim'
-elif has vi; then
+elif zshrc_has vi; then
     export EDITOR='vi'
-elif has nano; then
+elif zshrc_has nano; then
     export EDITOR='nano'
 fi
 
 # Homebrew
-has brew && export HOMEBREW_NO_AUTO_UPDATE=1
+zshrc_has brew && export HOMEBREW_NO_AUTO_UPDATE=1
 
 # Node.js Version Manager (NVM)
 if [[ -d "$HOME/.config/nvm" ]]; then
@@ -84,7 +84,7 @@ if [[ -d "$HOME/.pyenv" ]]; then
 fi
 
 # AWS CLI
-if has aws && has aws_completer; then
+if zshrc_has aws && zshrc_has aws_completer; then
     autoload bashcompinit && bashcompinit
     autoload -Uz compinit && compinit
     complete -C $(which aws_completer) aws # TODO: this does not work

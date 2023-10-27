@@ -14,7 +14,7 @@ alias untar='tar -vxf' # extract
 alias lzip='unzip -lv'
 alias lrar='unrar l'
 
-has batcat && ! has bat && bat() { batcat "$@"; }
+zshrc_has batcat && ! zshrc_has bat && bat() { batcat "$@"; }
 if type bat >/dev/null; then
     # if bat exists as a command or a function
     batf() {
@@ -32,20 +32,20 @@ alias hd='hexdump -C' # hex+ascii
 alias cl='clang'
 alias cll='clang++'
 
-if has python3; then
+if zshrc_has python3; then
     alias py='python3'
     alias ipy='python3 -m IPython'
 fi
 
 # vim
-if has nvim; then
+if zshrc_has nvim; then
     alias vi='nvim'
     alias vim='nvim'
     alias vimdiff='nvim -d'
 fi
 
 # git
-if has git; then
+if zshrc_has git; then
     # overwrite ohmyzsh git plugin:
     # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh
 
@@ -131,7 +131,7 @@ if has git; then
 fi
 
 # docker
-if has docker; then
+if zshrc_has docker; then
     alias dat='docker attach'
     alias db='docker build'
     alias dbr='docker run --rm -it $(docker build -q .)'
@@ -159,10 +159,10 @@ fi
 # docker-compose
 # Refer to: oh-my-zsh/docker-compose.plugin.zsh
 function {
-    if has docker && docker compose &>/dev/null; then
+    if zshrc_has docker && docker compose &>/dev/null; then
         # Docker Compose V2
         local _dc='docker compose'
-    elif has docker-compose; then
+    elif zshrc_has docker-compose; then
         # Docker Compose V1
         local _dc='docker-compose'
     fi
@@ -188,12 +188,12 @@ function {
 }
 
 # kubectl
-if has kubectl; then
+if zshrc_has kubectl; then
     alias kc='kubectl'
 fi
 
 # brew
-if has brew; then
+if zshrc_has brew; then
     # brewit is my own function
     alias bi='brewit --verbose'
     alias bu='brew uninstall'
@@ -201,7 +201,7 @@ if has brew; then
 fi
 
 # gdb
-if has gdb; then
+if zshrc_has gdb; then
     alias peda='gdb -q -ex init-peda'
     alias pwndbg='gdb -q -ex init-pwndbg'
 fi
@@ -210,7 +210,7 @@ fi
 function {
     # lsof
     # raw hostname(-n), raw port number(-P), inet4(-i4)
-    if has lsof; then
+    if zshrc_has lsof; then
         alias lsof-listen='lsof -nP -sTCP:LISTEN -i4TCP'
         alias lsof-connect='lsof -nP -i4TCP'
         lsof-port() {
@@ -218,18 +218,18 @@ function {
         }
     fi
 
-    if has dig; then
+    if zshrc_has dig; then
         alias myip='dig +short myip.opendns.com @resolver1.opendns.com'
         alias myip1='dig +short txt ch whoami.cloudflare @1.0.0.1'
     fi
 
-    if has nettop; then
+    if zshrc_has nettop; then
         # macOS; show delta(-d), per-process(-P)
         alias nettop='nettop -Pd'
     fi
 
     # packet filter
-    if has pfctl; then
+    if zshrc_has pfctl; then
         alias pf-enable='sudo pfctl -ef /etc/pf.conf'
         alias pf-disable='sudo pfctl -d'
         alias pf-reload='sudo pfctl -F all -f /etc/pf.conf'
@@ -237,25 +237,25 @@ function {
         alias pf-dryrun='pfctl -vnf /etc/pf.conf'
     fi
 
-    if has ss; then
+    if zshrc_has ss; then
         alias sst='ss -lnpt4'
         alias ssu='ss -lnpu4'
-    elif has netstat; then
+    elif zshrc_has netstat; then
         alias sst='netstat -lnpt4'
         alias ssu='netstat -lnpu4'
     fi
 
-    if has ufw; then
+    if zshrc_has ufw; then
         alias ufwl='sudo ufw status verbose'
     fi
 
-    if has nft; then
+    if zshrc_has nft; then
         alias nftl='sudo nft --handle list ruleset'
     fi
 }
 
 # Poetry
-if has poetry; then
+if zshrc_has poetry; then
     alias pt='poetry'
     alias pta='poetry add'
     alias ptad='poetry add -D'
@@ -268,7 +268,7 @@ fi
 
 # systemd
 # Refer to: https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/systemd/systemd.plugin.zsh
-if has systemctl; then
+if zshrc_has systemctl; then
     alias sce='sudo systemctl enable'
     alias scen='sudo systemctl enable --now'
     alias scd='sudo systemctl disable'
@@ -278,18 +278,18 @@ if has systemctl; then
     alias scr='sudo systemctl restart'
     alias scs='systemctl status'
 fi
-if has journalctl; then
+if zshrc_has journalctl; then
     alias jc='journalctl -xeu'
 fi
 
 # radare2
-if has radare2 && ! has r2; then
+if zshrc_has radare2 && ! zshrc_has r2; then
     alias r2='radare2'
 fi
 
 # rsync
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/rsync/rsync.plugin.zsh
-if has rsync; then
+if zshrc_has rsync; then
     alias rsync-copy="rsync -avzPh"
     alias rsync-move="rsync -avzPh --remove-source-files"
     alias rsync-update="rsync -avzuPh"
@@ -339,7 +339,7 @@ alias -- -9='cd -9'
 #
 
 # ls, the common ones I use a lot shortened for rapid fire usage
-if has exa; then
+if zshrc_has exa; then
     # exa is a modern ls replacement
     alias ls='exa -bg'        # binary size prefix, group
     alias l='ls -laa'         # long list, show all
@@ -388,7 +388,7 @@ alias -g NE="2> /dev/null"
 alias -g NUL="> /dev/null 2>&1"
 alias -g P="2>&1| pygmentize -l pytb"
 alias -g X='| xargs'
-if has ag; then
+if zshrc_has ag; then
     alias -g G='| ag'
 fi
 
@@ -401,8 +401,8 @@ alias duf='du -sh * | sort -hr'
 # see also `tree` function in OMZ/systemadmin
 alias fdd='find . -type d'
 alias fdf='find . -type f'
-has fd && alias fd='fd -IHg'
-has fdfind && alias fd='fdfind -IHg'
+zshrc_has fd && alias fd='fd -IHg'
+zshrc_has fdfind && alias fd='fdfind -IHg'
 
 alias h='history'
 alias hgrep="fc -El 0 | grep"
@@ -558,7 +558,7 @@ shell-speed-test() {
     for i in $(seq 1 10); do time $SHELL -i -c exit; done
 }
 
-if ! has yq && has docker; then
+if ! zshrc_has yq && zshrc_has docker; then
     yq() {
         docker run --rm -i -v "${PWD}":/workdir mikefarah/yq yq "$@"
     }

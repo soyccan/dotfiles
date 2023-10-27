@@ -14,114 +14,54 @@ if [[ ${SSH_CONNECTION+X}
 fi
 
 
-# test if a command exists
-# this is used in subsequent scripts to be sourced
-function has { [[ $commands[$1] ]] }
-
-
-## Global variables & functions for zshrc
 ZSH=${XDG_CONFIG_HOME:-$HOME/.config}/zsh
+ZSH_DATA=${XDG_DATA_HOME:-$HOME/.local/share}/zsh
 ZSH_PLUGGED=${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugged
 
-gbl_funcs=()
+source $ZSH/lib.zsh
 
-function zcompile-many {
-    local f
-    for f; do zcompile -R -- "$f".zwc "$f"; done
-}
-gbl_funcs+=zcompile-many
+
+## Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+zshrc_plugin_update $ZSH_PLUGGED/powerlevel10k &&
+    make -C $ZSH_PLUGGED/powerlevel10k pkg
+
+[[ -r ${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh ]] &&
+    source ${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh
+
+
+## Update or clone plugins and compile them when there is update
+zshrc_plugin_update $ZSH_PLUGGED/fast-syntax-highlighting &&
+    zshrc_zcompile_many $ZSH_PLUGGED/fast-syntax-highlighting/**/*.zsh
+
+zshrc_plugin_update $ZSH_PLUGGED/zsh-autosuggestions &&
+    zshrc_zcompile_many $ZSH_PLUGGED/zsh-autosuggestions/**/*.zsh
+
+zshrc_plugin_update $ZSH_PLUGGED/zsh-completions &&
+    zshrc_zcompile_many $ZSH_PLUGGED/zsh-completions/**/*.zsh
+
+zshrc_plugin_update $ZSH_PLUGGED/ohmyzsh &&
+    zshrc_zcompile_many $ZSH_PLUGGED/ohmyzsh/lib/*.zsh
+
+if zshrc_plugin_update $ZSH_PLUGGED/fzf ||
+        [[ ! -e $ZSH_PLUGGED/fzf/bin/fzf || ! -e $HOME/.local/bin/fzf ]]; then
+    # TODO: always use the downloaded binary
+    $ZSH_PLUGGED/fzf/install --bin
+    zshrc_mkshim fzf $ZSH_PLUGGED/fzf/bin/fzf
+fi
+
+zshrc_plugin_update $ZSH_PLUGGED/fasd
+# TODO: always use the downloaded binary
+# zshrc_mkshim fasd $ZSH_PLUGGED/fasd/fasd
+
+
+## Pre-Plugin tasks
+# configs that need to be loaded before plugins are loaded
 
 # Enable the "new" completion system (compsys)
 autoload -Uz compinit && compinit
-[[ ~/.zcompdump.zwc -nt ~/.zcompdump ]] || zcompile-many ~/.zcompdump
-
-# Clone plugins included as submodules of my dotfiles repo
-# return 1 if already cloned, 0 otherwise
-function clone-plugin {
-    local name=$1
-    if [[ "$(<$HOME/.local/share/yadm/repo.git/config)" != *$name* ]]; then
-        # if .git/config contains no $name string
-        # we say the submodule is not cloned, and clone it
-        git -C $ZSH_PLUGGED submodule update --init --depth=1 $name
-        return 0
-    fi
-    return 1
-}
-gbl_funcs+=clone-plugin
-
-# make a shim: a wrapper script that forwards the call to the actual binary,
-# which may be located in a user dir
-function mkshim {
-    local name=$1
-    local binpath=$2
-
-    mkdir -p $HOME/.local/bin
-    echo -e "#!/bin/sh\n$binpath \"\$@\"" > $HOME/.local/bin/$name
-    chmod +x $HOME/.local/bin/$name
-}
-gbl_funcs+=mkshim
-
-function download_bin {
-    local binname=$1
-    local url=$2
-    (
-        cd $(mktemp -d) || exit
-        curl -fLO $url
-        extract ${url##*/}
-        cp -f **/$binname $HOME/.local/bin/$binname
-    )
-}
-gbl_funcs+=download_bin
-
-# Check if command exists, return 0 on success
-# much faster than external program `which` as no forking is needed
-# instead, it searches in the external commands hash table
-# unlike `command -v`, `type` or `whence -v`, it excludes aliases
-# https://zsh.sourceforge.io/Doc/Release/Zsh-Modules.html#index-commands
-function has { [[ $commands[$1] ]] }
-gbl_funcs+=has
-
-# Determine OS
-function is_macos { [[ $OSTYPE = darwin* ]] }
-function is_linux { [[ $OSTYPE = linux* ]] }
-gbl_funcs+=(is_macos is_linux)
-
-
-## Clone and compile to wordcode missing plugins
-clone-plugin fast-syntax-highlighting &&
-    zcompile-many $ZSH_PLUGGED/fast-syntax-highlighting/**/*.zsh
-
-clone-plugin zsh-autosuggestions &&
-    zcompile-many $ZSH_PLUGGED/zsh-autosuggestions/**/*.zsh
-
-clone-plugin powerlevel10k &&
-    make -C $ZSH_PLUGGED/powerlevel10k pkg
-
-clone-plugin zsh-completions &&
-    zcompile-many $ZSH_PLUGGED/zsh-completions/**/*.zsh
-
-clone-plugin ohmyzsh &&
-    zcompile-many $ZSH_PLUGGED/ohmyzsh/lib/*.zsh
-
-# TODO: include fzf, fasd, exa, bat... binaries in PATH
-# may refer to zinit annex bin-gem-node
-clone-plugin fzf
-if ! has fzf; then
-    $ZSH_PLUGGED/fzf/install --bin
-    mkshim fzf $ZSH_PLUGGED/fzf/bin/fzf
-fi
-
-clone-plugin fasd
-has fasd || mkshim fasd $ZSH_PLUGGED/fasd/fasd
-
-
-## Activate Powerlevel10k Instant Prompt
-[[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]] &&
-    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-
-
-## Pre-Plugin settings
-# configs that need to be loaded before plugins are loaded
+[[ ~/.zcompdump.zwc -nt ~/.zcompdump ]] || zshrc_zcompile_many ~/.zcompdump
 
 # setup environment
 source $ZSH/env.zsh
@@ -145,7 +85,7 @@ source $ZSH_PLUGGED/powerlevel10k/powerlevel10k.zsh-theme
 source $HOME/.p10k.zsh
 
 # zsh-completions: Additional completion definitions for Zsh
-fpath+=$ZSH_PLUGGED/zsh-completions/src
+source $ZSH_PLUGGED/zsh-completions/zsh-completions.plugin.zsh
 
 # Oh My Zsh
 source $ZSH_PLUGGED/ohmyzsh/lib/completion.zsh
@@ -171,16 +111,14 @@ function {
 }
 
 # require ohmyzsh plugin `extract`
-has bat || download_bin bat https://github.com/sharkdp/bat/releases/download/v0.23.0/bat-v0.23.0-x86_64-unknown-linux-musl.tar.gz
-has exa || download_bin exa https://github.com/ogham/exa/releases/download/v0.10.1/exa-linux-x86_64-musl-v0.10.1.zip
+zshrc_fetch_bin bat https://github.com/sharkdp/bat/releases/download/v0.23.0/bat-v0.23.0-x86_64-unknown-linux-musl.tar.gz
+zshrc_fetch_bin exa https://github.com/ogham/exa/releases/download/v0.10.1/exa-linux-x86_64-musl-v0.10.1.zip
 
 # globalias: expand glob & alias in command line
 source $ZSH/plugins/globalias.plugin.zsh
 
 # fasd & fzf
-[[ $- == *i* ]] && function {
-    # if shell is interactive
-
+function {
     # usage: $ <cmd> **<tab>
     source $ZSH_PLUGGED/fzf/shell/completion.zsh
 
@@ -202,20 +140,16 @@ source $ZSH/plugins/globalias.plugin.zsh
 }
 
 
-## Epilogue
+## Post-plugin tasks
 
 # Load my configs (overrides loaded plugins)
-source $ZSH/aliases.zsh
+source $ZSH/alias.zsh
 
-# my functions & completions
-fpath+=$ZSH/functions
-fpath+=$ZSH/functions/vendor-completions
+# my completions
+fpath+=$ZSH_DATA/completions
 
 # Pull new changes of dotfiles in background
-has yadm && (yadm pull &>/dev/null &)
-
-unfunction $gbl_funcs
-unset gbl_funcs
+zshrc_has yadm && (yadm pull &>/dev/null &)
 
 
 # Profiling end
