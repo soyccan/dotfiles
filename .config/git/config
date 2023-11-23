@@ -40,3 +40,5 @@
     default = current
 [credential]
 	helper = cache --timeout=0
+[rebase]
+	autostash = true

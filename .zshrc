@@ -18,6 +18,7 @@ ZSH=${XDG_CONFIG_HOME:-$HOME/.config}/zsh
 ZSH_DATA=${XDG_DATA_HOME:-$HOME/.local/share}/zsh
 ZSH_PLUGGED=${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugged
 
+# Import zshrc_* utility functions
 source $ZSH/lib.zsh
 
 
@@ -31,9 +32,12 @@ zshrc_plugin_update $ZSH_PLUGGED/powerlevel10k &&
     source ${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh
 
 
-## Update or clone plugins and compile them when there is update
+## ---
+## Update or clone plugins. Compile them when there is update
 zshrc_plugin_update $ZSH_PLUGGED/fast-syntax-highlighting &&
     zshrc_zcompile_many $ZSH_PLUGGED/fast-syntax-highlighting/**/*.zsh
+
+zshrc_plugin_update $ZSH_PLUGGED/zsh-autocomplete
 
 zshrc_plugin_update $ZSH_PLUGGED/zsh-autosuggestions &&
     zshrc_zcompile_many $ZSH_PLUGGED/zsh-autosuggestions/**/*.zsh
@@ -56,6 +60,11 @@ zshrc_plugin_update $ZSH_PLUGGED/fasd
 # zshrc_mkshim fasd $ZSH_PLUGGED/fasd/fasd
 
 
+[[ ! -x $HOME/.local/bin/zoxide ]] &&
+    curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+
+
+## ---
 ## Pre-Plugin tasks
 # configs that need to be loaded before plugins are loaded
 
@@ -65,16 +74,28 @@ autoload -Uz compinit && compinit
 
 # setup environment
 source $ZSH/env.zsh
+source $ZSH/venv.zsh
 
 # key bindings need to be loaded before zsh-syntax-highlighting
 source $ZSH/key-bindings.zsh
 
+# Remembering Recent Directories
+autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
+add-zsh-hook chpwd chpwd_recent_dirs
 
+
+## ---
 ## Load plugins
 # remember to clone them first
 
-# Fast Syntax Highlighting: Feature rich syntax highlighting for Zsh
-source $ZSH_PLUGGED/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+# zoxide: A smarter cd command. Supports all major shells.
+# As `eval "$(zoxide init zsh)"` may be dangerous, I dumped the init script and source it.
+source $ZSH/plugins/zoxide.plugin.zsh
+
+# zsh-autocomplete: 🤖 Real-time type-ahead completion for Zsh. Asynchronous find-as-you-type autocompletion.
+# source $ZSH_PLUGGED/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+# # Apply my configs
+# source $ZSH/plugins/zsh-autocomplete.plugin.zsh
 
 # zsh-autosuggestions: Fish-like fast/unobtrusive autosuggestions for zsh
 ZSH_AUTOSUGGEST_MANUAL_REBIND=1
@@ -88,24 +109,28 @@ source $HOME/.p10k.zsh
 source $ZSH_PLUGGED/zsh-completions/zsh-completions.plugin.zsh
 
 # Oh My Zsh
-source $ZSH_PLUGGED/ohmyzsh/lib/completion.zsh
-source $ZSH_PLUGGED/ohmyzsh/lib/functions.zsh
-source $ZSH_PLUGGED/ohmyzsh/lib/history.zsh
-source $ZSH_PLUGGED/ohmyzsh/lib/theme-and-appearance.zsh
 function {
-    # Load colors
-    # Plugin `colored-man-pages` requires this
-    autoload -Uz colors
-    colors
+    omz_libs=(
+        completion
+        functions
+        history
+        theme-and-appearance
+    )
+    omz_plugins=(
+        colored-man-pages
+        command-not-found
+        encode64
+        systemadmin
+        systemd
+        extract
+        git
+    )
 
     local name
-    for name in colored-man-pages \
-                command-not-found \
-                encode64 \
-                systemadmin \
-                systemd \
-                extract \
-                git; do
+    for name in $omz_libs; do
+        source $ZSH_PLUGGED/ohmyzsh/lib/$name.zsh
+    done
+    for name in $omz_plugins; do
         source $ZSH_PLUGGED/ohmyzsh/plugins/$name/$name.plugin.zsh
     done
 }
@@ -140,6 +165,7 @@ function {
 }
 
 
+## ---
 ## Post-plugin tasks
 
 # Load my configs (overrides loaded plugins)
@@ -147,6 +173,15 @@ source $ZSH/alias.zsh
 
 # my completions
 fpath+=$ZSH_DATA/completions
+
+# zsh-syntax-highlighting: Fish shell like syntax highlighting for Zsh.
+# fast-syntax-highlighting: Feature-rich syntax highlighting for ZSH.
+# should be sourced after all custom widgets have been created
+# TODO: compare zsh-syntax-highlighting vs. fast-syntax-highlighting
+# Seems that fast-syntax-highlighting has better highlights, and zsh-syntax-highlighting is better
+# maintained
+# source $ZSH_PLUGGED/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
+source $ZSH_PLUGGED/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 
 # Pull new changes of dotfiles in background
 zshrc_has yadm && (yadm pull &>/dev/null &)

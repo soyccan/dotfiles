@@ -10,3 +10,6 @@
 #
 # Global Order: zshenv, zprofile, zshrc, zlogin
 
+# In Ubuntu, skip the compinit in /etc/zsh/zshrc
+# [Bug #16759 “compinit -U in /etc/zsh/zshrc is unfriendly to fpath users” : Bugs : zsh package : Ubuntu](https://bugs.launchpad.net/ubuntu/+source/zsh/+bug/16759)
+skip_global_compinit=1

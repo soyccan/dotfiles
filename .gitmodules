@@ -53,6 +53,10 @@
 	path = .local/share/zsh/plugged/zsh-completions
 	url = https://github.com/zsh-users/zsh-completions.git
 	shallow = true
+[submodule "zsh-autocomplete"]
+	path = .local/share/zsh/plugged/zsh-autocomplete
+	url = https://github.com/marlonrichert/zsh-autocomplete
+	shallow = true
 [submodule "ohmyzsh"]
 	path = .local/share/zsh/plugged/ohmyzsh
 	url = https://github.com/ohmyzsh/ohmyzsh/

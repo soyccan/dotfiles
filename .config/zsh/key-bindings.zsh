@@ -1,4 +1,4 @@
-# Reference: 
+# Reference:
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/key-bindings.zsh
 # http://zsh.sourceforge.net/Doc/Release/Zsh-Line-Editor.html
 # http://zsh.sourceforge.net/Doc/Release/Zsh-Line-Editor.html#Zle-Builtins
@@ -20,6 +20,7 @@ fi
 # Use emacs key bindings
 bindkey -e
 
+# [PageUp] & [PageDown] takes over the default behavior of [Up] & [Down]
 # [PageUp] - Up a line of history
 if [[ -n "${key[PageUp]}" ]]; then
   bindkey -M emacs "${key[PageUp]}" up-line-or-history
@@ -33,6 +34,7 @@ if [[ -n "${key[PageDown]}" ]]; then
   bindkey -M vicmd "${key[PageDown]}" down-line-or-history
 fi
 
+##> Let zsh-autocomplete binds Up, Down, ^P, ^N
 # Start typing + [Up-Arrow] - fuzzy find history forward
 if [[ -n "${key[Up]}" ]]; then
   autoload -U up-line-or-beginning-search
@@ -66,6 +68,7 @@ bindkey -M emacs "^N" down-line-or-beginning-search
 bindkey -M viins "^N" down-line-or-beginning-search
 bindkey -M vicmd "^N" down-line-or-beginning-search
 
+# [Home] & [End] are not binded by default
 # [Home] - Go to beginning of line
 if [[ -n "${key[Home]}" ]]; then
   bindkey -M emacs "${key[Home]}" beginning-of-line
@@ -117,6 +120,15 @@ else
   bindkey -M vicmd "^[3;5~" delete-char
 fi
 
+# [Ctrl-Backspace] - delete whole backward-word
+# WARNING: This breaks the normal Backspace bahavior in some terminal emulators that send delete
+# key as ^H. See:
+# [Backspace not working properly · Issue #9155 · ohmyzsh/ohmyzsh](https://github.com/ohmyzsh/ohmyzsh/issues/9155)
+# [Why don't Ctrl+Backspace and Ctrl+Delete work? · Issue #7609 · ohmyzsh/ohmyzsh](https://github.com/ohmyzsh/ohmyzsh/issues/7609)
+# TODO: detect terminal behavior
+bindkey -M emacs '^H' backward-kill-word
+bindkey -M viins '^H' backward-kill-word
+bindkey -M vicmd '^H' backward-kill-word
 # [Ctrl-Delete] - delete whole forward-word
 bindkey -M emacs '^[[3;5~' kill-word
 bindkey -M viins '^[[3;5~' kill-word
@@ -126,10 +138,19 @@ bindkey -M vicmd '^[[3;5~' kill-word
 bindkey -M emacs '^[[1;5C' forward-word
 bindkey -M viins '^[[1;5C' forward-word
 bindkey -M vicmd '^[[1;5C' forward-word
+# macOS conventionally uses Option- key combinations for word navigation, which is the Alt- series
+# [Alt-RightArrow] - move forward one word
+bindkey -M emacs '^[[1;3C' forward-word
+bindkey -M viins '^[[1;3C' forward-word
+bindkey -M vicmd '^[[1;3C' forward-word
 # [Ctrl-LeftArrow] - move backward one word
 bindkey -M emacs '^[[1;5D' backward-word
 bindkey -M viins '^[[1;5D' backward-word
 bindkey -M vicmd '^[[1;5D' backward-word
+# [Alt-LeftArrow] - move backward one word
+bindkey -M emacs '^[[1;3D' backward-word
+bindkey -M viins '^[[1;3D' backward-word
+bindkey -M vicmd '^[[1;3D' backward-word
 
 
 bindkey '\ew' kill-region                             # [Esc-w] - Kill from the cursor to the mark

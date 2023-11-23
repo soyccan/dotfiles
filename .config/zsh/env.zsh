@@ -7,6 +7,10 @@ function {
     local new_path=()
     local p
 
+    # Recommended place for user-specific executable files by XDG Base Directory Specification
+    # executables installed by pip are also here
+    new_path+=$HOME/.local/bin
+
     # Snap
     new_path+=/snap/bin
 
@@ -22,18 +26,17 @@ function {
         new_path+=$p/bin
     done
 
-    # Python pyenv & pips
-    # Linux
+    # Python (pyenv)
     new_path+=$HOME/.pyenv/bin
-    new_path+=$HOME/.local/bin
-    # masOS
+
+    # Python (masOS)
     new_path+=(/Library/Frameworks/Python.framework/Versions/Current/bin)
     for p in $HOME/Library/Python/*/bin; do
         new_path+=$p
     done
 
     # Foundry
-    new_path+="/home/soyccan/.foundry/bin"
+    new_path+=$HOME/.foundry/bin
 
     # update PATH env var
     for p in $new_path; do
@@ -63,32 +66,6 @@ fi
 
 # Homebrew
 zshrc_has brew && export HOMEBREW_NO_AUTO_UPDATE=1
-
-# Node.js Version Manager (NVM)
-if [[ -d "$HOME/.config/nvm" ]]; then
-    export NVM_DIR="$HOME/.config/nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-fi
-
-# Rust
-if [[ -e "$HOME/.cargo/env" ]]; then
-    source "$HOME/.cargo/env"
-fi
-
-# Pyenv
-if [[ -d "$HOME/.pyenv" ]]; then
-    export PYENV_ROOT="$HOME/.pyenv"
-    command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-    eval "$(pyenv init -)"
-fi
-
-# AWS CLI
-if zshrc_has aws && zshrc_has aws_completer; then
-    autoload bashcompinit && bashcompinit
-    autoload -Uz compinit && compinit
-    complete -C $(which aws_completer) aws # TODO: this does not work
-fi
 
 # pagers
 export LESSOPEN="|/bin/lesspipe %s"

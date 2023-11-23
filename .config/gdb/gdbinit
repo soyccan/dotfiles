@@ -80,7 +80,7 @@ end
 
 
 define init-pwndbg
-source ~/.gdb/pwndbg/gdbinit.py
+source ~/.local/share/gdb/plugged/pwndbg/gdbinit.py
 set disassemble-next-line off
 global-settings
 end
