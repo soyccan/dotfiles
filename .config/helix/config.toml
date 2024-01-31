@@ -1,0 +1,71 @@
+theme = "papercolor-dark++"
+
+
+[editor]
+bufferline = "multiple"
+color-modes = true
+cursorline = true
+line-number = "relative"
+rulers = [100]
+
+# enable coloring in case of auto-detection failure due to unset $COLORTERM
+true-color = true
+
+[editor.indent-guides]
+render = true
+
+[editor.statusline]
+mode.normal = "NORMAL"
+mode.insert = "INSERT"
+mode.select = "SELECT"
+# left = ["mode", "spacer", "spinner", "spacer", "file-type-icon", "file-name", "file-modification-indicator"]
+# left = ["mode", "separator", "render_mode", "spinner", "file-name", "read-only-indicator", "file-modification-indicator"]
+# separator = "\ue0b0" # powerline
+
+
+[keys.normal]
+# save & quit (overrides move_next_word_start (w) & replay_macro (q))
+w = ":w"
+q = ":q"
+# close buffer. inspired by ZZ & ZQ in vim
+Z = ":buffer-close"
+
+# move lines up/down
+C-k = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
+C-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
+
+# goto line start/end (originally gh & gl)
+H = "goto_line_start"
+L = "goto_line_end"
+
+# exit multi-cursor selection (originally ,;<esc>)
+esc = ["keep_primary_selection", "collapse_selection", "normal_mode"]
+
+# delete/change until line end (originally vglc & vgld)
+# shadows multi-cursor function copy_selection_on_next_line (C)
+D = ["ensure_selections_forward", "extend_to_line_end", "delete_selection"]
+# C = ["ensure_selections_forward", "extend_to_line_end", "change_selection"]
+
+# add new line below (originally ]<space>)
+ret = ["open_below", "normal_mode"]
+
+# switch window (originally <C-w>w)
+tab = "rotate_view"
+S-tab = "rotate_view_reverse"
+
+
+[keys.select]
+# move lines up/down
+C-k = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
+C-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
+
+# goto line start/end (originally gh & gl)
+H = "goto_line_start"
+L = "goto_line_end"
+
+# exit multi-cursor selection (originally ,;<esc>)
+esc = ["keep_primary_selection", "collapse_selection", "normal_mode"]
+
+# in normal mode, `ge` goes to the start of the last line,
+# but usually in select mode we want the EOF
+g = { e = "goto_file_end" }

@@ -20,7 +20,7 @@
     "[c][cpp]": {
         "editor.tabSize": 8,
         "editor.codeActionsOnSave": {
-            "source.organizeIncludes": true
+            "source.organizeIncludes": "explicit"
         },
     },
     // ---
@@ -33,6 +33,7 @@
         "--max-line-length=100",
         "--ignore=W503"
     ],
+    "pylint.cwd": "${fileDirname}",
     "black-formatter.args": [],
     "isort.args": [
         "--profile=black"
@@ -40,7 +41,7 @@
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter",
         "editor.codeActionsOnSave": {
-            "source.organizeImports": true
+            "source.organizeImports": "explicit"
         },
     },
     // ---
@@ -63,4 +64,8 @@
         "editor.defaultFormatter": "rust-lang.rust-analyzer",
         "editor.formatOnSave": true,
     },
+    "explorer.confirmDragAndDrop": false,
+    "editor.formatOnSave": true,
+    "go.toolsManagement.autoUpdate": true,
+    "editor.fontSize": 14,
 }

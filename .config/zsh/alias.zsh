@@ -66,7 +66,8 @@ if zshrc_has git; then
     alias grb='git rebase --rebase-merges'
     alias grbi='git rebase --rebase-merges --interactive'
     alias grbir='git rebase --rebase-merges --interactive --root'
-    alias gsa='git submodule add'
+    alias gsm='git submodule'
+    alias gsma='git submodule add'
     alias gsti='git status --ignored'
     alias gswd='git switch --detach'
 
@@ -142,11 +143,12 @@ if zshrc_has docker; then
     alias diml='docker image ls'
     alias dimp='docker image prune'
     alias dl='docker pull'
-    alias dlg='docker logs -f'
+    alias dlg='docker logs -n 100 -f'
     alias dps='docker ps -a'
     alias drm='docker rm'
     alias drmi='docker rmi'
     alias dr='docker run --rm -it'
+    alias drst='docker restart'
     alias dst='docker start -ai'
     alias dstp='docker stop'
     alias dk='docker kill'
@@ -180,7 +182,7 @@ function {
         alias dcupd="$_dc up -d"
         alias dcupdb="$_dc up -d --build"
         alias dcdn="$_dc down"
-        alias dcl="$_dc logs -f"
+        alias dcl="$_dc logs -n 100 -f"
         alias dcpl="$_dc pull"
         alias dcsta="$_dc start"
         alias dck="$_dc kill"
@@ -241,8 +243,9 @@ function {
         alias sst='ss -lnpt4'
         alias ssu='ss -lnpu4'
     elif zshrc_has netstat; then
-        alias sst='netstat -lnpt4'
-        alias ssu='netstat -lnpu4'
+        alias sst='netstat -lnpt4' # tcp listening
+        alias ssu='netstat -lnpu4' # udp listening
+        alias ssr='netstat -rnfinet' # routing table
     fi
 
     if zshrc_has ufw; then
@@ -339,9 +342,9 @@ alias -- -9='cd -9'
 #
 
 # ls, the common ones I use a lot shortened for rapid fire usage
-if zshrc_has exa; then
-    # exa is a modern ls replacement
-    alias ls='exa -bg'        # binary size prefix, group
+if zshrc_has eza; then
+    # eza is a modern ls replacement
+    alias ls='eza -bg'        # binary size prefix, group
     alias l='ls -laa'         # long list, show all
     alias ll='ls -l'          # long list, ignore hidden files
     alias lt='ls -laar -snew' # sorted by modified date, newest first
@@ -388,8 +391,8 @@ alias -g NE="2> /dev/null"
 alias -g NUL="> /dev/null 2>&1"
 alias -g P="2>&1| pygmentize -l pytb"
 alias -g X='| xargs'
-if zshrc_has ag; then
-    alias -g G='| ag'
+if zshrc_has rg; then
+    alias -g G='| rg'
 fi
 
 # show files/directories by size
@@ -401,8 +404,8 @@ alias duf='du -sh * | sort -hr'
 # see also `tree` function in OMZ/systemadmin
 alias fdd='find . -type d'
 alias fdf='find . -type f'
-zshrc_has fd && alias fd='fd -IHg'
-zshrc_has fdfind && alias fd='fdfind -IHg'
+zshrc_has fd && alias fd='fd -IH'
+zshrc_has fdfind && alias fd='fdfind -IH'
 
 alias h='history'
 alias hgrep="fc -El 0 | grep"
@@ -476,7 +479,7 @@ p() {
 }
 
 # Show colorbar to test terminal color
-colorbar() {
+term-test-colorbar() {
     awk 'BEGIN{
         s="/\\/\\/\\/\\/\\"; s=s s s s s s s s;
         for (colnum = 0; colnum<77; colnum++) {
@@ -492,7 +495,24 @@ colorbar() {
     }'
 }
 
-fonttest() {
+term-test-colors() {
+    # https://github.com/alacritty/alacritty/issues/289#issuecomment-340283908
+    echo -e '\r'
+    echo -e '\033[0K\033[1mBold\033[0m \033[7mInvert\033[0m \033[4mUnderline\033[0m'
+    echo -e '\033[0K\033[1m\033[7m\033[4mBold & Invert & Underline\033[0m'
+    echo
+    echo -e '\033[0K\033[31m Red \033[32m Green \033[33m Yellow \033[34m Blue \033[35m Magenta \033[36m Cyan \033[0m'
+    echo -e '\033[0K\033[1m\033[4m\033[31m Red \033[32m Green \033[33m Yellow \033[34m Blue \033[35m Magenta \033[36m Cyan \033[0m'
+    echo
+    echo -e '\033[0K\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+    echo -e '\033[0K\033[1m\033[4m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+    echo
+    echo -e '\033[0K\033[30m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+    echo -e '\033[0K\033[30m\033[1m\033[4m\033[41m Red \033[42m Green \033[43m Yellow \033[44m Blue \033[45m Magenta \033[46m Cyan \033[0m'
+}
+
+term-test-fonts() {
+    # https://askubuntu.com/questions/528928/how-to-do-underline-bold-italic-strikethrough-color-background-and-size-i/985386#985386
     echo -e '\e[1mbold\e[22m'
     echo -e '\e[2mdim\e[22m'
     echo -e '\e[3mitalic\e[23m'
@@ -530,6 +550,10 @@ fonttest() {
     echo -e '\e[4:3m\e[58;2;240;143;104mtruecolor underline (new in 0.52) (*)\e[59m\e[4:0m'
 }
 
+shell-test-speed() {
+    for i in $(seq 1 10); do time $SHELL -i -c exit; done
+}
+
 # Usage: program < input.txt | overwrite input.txt
 overwrite() {
     n=$(tee >(cat 1<> "$1") | wc -c)
@@ -551,11 +575,6 @@ urlencode() {
 urldecode() {
     unquoted="${1//+/ }"
     printf '%b' "${unquoted//%/\\x}"
-}
-
-
-shell-speed-test() {
-    for i in $(seq 1 10); do time $SHELL -i -c exit; done
 }
 
 if ! zshrc_has yq && zshrc_has docker; then

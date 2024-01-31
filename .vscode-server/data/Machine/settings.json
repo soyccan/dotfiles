@@ -19,7 +19,7 @@
     "[c][cpp]": {
         "editor.tabSize": 8,
         "editor.codeActionsOnSave": {
-            "source.organizeIncludes": true
+            "source.organizeIncludes": "explicit"
         },
     },
 
@@ -39,7 +39,7 @@
     "[python]": {
         "editor.defaultFormatter": "ms-python.black-formatter",
         "editor.codeActionsOnSave": {
-            "source.organizeImports": true
+            "source.organizeImports": "explicit"
         },
     },
 
@@ -53,4 +53,5 @@
     "[javascript][jsonc]": {
         "editor.tabSize": 2,
     },
+    "clangd.path": "/home/soyccan/.vscode-server/data/User/globalStorage/llvm-vs-code-extensions.vscode-clangd/install/17.0.3/clangd_17.0.3/bin/clangd",
 }

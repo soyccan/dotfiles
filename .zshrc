@@ -8,9 +8,9 @@
 if [[ ${SSH_CONNECTION+X}
         && -z ${VSCODE_INJECTION+X}${VSCODE_IPC_HOOK_CLI+X}
         && -z ${TMUX+X}${ZSH_SCRIPT+X}${ZSH_EXECUTION_STRING+X} ]]; then
-    tmux new-session -dAD "exec htop"
-    tmux new-window
-    tmux attach
+    # tmux new-session -dAD "exec htop"
+    # tmux new-window
+    # tmux attach
 fi
 
 
@@ -48,20 +48,9 @@ zshrc_plugin_update $ZSH_PLUGGED/zsh-completions &&
 zshrc_plugin_update $ZSH_PLUGGED/ohmyzsh &&
     zshrc_zcompile_many $ZSH_PLUGGED/ohmyzsh/lib/*.zsh
 
-if zshrc_plugin_update $ZSH_PLUGGED/fzf ||
-        [[ ! -e $ZSH_PLUGGED/fzf/bin/fzf || ! -e $HOME/.local/bin/fzf ]]; then
-    # TODO: always use the downloaded binary
-    $ZSH_PLUGGED/fzf/install --bin
-    zshrc_mkshim fzf $ZSH_PLUGGED/fzf/bin/fzf
-fi
+zshrc_plugin_update $ZSH_PLUGGED/fzf
 
 zshrc_plugin_update $ZSH_PLUGGED/fasd
-# TODO: always use the downloaded binary
-# zshrc_mkshim fasd $ZSH_PLUGGED/fasd/fasd
-
-
-[[ ! -x $HOME/.local/bin/zoxide ]] &&
-    curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 
 
 ## ---
@@ -134,10 +123,6 @@ function {
         source $ZSH_PLUGGED/ohmyzsh/plugins/$name/$name.plugin.zsh
     done
 }
-
-# require ohmyzsh plugin `extract`
-zshrc_fetch_bin bat https://github.com/sharkdp/bat/releases/download/v0.23.0/bat-v0.23.0-x86_64-unknown-linux-musl.tar.gz
-zshrc_fetch_bin exa https://github.com/ogham/exa/releases/download/v0.10.1/exa-linux-x86_64-musl-v0.10.1.zip
 
 # globalias: expand glob & alias in command line
 source $ZSH/plugins/globalias.plugin.zsh

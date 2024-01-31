@@ -23,15 +23,10 @@
 "     let g:neomake_<ft>_<makername>_maker = {}
 "     let g:neomake_<ft>_enabled_makers = []
 
-let g:neomake_python_enabled_makers = neomake#makers#ft#python#EnabledMakers()
-" remove pydocstyle
-call filter(g:neomake_python_enabled_makers, 'v:val != "pydocstyle"')
+let g:neomake_python_enabled_makers = ["python", "pylint", "flake8"]
 " python3
 let g:neomake_python_python_maker = neomake#makers#ft#python#python()
 let g:neomake_python_python_maker['exe'] = 'python3'
-" pylint
-let g:neomake_python_pylint_maker = neomake#makers#ft#python#pylint()
-let g:neomake_python_pylint_maker['args'] += ['--errors-only']
 
 " variants of shellcheck maker for different shells
 " Refer to: neomake#makers#ft#sh#shellcheck()

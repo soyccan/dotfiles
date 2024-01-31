@@ -1,0 +1,28 @@
+# papercolor-dark++: Modified from built-in papercolor-dark theme
+
+inherits = "papercolor-dark"
+
+# for recommended command history in command mode
+"ui.text.inactive" = "regular5"
+
+# buffer line
+"ui.bufferline" = { bg = "statusline_inactive_bg", fg = "statusline_inactive_fg" }
+"ui.bufferline.active" = { bg = "statusline_active_bg", fg = "statusline_active_fg" }
+"ui.bufferline.background" = { bg = "statusline_inactive_bg", fg = "statusline_inactive_fg" }
+
+# status line
+"ui.statusline" = { bg = "statusline_inactive_bg", fg = "statusline_inactive_fg" }
+"ui.statusline.inactive" = { bg = "#2a2a2a", fg = "statusline_inactive_fg" }
+
+# mode indicator in status line
+"ui.statusline.normal" = { bg = "bright6", fg = "statusline_active_fg", modifiers = ["bold"] }
+"ui.statusline.insert" = { bg = "bright4", fg = "statusline_active_fg", modifiers = ["bold"] }
+"ui.statusline.select" = { bg = "regular3", fg = "statusline_active_fg", modifiers = ["bold"] }
+
+# separator still has limited configurability (no per-mode options)
+# "ui.statusline.separator" = { bg = "statusline_active_bg", fg = "green" }
+
+# [palette]
+# statusline_active_bg = "#5faf00"
+# statusline_active_fg = "#bcbcbc"
+# statusline_inactive_bg = "#2a2a2a"

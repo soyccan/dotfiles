@@ -99,7 +99,7 @@ let g:is_bash = 1
 
 " Clipboard for mac
 " This breaks block-mode paste
-set clipboard=unnamed
+" set clipboard=unnamedplus
 
 " Mouse
 set mouse=a

@@ -1,6 +1,6 @@
 # Node.js Version Manager (NVM)
 if [[ -d "$HOME/.config/nvm" ]]; then
-    export NVM_DIR="${XDG_CONFIG_HOME:-$HOME/.config}nvm"
+    export NVM_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
     # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 fi
@@ -17,6 +17,9 @@ if [[ -d "$HOME/.pyenv" ]]; then
     eval "$(pyenv init -)"
 fi
 
+# Haskell
+[ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env"
+
 # AWS CLI
 # if zshrc_has aws && zshrc_has aws_completer; then
 #     autoload bashcompinit && bashcompinit
@@ -24,3 +27,7 @@ fi
 #     complete -C $(which aws_completer) aws # TODO: this does not work
 # fi
 
+# Nix
+if [[ ! $NIX_PROFILES && -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]]; then
+    source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+fi
