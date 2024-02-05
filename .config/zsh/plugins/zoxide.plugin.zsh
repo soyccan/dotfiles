@@ -1,3 +1,4 @@
+# Modified from $(zoxide init zsh)
 # =============================================================================
 #
 # Utility functions for zoxide.
@@ -20,15 +21,31 @@ function __zoxide_cd() {
 #
 
 # Hook to add new entries to the database.
-function __zoxide_hook() {
+function __zoxide_hook_chpwd() {
     # shellcheck disable=SC2312
     \command zoxide add -- "$(__zoxide_pwd)"
 }
 
+function __zoxide_hook_preexec() {
+    # record recent files
+    # $1 is the raw command, $2 is the expanded command (in the case of an alias)
+    local cmd=("${(@Q)${(z)2}}")
+    # heuristically guess the first arg to be a filepath
+    # do tilde expansion
+    local filepath=${~cmd[2]}
+    if [[ -f "$filepath" ]]; then
+        local realpath="${filepath:P}"
+        \command zoxide add -- "$realpath"
+    fi
+}
+
 # Initialize hook.
 # shellcheck disable=SC2154
-if [[ ${precmd_functions[(Ie)__zoxide_hook]:-} -eq 0 ]] && [[ ${chpwd_functions[(Ie)__zoxide_hook]:-} -eq 0 ]]; then
-    chpwd_functions+=(__zoxide_hook)
+if [[ ${chpwd_functions[(Ie)__zoxide_hook_chpwd]:-} -eq 0 ]]; then
+    chpwd_functions+=(__zoxide_hook_chpwd)
+fi
+if [[ ${preexec_functions[(Ie)__zoxide_hook_preexec]:-} -eq 0 ]]; then
+    preexec_functions+=(__zoxide_hook_preexec)
 fi
 
 # =============================================================================

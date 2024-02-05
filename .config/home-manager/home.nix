@@ -18,17 +18,15 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
+    # shell utils
     bat
     bottom
     delta
     dog
     # dust
     eza
-    fasd
     fd
-    # foundryup
     fzf
-    # ghcup
     htop
     httpie
     hyperfine
@@ -36,13 +34,16 @@
     just
     lazygit
     lsd
+    most
     neofetch
+    nushell
     p7zip
     procs
     pyenv
     ripgrep
     rustup
     sd
+    starship
     tealdeer
     tmux
     unzip
@@ -52,8 +53,11 @@
     zoxide
 
     # develop
+    # foundryup
+    # ghcup
     # bear
     helix
+    tig
     tree-sitter
     ninja
 

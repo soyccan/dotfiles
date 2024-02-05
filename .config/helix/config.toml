@@ -43,7 +43,7 @@ esc = ["keep_primary_selection", "collapse_selection", "normal_mode"]
 
 # delete/change until line end (originally vglc & vgld)
 # shadows multi-cursor function copy_selection_on_next_line (C)
-D = ["ensure_selections_forward", "extend_to_line_end", "delete_selection"]
+# D = ["ensure_selections_forward", "extend_to_line_end", "delete_selection"]
 # C = ["ensure_selections_forward", "extend_to_line_end", "change_selection"]
 
 # add new line below (originally ]<space>)

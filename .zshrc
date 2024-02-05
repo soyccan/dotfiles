@@ -50,8 +50,6 @@ zshrc_plugin_update $ZSH_PLUGGED/ohmyzsh &&
 
 zshrc_plugin_update $ZSH_PLUGGED/fzf
 
-zshrc_plugin_update $ZSH_PLUGGED/fasd
-
 
 ## ---
 ## Pre-Plugin tasks
@@ -79,7 +77,7 @@ add-zsh-hook chpwd chpwd_recent_dirs
 
 # zoxide: A smarter cd command. Supports all major shells.
 # As `eval "$(zoxide init zsh)"` may be dangerous, I dumped the init script and source it.
-source $ZSH/plugins/zoxide.plugin.zsh
+zshrc_has zoxide && source $ZSH/plugins/zoxide.plugin.zsh
 
 # zsh-autocomplete: 🤖 Real-time type-ahead completion for Zsh. Asynchronous find-as-you-type autocompletion.
 # source $ZSH_PLUGGED/zsh-autocomplete/zsh-autocomplete.plugin.zsh
@@ -127,8 +125,8 @@ function {
 # globalias: expand glob & alias in command line
 source $ZSH/plugins/globalias.plugin.zsh
 
-# fasd & fzf
-function {
+# fzf
+if zshrc_has fzf; then
     # usage: $ <cmd> **<tab>
     source $ZSH_PLUGGED/fzf/shell/completion.zsh
 
@@ -139,15 +137,7 @@ function {
 
     # override with my widgets & key bindings
     source $ZSH/plugins/fzf.plugin.zsh
-
-    # init fasd
-    local fasd_cache=$HOME/.fasd-init-zsh
-    if [[ $(command -v fasd) -nt $fasd_cache || ! -s $fasd_cache ]]; then
-        fasd --init zsh-hook zsh-ccomp zsh-ccomp-install \
-            zsh-wcomp zsh-wcomp-install >| $fasd_cache
-    fi
-    source $fasd_cache
-}
+fi
 
 
 ## ---

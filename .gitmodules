@@ -65,7 +65,3 @@
 	path = .local/share/zsh/plugged/fzf
 	url = https://github.com/junegunn/fzf
 	shallow = true
-[submodule "fasd"]
-	path = .local/share/zsh/plugged/fasd
-	url = https://github.com/clvv/fasd
-	shallow = true

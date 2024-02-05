@@ -27,7 +27,7 @@ fi
 #     complete -C $(which aws_completer) aws # TODO: this does not work
 # fi
 
-# Nix
-if [[ ! $NIX_PROFILES && -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]]; then
-    source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+# Nix Home Manager
+if [[ $NIX_PROFILES && -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then
+    source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 fi
