@@ -5,6 +5,7 @@
     "editor.rulers": [
         100
     ],
+    "explorer.confirmDragAndDrop": false,
     "files.insertFinalNewline": true,
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
@@ -34,7 +35,9 @@
         "--ignore=W503"
     ],
     "pylint.cwd": "${fileDirname}",
-    "black-formatter.args": [],
+    "black-formatter.args": [
+        "--line-length=100"
+    ],
     "isort.args": [
         "--profile=black"
     ],
@@ -57,6 +60,7 @@
     },
     // ---
     // Rust
+    "evenBetterToml.formatter.columnWidth": 100,
     "rust-analyzer.rustfmt.extraArgs": [
         "+nightly"
     ],
@@ -64,8 +68,4 @@
         "editor.defaultFormatter": "rust-lang.rust-analyzer",
         "editor.formatOnSave": true,
     },
-    "explorer.confirmDragAndDrop": false,
-    "editor.formatOnSave": true,
-    "go.toolsManagement.autoUpdate": true,
-    "editor.fontSize": 14,
 }
