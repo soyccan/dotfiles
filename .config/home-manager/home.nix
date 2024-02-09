@@ -27,12 +27,12 @@
     eza
     fd
     fzf
+    glow
     htop
     httpie
     hyperfine
     jq
     just
-    lazygit
     lsd
     most
     neofetch
@@ -41,25 +41,31 @@
     procs
     pyenv
     ripgrep
-    rustup
     sd
     starship
     tealdeer
     tmux
+    tokei
     unzip
     xz
+    yadm
     zellij
     zip
     zoxide
 
     # develop
+    # bear
     # foundryup
     # ghcup
-    # bear
+    git
+    # TODO: diff-highlight from git pkg
     helix
+    lazygit
+    ninja
+    pre-commit
+    rustup
     tig
     tree-sitter
-    ninja
 
     # system tools
     sysstat  # iostat & mpstat
@@ -78,7 +84,6 @@
 
     # productivity
     hugo # static site generator
-    glow # markdown previewer in terminal
 
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
@@ -130,4 +135,10 @@
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
+  # Disable man pages to avoid conflicting with system man pages
+  # otherwise, man is installed by home manager and shadows the system man, making apropos
+  # fail to lookup man pages:
+  # [manpages of host OS are not visible for me · Issue #432 · nix-community/home-manager](https://github.com/nix-community/home-manager/issues/432)
+  programs.man.enable = false;
 }

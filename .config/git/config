@@ -1,47 +1,42 @@
-[user]
-    email = soyccan@gmail.com
-    name = soyccan
-
-[difftool]
-    prompt = false
-
-[merge]
-    tool = nvim
-[mergetool "nvim"]
-    cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED +'wincmd b' +'wincmd J'
-
-[filter "lfs"]
-    process = git-lfs filter-process
-    required = true
-    clean = git-lfs clean -- %f
-    smudge = git-lfs smudge -- %f
-
 [init]
-    defaultBranch = main
+defaultBranch = main
 
 [core]
-    # autocrlf
-    #   true:  convert CRLF to LF when commit, and convert LF to CRLF when checkout
-    #   input: convert CRLF to LF when commit
-    #   false: (default) do nothing
-    autocrlf = input
+# true:  convert CRLF to LF when commit, and convert LF to CRLF when checkout
+# input: convert CRLF to LF when commit
+# false: (default) do nothing
+autocrlf = input
 
-    # safecrlf
-    #   true:  reject on irreversible conversion
-    #   warn:  warn on irreversible conversion
-    #   false: do nothing
-    safecrlf = warn
+# true:  reject on irreversible conversion
+# warn:  warn on irreversible conversion
+# false: do nothing
+safecrlf = warn
 
-    filemode = false
-    pager = less -R
+# pager = less -R
+
+[user]
+email = soyccan@gmail.com
+name = Zac Chengkang Chen
+
+[diff]
+tool = nvimdiff
+
+[fetch]
+parallel = 10
+prune = true
+
+[merge]
+autoStash = true
+tool = nvimdiff
+
+[pull]
+rebase = true
 
 [push]
-    # push the current branch to the same name on remote
-    default = current
-    autoSetupRemote = true
-[credential]
-	helper = cache --timeout=0
+# https://stackoverflow.com/a/76994949
+default = simple
+autoSetupRemote = true
+
 [rebase]
-	autostash = true
-[pull]
-    autostash = true
+autoStash = true
+rebaseMerges = true

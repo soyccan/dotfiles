@@ -11,6 +11,9 @@ rulers = [100]
 # enable coloring in case of auto-detection failure due to unset $COLORTERM
 true-color = true
 
+[editor.cursor-shape]
+insert = "bar"
+
 [editor.indent-guides]
 render = true
 

@@ -1,3 +1,9 @@
+# starship init fish --print-full-init
+
+if not status is-interactive || not command -q starship
+    exit
+end
+
 function fish_prompt
     switch "$fish_key_bindings"
         case fish_hybrid_key_bindings fish_vi_key_bindings

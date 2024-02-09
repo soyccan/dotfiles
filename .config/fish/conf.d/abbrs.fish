@@ -2,37 +2,49 @@ if not status is-interactive
     exit
 end
 
+set -U XDG_CONFIG_HOME $HOME/.config
+
+# fish builtins
+abbr cmd 'command'
+abbr which 'command -s'
+abbr where 'type -a'
+
 # reload (source) fish config
-abbr src exec fish
+abbr src 'exec fish'
 
 
 # --- Files & Dirs ---
 
 # ls
-abbr l ls -ahl
 if command -q eza
-    abbr l eza --all --long
-    abbr tree eza --tree
+    alias l 'eza --all --all --long --time-style=iso --binary --git'
+    abbr tree 'eza --tree'
+else
+    abbr l 'ls -ahl'
 end
 
 # prompt before action
-abbr mv mv -i
-abbr rm rm -i
+abbr mv 'mv -i'
+abbr rm 'rm -i'
 
 # add/remove ~ (tilde) at the end of filename
 function disable-file
-    mv -i $argv[1] "$argv[1]"~
+    for file in $argv
+        mv -i $file "$file"~
+    end
 end
 function enable-file
-    mv -i $argv[1] (string replace --regex '~$' '' $argv[1])
+    for file in $argv
+        mv -i $file (string replace --regex '~$' '' $file)
+    end
 end
 
 # take functinos (inspired by ohmyzsh)
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/functions.zsh
 function take
-    if string match --quiet --regex '^(https?|ftp).*\.(tar\.(gz|bz2|xz)|tgz)$' $argv[1]
+    if string match --quiet --regex '\.(tar\.(gz|bz2|xz)|t[gbx]z)$' $argv[1]
         takeurl $argv[1]
-    else if string match --quiet --regex '^([A-Za-z0-9]\+@|https?|git|ssh|ftps?|rsync).*\.git/?$' $argv[1]
+    else if string match --quiet --regex '\.git/?$' $argv[1]
         takegit $argv[1]
     else
         takedir $argv
@@ -68,15 +80,27 @@ function edit --description 'edit files in vsplit windows'
             $EDITOR -O $argv
     end
 end
-abbr e edit
+abbr e 'edit'
 
 
 # --- Per Commands ---
 
+if command -q systemctl
+    abbr sc 'systemctl'
+    abbr scs 'systemctl status'
+    abbr scst 'sudo systemctl start'
+    abbr scstp 'sudo systemctl stop'
+    abbr sce 'sudo systemctl enable --now'
+    abbr scd 'sudo systemctl disable --now'
+end
+
+if command -q tig
+    abbr tiga 'tig --all'
+end
+
 if command -q zellij
-    # Edit zellij configs
-    function zellij-config
-        hx --vsplit $HOME/.config/zellij/config.kdl (zellij setup --dump-config | psub)
+    function zellij-config --description 'edit zellij config (with the default config aside)'
+        edit $XDG_CONFIG_HOME/zellij/config.kdl (zellij setup --dump-config | psub)
     end
 end
 
