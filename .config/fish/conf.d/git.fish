@@ -50,6 +50,8 @@ abbr gmc 'git merge --continue'
 abbr gms 'git merge --squash'
 abbr gmt 'git mergetool'
 
+abbr gp 'git push'
+
 abbr gr 'git remote -v'
 abbr grms 'git remote set-url origin'
 
