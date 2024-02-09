@@ -62,7 +62,7 @@ function takeurl
     cd $dirname
 end
 function takegit
-    git clone $argv[1]
+    git clone --recurse-submodules --depth 1 $argv[1]
     string match --quiet --regex '^.*/(?<repo>.*)\.git$' $argv[1]
     if not set -q repo
         echo "Error: dir '$repo' does not exist"
