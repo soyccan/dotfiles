@@ -1,10 +1,12 @@
-{ config, pkgs, ... }:
+{ config, pkgs, system, username, homeDirectory, ... }:
 
-{
+let
+  isDarwin = builtins.match ".*-darwin$" system != null;
+in {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = "soyccan";
-  home.homeDirectory = "/home/soyccan";
+  home.username = username;
+  home.homeDirectory = homeDirectory;
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -68,13 +70,11 @@
     tree-sitter
 
     # system tools
-    sysstat  # iostat & mpstat
 
     # networking tools
     aria2 # A lightweight multi-protocol & multi-source command-line download utility
     bandwhich # Terminal bandwidth utilization tool
     dnsutils  # `dig` + `nslookup`
-    ethtool
     ipcalc  # it is a calculator for the IPv4/v6 addresses
     iperf3
     ldns # replacement of `dig`, it provide the command `drill`
@@ -101,7 +101,12 @@
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
-  ];
+  ] ++ (
+    if !isDarwin then [
+      sysstat  # iostat & mpstat
+      ethtool
+    ] else []
+  );
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.

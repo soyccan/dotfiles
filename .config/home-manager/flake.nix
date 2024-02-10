@@ -11,19 +11,35 @@
   };
 
   outputs = { nixpkgs, home-manager, ... }:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in {
-      homeConfigurations."soyccan" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-
-        # Specify your home configuration modules here, for example,
-        # the path to your home.nix.
-        modules = [ ./home.nix ];
-
-        # Optionally use extraSpecialArgs
-        # to pass through arguments to home.nix
+  let
+    myHomeConfigurations = {
+      "soyccan@nslab5" = {
+        system = "x86_64-linux";
+        username = "soyccan";
+        homeDirectory = "/home/soyccan";
+      };
+      "soyccan@scnmac" = {
+        system = "aarch64-darwin";
+        username = "soyccan";
+        homeDirectory = "/Users/soyccan";
       };
     };
+
+    makeHomeConfiguration = config@{ system, username, homeDirectory }: (
+      home-manager.lib.homeManagerConfiguration {
+        modules = [ ./home.nix ];
+        pkgs = nixpkgs.legacyPackages.${system};
+        extraSpecialArgs = {
+          # these args are passed to home.nix
+          inherit system username homeDirectory;
+        };
+      }
+    );
+  in {
+    homeConfigurations = (
+      nixpkgs.lib.attrsets.mapAttrs
+      (confName: conf: makeHomeConfiguration conf)
+      myHomeConfigurations
+    );
+  };
 }
