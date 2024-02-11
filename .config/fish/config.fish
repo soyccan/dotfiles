@@ -21,7 +21,7 @@ set -x LOCALE_ARCHIVE /usr/lib/locale/locale-archive
 # Default editor
 for editor in hx nvim vim vi nano
     if command -q $editor
-        set -x EDITOR $editor
+        set -x EDITOR (command -s $editor)
         break
     end
 end

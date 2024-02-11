@@ -24,14 +24,12 @@ in {
     bat
     bottom
     delta
-    dog
-    # dust
+    du-dust
     eza
     fd
     fzf
     glow
     htop
-    httpie
     hyperfine
     jq
     just
@@ -57,30 +55,45 @@ in {
 
     # develop
     # bear
+    clang
     # foundryup
     # ghcup
     git
     # TODO: diff-highlight from git pkg
+    git-filter-repo
+    gh
     helix
     lazygit
+    lldb
     ninja
     pre-commit
     rustup
+    shellcheck
     tig
     tree-sitter
 
     # system tools
+    # fail2ban
+    # easy-rsa
 
     # networking tools
     aria2 # A lightweight multi-protocol & multi-source command-line download utility
     bandwhich # Terminal bandwidth utilization tool
     dnsutils  # `dig` + `nslookup`
+    dogdns  # dig
     ipcalc  # it is a calculator for the IPv4/v6 addresses
     iperf3
     ldns # replacement of `dig`, it provide the command `drill`
     mtr # A network diagnostic tool
     nmap # A utility for network discovery and security auditing
     socat # replacement of openbsd-netcat
+    tshark
+    xh # http client
+
+    # forensics tools
+    binwalk
+    # gdbserver
+    # qemu-user
 
     # productivity
     hugo # static site generator

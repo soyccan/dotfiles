@@ -23,6 +23,8 @@ else
     abbr l 'ls -ahl'
 end
 
+abbr ln 'ln -s'
+
 # prompt before action
 abbr mv 'mv -i'
 abbr rm 'rm -i'
@@ -73,20 +75,59 @@ end
 
 # Edit
 function edit --description 'edit files in vsplit windows'
-    switch $EDITOR
+    argparse 'sudo' -- $argv
+
+    set editor_path (string split '/' $EDITOR)
+    switch $editor_path[-1]
         case hx
-            $EDITOR --vsplit $argv
+            if test $_flag_sudo
+                command sudo $EDITOR --vsplit $argv
+            else
+                command $EDITOR --vsplit $argv
+            end
         case nvim vim vi
-            $EDITOR -O $argv
+            if test $_flag_sudo
+                command sudo $EDITOR -O $argv
+            else
+                command $EDITOR -O $argv
+            end
     end
 end
 abbr e 'edit'
+abbr se 'edit --sudo'
+
+# View
+abbr t 'tail -n 100 -f'
+
+
+# --- System Administration ---
+abbr df 'df -h'
+abbr du 'du -h'
+abbr ip 'ip -color=auto'
+abbr ping 'ping -c 5'
 
 
 # --- Per Commands ---
 
+if command -q apt
+    function apt-show
+        apt show -a $argv | \
+            bat -l yaml --color=always | \
+            rg --passthru --colors 'match:bg:yellow' APT-Sources
+    end
+end
+
+if command -q nft
+    abbr nftl 'sudo nft --handle list ruleset'
+end
+
+if command -q ufw
+    abbr ufwl 'sudo ufw status verbose'
+end
+
 if command -q systemctl
     abbr sc 'systemctl'
+    abbr scr 'sudo systemctl restart'
     abbr scs 'systemctl status'
     abbr scst 'sudo systemctl start'
     abbr scstp 'sudo systemctl stop'
@@ -99,6 +140,9 @@ if command -q tig
 end
 
 if command -q zellij
+    abbr za 'zellij attach'
+    abbr zj 'zellij'
+
     function zellij-config --description 'edit zellij config (with the default config aside)'
         edit $XDG_CONFIG_HOME/zellij/config.kdl (zellij setup --dump-config | psub)
     end

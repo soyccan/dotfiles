@@ -1,8 +1,10 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
 SETUVAR XDG_CONFIG_HOME:/home/soyccan/\x2econfig
-SETUVAR __fish_initialized:3100
+SETUVAR __fish_initialized:3400
 SETUVAR _fish_abbr_cmd:command
+SETUVAR _fish_abbr_df:df\x20\x2dh
+SETUVAR _fish_abbr_du:du\x20\x2dh
 SETUVAR _fish_abbr_e:edit
 SETUVAR _fish_abbr_ga:git\x20add
 SETUVAR _fish_abbr_gaa:git\x20add\x20\x2d\x2dall
@@ -62,17 +64,25 @@ SETUVAR _fish_abbr_gsti:git\x20status\x20\x2d\x2dignored
 SETUVAR _fish_abbr_gsw:git\x20switch
 SETUVAR _fish_abbr_gswc:git\x20switch\x20\x2d\x2dcreate
 SETUVAR _fish_abbr_gswd:git\x20switch\x20\x2d\x2ddetach
+SETUVAR _fish_abbr_ip:ip\x20\x2dcolor\x3dauto
+SETUVAR _fish_abbr_ln:ln\x20\x2ds
 SETUVAR _fish_abbr_mv:mv\x20\x2di
+SETUVAR _fish_abbr_nftl:sudo\x20nft\x20\x2d\x2dhandle\x20list\x20ruleset
+SETUVAR _fish_abbr_ping:ping\x20\x2dc\x205
 SETUVAR _fish_abbr_rm:rm\x20\x2di
 SETUVAR _fish_abbr_sc:systemctl
 SETUVAR _fish_abbr_scd:sudo\x20systemctl\x20disable\x20\x2d\x2dnow
 SETUVAR _fish_abbr_sce:sudo\x20systemctl\x20enable\x20\x2d\x2dnow
+SETUVAR _fish_abbr_scr:sudo\x20systemctl\x20restart
 SETUVAR _fish_abbr_scs:systemctl\x20status
 SETUVAR _fish_abbr_scst:sudo\x20systemctl\x20start
 SETUVAR _fish_abbr_scstp:sudo\x20systemctl\x20stop
+SETUVAR _fish_abbr_se:edit\x20\x2d\x2dsudo
 SETUVAR _fish_abbr_src:exec\x20fish
+SETUVAR _fish_abbr_t:tail\x20\x2dn\x20100\x20\x2df
 SETUVAR _fish_abbr_tiga:tig\x20\x2d\x2dall
 SETUVAR _fish_abbr_tree:eza\x20\x2d\x2dtree
+SETUVAR _fish_abbr_ufwl:sudo\x20ufw\x20status\x20verbose
 SETUVAR _fish_abbr_where:type\x20\x2da
 SETUVAR _fish_abbr_which:command\x20\x2ds
 SETUVAR fish_color_autosuggestion:555\x1ebrblack
@@ -102,3 +112,4 @@ SETUVAR fish_pager_color_completion:\x1d
 SETUVAR fish_pager_color_description:B3A06D\x1eyellow
 SETUVAR fish_pager_color_prefix:normal\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
 SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
+SETUVAR fish_pager_color_selected_background:\x2dr
