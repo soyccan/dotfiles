@@ -13,7 +13,7 @@
   outputs = { nixpkgs, home-manager, ... }:
   let
     myHomeConfigurations = {
-      "soyccan@nslab5" = {
+      "soyccan@soc5" = {
         system = "x86_64-linux";
         username = "soyccan";
         homeDirectory = "/home/soyccan";

@@ -1,96 +1,12 @@
-define global-settings
-# https://blog.csdn.net/keial/article/details/78881533
-set pagination off
-set disassemble-next-line on
 set breakpoint pending on
-set stop-on-solib-events 0
-show stop-on-solib-events
-# b sigaction
-# b __pthread_start
-# break JNI_OnLoad
-
-set startup-with-shell off
+set detach-on-fork off
+set disassemble-next-line on
 set disassembly-flavor intel
 set follow-fork-mode parent
-set detach-on-fork off
-set debug-file-directory /usr/lib/debug
-directory ~/Documents/glibc-src/glibc-2.27/libio
-directory ~/Documents/glibc-src/glibc-2.27/stdio-common
+set pagination off
+set startup-with-shell off
+set stop-on-solib-events 0
 
-tmp
-
-# note the conflict with peda and pwndbg
-# python from libheap import *
-
-# gdb ghidra
-# source ~/Documents/gdbghidra/data/gdb_ghidra_bridge_client.py
-end
-
-
-define tmp
-# target remote 0:2222
-
-# b *0x400a9d
-# b *0x400c4f
-# b *0x400bf0
-# b *0x400c1d
-# b *dlsym+160
-
-# file a2b
-# b main
-
-# file pwnie
-# b *0x8048668
-
-# file easierROP
-# b *0x400a9d
-# b *0x400b2e
-# b *0x400bc7
-# set $buf=0x6020e0
-end
-
-
-define setbreak
-end
-
-
-define xx
-    x/60gx $arg0
-#     x/120wx $arg0
-end
-
-
-define init-peda
-source ~/.gdb/peda/peda.py
-
-# heapinfo and some command
-source ~/.gdb/Pwngdb/pwngdb.py
-source ~/.gdb/Pwngdb/angelheap/gdbinit.py
-python
-import angelheap
-angelheap.init_angelheap()
-end
-
-set disassemble-next-line off
-global-settings
-end
-document init-peda
-    Initializes the PEDA (Python Exploit Development Assistant for GDB) framework
-end
-
-
-define init-pwndbg
-source ~/.local/share/gdb/plugged/pwndbg/gdbinit.py
-set disassemble-next-line off
-global-settings
-end
-document init-pwndbg
-    Initializes PwnDBG
-end
-
-
-define init-gef
-end
-document init-gef
-    Initializes GEF (GDB Enhanced Features)
-end
+break __pthread_start
+break sigaction
+break JNI_OnLoad

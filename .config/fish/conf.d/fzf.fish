@@ -103,6 +103,38 @@ function fzf-cd-widget -d "Change directory"
   commandline -f repaint
 end
 
+function fzf-fasd-widget -d "Insert recent files"
+  # https://github.com/junegunn/fzf/wiki/Examples#with-fasd
+  set -l commandline (__fzf_parse_commandline)
+  set -l dir $commandline[1]
+  set -l fzf_query $commandline[2]
+  set -l prefix $commandline[3]
+
+  set result
+  test -n "$FZF_TMUX_HEIGHT"; or set FZF_TMUX_HEIGHT 40%
+  begin
+    set -lx FZF_DEFAULT_OPTS "--height $FZF_TMUX_HEIGHT --reverse --scheme=path --bind=ctrl-z:ignore $FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS"
+    set -l fzfcmd (__fzfcmd)
+    set result (command fasd -Rfl $fzf_query | command $fzfcmd --print0 --query "$fzf_query")
+  end
+
+  if [ -z "$result" ]
+    commandline -f repaint
+    return
+  else
+    # Remove last token from commandline.
+    commandline -t ""
+  end
+
+  for i in $result
+    commandline -it -- $prefix
+    commandline -it -- (string escape $i)
+    commandline -it -- ' '
+  end
+
+  commandline -f repaint
+end
+
 function __fzfcmd
   test -n "$FZF_TMUX"; or set FZF_TMUX 0
   test -n "$FZF_TMUX_HEIGHT"; or set FZF_TMUX_HEIGHT 40%

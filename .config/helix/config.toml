@@ -56,6 +56,14 @@ ret = ["open_below", "normal_mode"]
 tab = "rotate_view"
 S-tab = "rotate_view_reverse"
 
+[keys.normal.g]
+# goto in other window
+d = ["goto_definition", "rotate_view"]
+D = ["goto_declaration", "rotate_view"]
+i = ["goto_implementation", "rotate_view"]
+r = ["goto_reference", "rotate_view"]
+y = ["goto_type_definition", "rotate_view"]
+
 
 [keys.select]
 # move lines up/down

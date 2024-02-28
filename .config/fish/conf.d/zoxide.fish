@@ -43,7 +43,8 @@ end
 function __zoxide_hook_preexec --on-event fish_preexec
     set cmd (__zoxide_split_cmdline $argv[1])
     # heuristically guess the first arg to be a filepath
-    set filepath $cmd[2]
+    # with variable expansions
+    set filepath (eval echo $cmd[2])
     if test $filepath && test -f $filepath
         command zoxide add -- (realpath $filepath)
     end

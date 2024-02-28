@@ -15,6 +15,14 @@ abbr src 'exec fish'
 
 # --- Files & Dirs ---
 
+# cd
+abbr - 'cd -'
+abbr ... 'cd ../..'
+abbr ..2 'cd ../..'
+abbr ..3 'cd ../../..'
+abbr ..4 'cd ../../../..'
+abbr ..5 'cd ../../../../..'
+
 # ls
 if command -q eza
     alias l 'eza --all --all --long --time-style=iso --binary --git'
@@ -27,6 +35,7 @@ abbr ln 'ln -s'
 
 # prompt before action
 abbr mv 'mv -i'
+abbr cp 'cp -ir'
 abbr rm 'rm -i'
 
 # add/remove ~ (tilde) at the end of filename
@@ -97,7 +106,8 @@ abbr e 'edit'
 abbr se 'edit --sudo'
 
 # View
-abbr t 'tail -n 100 -f'
+abbr t 'tail -n 100'
+abbr T 'tail -n 0 -F'
 
 
 # --- System Administration ---
@@ -121,6 +131,10 @@ if command -q nft
     abbr nftl 'sudo nft --handle list ruleset'
 end
 
+if command -q journalctl
+    abbr jc 'journalctl -xeu'
+end
+
 if command -q ufw
     abbr ufwl 'sudo ufw status verbose'
 end
@@ -142,9 +156,15 @@ end
 if command -q zellij
     abbr za 'zellij attach'
     abbr zj 'zellij'
+    abbr zjc 'zellij-config'
+    abbr zjl 'zellij list-sessions'
+    abbr zjy 'zellij-layout'
 
     function zellij-config --description 'edit zellij config (with the default config aside)'
         edit $XDG_CONFIG_HOME/zellij/config.kdl (zellij setup --dump-config | psub)
     end
-end
 
+    function zellij-layout --description 'edit zellij default layout'
+        edit $XDG_CONFIG_HOME/zellij/layouts/default.kdl (zellij setup --dump-layout default | psub)
+    end
+end

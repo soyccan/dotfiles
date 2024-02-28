@@ -26,6 +26,7 @@ in {
     delta
     du-dust
     eza
+    fasd
     fd
     fzf
     glow
@@ -67,7 +68,7 @@ in {
     lldb
     ninja
     pre-commit
-    rustup
+    # rustup # Caveat: this makes further cargo build use Glibc from Nix store
     shellcheck
     tig
     tree-sitter
