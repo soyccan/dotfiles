@@ -2,8 +2,6 @@ if not status is-interactive
     exit
 end
 
-set -U XDG_CONFIG_HOME $HOME/.config
-
 # fish builtins
 abbr cmd 'command'
 abbr which 'command -s'
@@ -135,6 +133,11 @@ if command -q journalctl
     abbr jc 'journalctl -xeu'
 end
 
+if command -q python3
+    abbr py 'python3'
+    abbr ipy 'python3 -m IPython'
+end
+
 if command -q ufw
     abbr ufwl 'sudo ufw status verbose'
 end
@@ -161,7 +164,7 @@ if command -q zellij
     abbr zjy 'zellij-layout'
 
     function zellij-config --description 'edit zellij config (with the default config aside)'
-        edit $XDG_CONFIG_HOME/zellij/config.kdl (zellij setup --dump-config | psub)
+        edit (get-default XDG_CONFIG_HOME $HOME/.config)/zellij/config.kdl (zellij setup --dump-config | psub)
     end
 
     function zellij-layout --description 'edit zellij default layout'

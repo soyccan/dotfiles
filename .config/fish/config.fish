@@ -6,9 +6,6 @@ end
 
 # --- Below are for interactive shells ---
 
-# universal variables inherit environment variables, and provide default values if missing
-set -U XDG_CONFIG_HOME $HOME/.config
-
 # Nix Home Manager
 # if test -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 #     fenv source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" > /dev/null
@@ -29,5 +26,5 @@ end
 # --- Per Commands ---
 
 if command -q rg
-    set -x RIPGREP_CONFIG_PATH $XDG_CONFIG_HOME/ripgrep/config
+    set -x RIPGREP_CONFIG_PATH (get-default XDG_CONFIG_HOME $HOME/.config)/ripgrep/config
 end
