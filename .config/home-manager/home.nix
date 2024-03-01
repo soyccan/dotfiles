@@ -40,7 +40,7 @@ in {
     nushell
     p7zip
     procs
-    pyenv
+    # pyenv
     ripgrep
     sd
     starship
