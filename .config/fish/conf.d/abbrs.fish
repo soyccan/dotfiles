@@ -32,9 +32,14 @@ end
 abbr ln 'ln -s'
 
 # prompt before action
-abbr mv 'mv -i'
-abbr cp 'cp -ir'
-abbr rm 'rm -i'
+abbr mv 'mv -iv'
+abbr cp 'cp -irv'
+abbr rm 'rm -iv'
+
+# archive
+abbr lzip 'unzip -l'
+abbr ltar 'tar -tf'
+abbr untar 'tar -xvf'
 
 # add/remove ~ (tilde) at the end of filename
 function disable-file
@@ -109,10 +114,21 @@ abbr T 'tail -n 0 -F'
 
 
 # --- System Administration ---
+
 abbr df 'df -h'
 abbr du 'du -h'
 abbr ip 'ip -color=auto'
 abbr ping 'ping -c 5'
+
+if command -q ss
+    # listening
+    abbr ssl 'ss -lnpt'
+    abbr sss 'ss -npt'
+else
+    # listening
+    abbr ssl 'netstat -lnpt'
+    abbr sss 'netstat -npt'
+end
 
 
 # --- Per Commands ---
@@ -125,12 +141,16 @@ if command -q apt
     end
 end
 
-if command -q nft
-    abbr nftl 'sudo nft --handle list ruleset'
-end
-
 if command -q journalctl
     abbr jc 'journalctl -xeu'
+end
+
+if command -q lazygit
+    abbr lg 'lazygit'
+end
+
+if command -q nft
+    abbr nftl 'sudo nft --handle list ruleset'
 end
 
 if command -q python3
@@ -138,8 +158,11 @@ if command -q python3
     abbr ipy 'python3 -m IPython'
 end
 
-if command -q ufw
-    abbr ufwl 'sudo ufw status verbose'
+if command -q rsync
+    abbr rsync-copy 'rsync -ahvz --info=progress2'
+    abbr rsync-move 'rsync -ahvz --info=progress2 --remove-source-files'
+    abbr rsync-update 'rsync -ahuvz --info=progress2'
+    abbr rsync-synchronize 'rsync -ahuvz --info=progress2 --delete'
 end
 
 if command -q systemctl
@@ -154,6 +177,10 @@ end
 
 if command -q tig
     abbr tiga 'tig --all'
+end
+
+if command -q ufw
+    abbr ufwl 'sudo ufw status verbose'
 end
 
 if command -q zellij

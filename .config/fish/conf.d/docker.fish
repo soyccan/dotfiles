@@ -8,7 +8,7 @@ end
 
 abbr da 'docker attach'
 abbr db 'docker build'
-abbr dbr 'docker run --rm (docker build --quiet .)'
+abbr dbr 'docker run --rm --interactive --tty (docker build --quiet .)'
 abbr de 'docker exec'
 abbr de! 'docker exec --interactive --tty'
 abbr di 'docker inspect'
@@ -23,7 +23,7 @@ abbr dnl 'docker network ls'
 abbr dp 'docker push'
 abbr dpl 'docker pull'
 abbr dprt 'docker port'
-abbr dps 'docker ps -a'
+abbr dps 'docker ps --all'
 abbr dr 'docker run --rm'
 abbr dr! 'docker run --rm --interactive --tty'
 abbr drm 'docker rm'
@@ -52,13 +52,15 @@ begin # Docker Compose
     abbr dcb "$dccmd build"
     abbr dcdn "$dccmd down"
     abbr dce "$dccmd exec"
+    abbr dce! "$dccmd exec --interactive --tty"
     abbr dck "$dccmd kill"
     abbr dcl "$dccmd logs --tail 100"
     abbr dclf "$dccmd logs --tail 0 --follow"
     abbr dco "$dccmd"
     abbr dcprt "$dccmd port"
-    abbr dcps "$dccmd ps -a"
+    abbr dcps "$dccmd ps --all"
     abbr dcr "$dccmd run --rm"
+    abbr dcr! "$dccmd run --rm --interactive --tty"
     abbr dcrst "$dccmd restart"
     abbr dcrm "$dccmd rm"
     abbr dcst "$dccmd start"

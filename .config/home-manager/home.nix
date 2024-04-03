@@ -30,6 +30,7 @@ in {
     fd
     fzf
     glow
+    graphviz
     htop
     hyperfine
     jq
@@ -41,6 +42,7 @@ in {
     p7zip
     procs
     # pyenv
+    rename
     ripgrep
     sd
     starship
@@ -56,7 +58,7 @@ in {
 
     # develop
     # bear
-    clang
+    # clang # Caveat: this hijacks system ld
     # foundryup
     # ghcup
     git
@@ -68,10 +70,13 @@ in {
     lldb
     ninja
     pre-commit
-    # rustup # Caveat: this makes further cargo build use Glibc from Nix store
+    # rustup
     shellcheck
     tig
     tree-sitter
+
+    # container
+    ctop
 
     # system tools
     # fail2ban

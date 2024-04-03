@@ -40,15 +40,22 @@ function __zoxide_hook_pwd --on-variable PWD
 end
 
 # Record recently accessed files (require a patched zoxide that support recording files)
-function __zoxide_hook_preexec --on-event fish_preexec
-    set cmd (__zoxide_split_cmdline $argv[1])
-    # heuristically guess the first arg to be a filepath
-    # with variable expansions
-    set filepath (eval echo $cmd[2])
-    if test $filepath && test -f $filepath
-        command zoxide add -- (realpath $filepath)
-    end
-end
+# function __zoxide_hook_preexec --on-event fish_preexec
+#     set cmd (__zoxide_split_cmdline $argv[1])
+
+#     # heuristically guess the first arg ($cmd[2]) to be a filepath
+#     set arg (echo $cmd[2])
+
+#     # ignore URLs
+#     string match --regex --quiet -- '^\w+://' $arg && return
+ 
+#     # run eval for variable expansions
+#     set filepath (eval echo $arg)
+
+#     if test $filepath && test -f $filepath
+#         command zoxide add -- (realpath $filepath)
+#     end
+# end
 
 function __zoxide_split_cmdline --description "Split a command line string into tokens"
     # https://stackoverflow.com/a/60346363
