@@ -22,6 +22,9 @@ keybinds {
     move {
         unbind "Ctrl h"
         bind "Alt m" { SwitchToMode "Normal"; }
+
+        bind "Alt h" { MoveTab "Left"; }
+        bind "Alt l" { MoveTab "Right"; }
     }
     tab {
         unbind "Ctrl t"

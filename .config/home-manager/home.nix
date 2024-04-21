@@ -93,7 +93,6 @@ in {
     mtr # A network diagnostic tool
     nmap # A utility for network discovery and security auditing
     socat # replacement of openbsd-netcat
-    tshark
     xh # http client
 
     # forensics tools

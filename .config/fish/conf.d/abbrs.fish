@@ -110,7 +110,7 @@ abbr se 'edit --sudo'
 
 # View
 abbr t 'tail -n 100'
-abbr T 'tail -n 0 -F'
+abbr T 'tail -n 100 -F'
 
 
 # --- System Administration ---
@@ -141,6 +141,15 @@ if command -q apt
     end
 end
 
+if command -q bat
+    abbr batp 'bat --paging auto'
+end
+
+if command -q base64
+    abbr e64 'base64'
+    abbr d64 'base64 -d'
+end
+
 if command -q journalctl
     abbr jc 'journalctl -xeu'
 end
@@ -159,14 +168,15 @@ if command -q python3
 end
 
 if command -q rsync
-    abbr rsync-copy 'rsync -ahvz --info=progress2'
-    abbr rsync-move 'rsync -ahvz --info=progress2 --remove-source-files'
-    abbr rsync-update 'rsync -ahuvz --info=progress2'
-    abbr rsync-synchronize 'rsync -ahuvz --info=progress2 --delete'
+    abbr rsync-copy 'rsync -ahv --info=progress2'
+    abbr rsync-move 'rsync -ahv --info=progress2 --remove-source-files'
+    abbr rsync-update 'rsync -ahuv --info=progress2'
+    abbr rsync-synchronize 'rsync -ahuv --info=progress2 --delete'
 end
 
 if command -q systemctl
     abbr sc 'systemctl'
+    abbr scdr 'sudo systemctl daemon-reload'
     abbr scr 'sudo systemctl restart'
     abbr scs 'systemctl status'
     abbr scst 'sudo systemctl start'

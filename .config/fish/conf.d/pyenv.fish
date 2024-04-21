@@ -8,6 +8,5 @@ set -x PYENV_SHELL fish
 fish_add_path $PYENV_ROOT/bin
 fish_add_path $PYENV_ROOT/shims
 
-fish_add_path $PYENV_ROOT/versions/(pyenv version-name)/bin
-
+# fish_add_path $PYENV_ROOT/versions/(pyenv version-name)/bin
 # command pyenv rehash 2>/dev/null
