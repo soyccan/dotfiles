@@ -66,8 +66,6 @@ begin # Docker Compose
     abbr dcst "$dccmd start"
     abbr dcstp "$dccmd stop"
     abbr dcup "$dccmd up --detach"
-    abbr dcupb "$dccmd up --detach --build"
-    abbr dcup! "$dccmd up"
-    abbr dcupb! "$dccmd up --build"
+    abbr dcup! "$dccmd up --detach --build --force-recreate --remove-orphans"
 end
 
