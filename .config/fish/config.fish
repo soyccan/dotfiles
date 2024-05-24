@@ -6,6 +6,9 @@ end
 
 # --- Below are for interactive shells ---
 
+# Paths
+fish_add_path $HOME/.local/bin
+
 # Nix Home Manager
 # if test -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 #     fenv source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" > /dev/null
@@ -28,5 +31,3 @@ end
 if command -q rg
     set -x RIPGREP_CONFIG_PATH (get-default XDG_CONFIG_HOME $HOME/.config)/ripgrep/config
 end
-
-fish_add_path -a /home/soyccan/.local/share/foundry/bin

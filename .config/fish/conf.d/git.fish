@@ -37,7 +37,6 @@ abbr gd 'git diff -w --word-diff=color'
 abbr gds 'git diff -w --word-diff=color --staged'
 abbr gdt 'git difftool'
 abbr gf 'git fetch --all'
-abbr gl 'git pull'
 
 abbr glg 'git log --stat'
 abbr glgp 'git log --stat --patch'
@@ -51,6 +50,7 @@ abbr gms 'git merge --squash'
 abbr gmt 'git mergetool'
 
 abbr gp 'git push'
+abbr gP 'git pull'
 
 abbr gr 'git remote -v'
 abbr grms 'git remote set-url origin'

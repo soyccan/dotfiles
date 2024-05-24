@@ -25,6 +25,7 @@ abbr ..5 'cd ../../../../..'
 if command -q eza
     alias l 'eza --all --all --long --time-style=iso --binary --git'
     abbr tree 'eza --tree --git-ignore'
+    abbr tree! 'eza --tree --all'
 else
     abbr l 'ls -ahl'
 end
@@ -165,6 +166,9 @@ end
 if command -q python3
     abbr py 'python3'
     abbr ipy 'python3 -m IPython'
+    abbr pt 'python3 -m poetry'
+    abbr ve 'python3 -m venv .venv'
+    abbr vea 'source .venv/bin/activate.fish'
 end
 
 if command -q rsync
@@ -176,13 +180,13 @@ end
 
 if command -q systemctl
     abbr sc 'systemctl'
+    abbr scd 'sudo systemctl disable --now'
     abbr scdr 'sudo systemctl daemon-reload'
+    abbr sce 'sudo systemctl enable --now'
+    abbr scf 'systemctl --failed'
     abbr scr 'sudo systemctl restart'
     abbr scs 'systemctl status'
-    abbr scst 'sudo systemctl start'
-    abbr scstp 'sudo systemctl stop'
-    abbr sce 'sudo systemctl enable --now'
-    abbr scd 'sudo systemctl disable --now'
+    abbr scx 'sudo systemctl stop'
 end
 
 if command -q tig

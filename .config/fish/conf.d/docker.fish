@@ -7,7 +7,7 @@ if not status is-interactive || not command -q docker
 end
 
 abbr da 'docker attach'
-abbr db 'docker build'
+abbr db 'docker build --progress plain'
 abbr dbr 'docker run --rm --interactive --tty (docker build --quiet .)'
 abbr de 'docker exec'
 abbr de! 'docker exec --interactive --tty'
@@ -36,6 +36,10 @@ abbr dtop 'docker top'
 abbr dv 'docker volume'
 abbr dvl 'docker volume ls'
 abbr dvp 'docker volume prune'
+
+function dip --description "Get container IP address"
+    docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $argv[1]
+end
 
 begin # Docker Compose
     set -l dccmd

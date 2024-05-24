@@ -178,6 +178,21 @@ init-submods() {
 }
 
 main() {
+    pkgs=(
+        fish
+        bat
+        ripgrep
+        fd-find
+        nmap
+    )
+    sudo apt install "$pkgs[@]"
+    sudo ln -s batcat /usr/bin/bat
+
+    chsh -s /usr/bin/fish
+
+    git clone https://github.com/ageis/ufw-application-profiles /tmp/ufw-application-profiles
+    sudo cp -nrv /tmp/ufw-application-profiles/applications.d/* /etc/ufw/applications.d
+
     check_deps
     init-submods
     setup-vimplug

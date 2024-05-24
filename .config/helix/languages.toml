@@ -3,3 +3,17 @@
 #     "--config",
 #     "imports_granularity=Crate,group_imports=StdExternalCrate"
 # ]
+
+[[language]]
+name = "python"
+auto-format = true
+language-servers = ["pylsp", "pyright"]
+
+# Requires: pip install python-lsp-ruff
+[language-server.pylsp.config.pylsp.plugins.ruff]
+lineLength = 100
+
+# Requires: pip install pyright
+[language-server.pyright]
+command = "pyright-langserver"
+args = ["--stdio"]
