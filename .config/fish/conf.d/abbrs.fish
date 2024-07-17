@@ -123,12 +123,15 @@ abbr ping 'ping -c 5'
 
 if command -q ss
     # listening
-    abbr ssl 'ss -lnpt'
-    abbr sss 'ss -npt'
+    function ssl
+        sudo ss --numeric --processes --tcp --listening | begin
+            sed --unbuffered 1q
+            awk '{ split($4, arr, ":"); print arr[length(arr)] "\t" $0 }' | sort --key 1n
+        end
+    end
 else
     # listening
-    abbr ssl 'netstat -lnpt'
-    abbr sss 'netstat -npt'
+    abbr ssl 'netstat -nptl'
 end
 
 
@@ -172,14 +175,15 @@ if command -q python3
 end
 
 if command -q rsync
-    abbr rsync-copy 'rsync -ahv --info=progress2'
-    abbr rsync-move 'rsync -ahv --info=progress2 --remove-source-files'
-    abbr rsync-update 'rsync -ahuv --info=progress2'
-    abbr rsync-synchronize 'rsync -ahuv --info=progress2 --delete'
+    abbr rsync-copy 'rsync -ah --info=progress2'
+    abbr rsync-move 'rsync -ah --info=progress2 --remove-source-files'
+    abbr rsync-update 'rsync -ahu --info=progress2'
+    abbr rsync-synchronize 'rsync -ahu --info=progress2 --delete'
 end
 
 if command -q systemctl
     abbr sc 'systemctl'
+    abbr scc 'systemctl cat'
     abbr scd 'sudo systemctl disable --now'
     abbr scdr 'sudo systemctl daemon-reload'
     abbr sce 'sudo systemctl enable --now'
