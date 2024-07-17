@@ -178,7 +178,7 @@ init-submods() {
 }
 
 add_apt_sources() {
-    set codename (lsb_release --codename --short)
+    codename=$(lsb_release --codename --short)
 
     echo "Types: deb
 URIs: https://download.docker.com/linux/ubuntu
