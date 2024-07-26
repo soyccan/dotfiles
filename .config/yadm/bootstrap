@@ -11,6 +11,10 @@ log() {
     echo "$0: $@"
 }
 
+to_lower() {
+    echo ${1,,}
+}
+
 remove_with_backup() {
     if [[ ! -e "$1" ]]; then
         return
@@ -179,10 +183,17 @@ init-submods() {
 }
 
 add_apt_sources() {
+    distro=$(to_lower $(lsb_release --id --short))
     codename=$(lsb_release --codename --short)
 
+    if ! curl -fsSL -o /dev/null "https://download.docker.com/linux/$distro/dists/$codename"; then
+        # fallback
+        distro=debian
+        codename=bookworm
+    fi
+
     echo "Types: deb
-URIs: https://download.docker.com/linux/ubuntu
+URIs: https://download.docker.com/linux/$distro
 Suites: $codename
 Components: stable
 Architectures: amd64
