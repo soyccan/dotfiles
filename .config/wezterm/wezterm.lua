@@ -1,6 +1,19 @@
 local wezterm = require "wezterm"
+local act = wezterm.action
 
 local config = {
+    --- Control ---
+
+    keys = {
+        {
+            key = 'F',
+            mods = 'CTRL|SHIFT',
+            action = act.Search {
+                CaseInSensitiveString = ""
+            },
+        },
+    },
+
     --- Appearance ---
 
     font = wezterm.font_with_fallback {
