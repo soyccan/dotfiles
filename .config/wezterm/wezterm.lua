@@ -1,6 +1,11 @@
 local wezterm = require "wezterm"
 local act = wezterm.action
 
+function exist_executable(program)
+    local success, _, _ = wezterm.run_child_process { "where.exe", program }
+    return success
+end
+
 local config = {
     --- Control ---
 
@@ -102,7 +107,16 @@ local config = {
 
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
     -- Windows-specific settings
-    config.default_prog = { "powershell.exe" }
+
+    config.default_prog = (function()
+        if exist_executable "pwsh.exe" then
+            return { "pwsh.exe" }
+        elseif exist_executable "powershell.exe" then
+            return { "powershell.exe" }
+        else
+            return { "cmd.exe" }
+        end
+    end)()
 
 elseif wezterm.target_triple == "x86_64-apple-darwin" then
     -- macOS-specific settings
