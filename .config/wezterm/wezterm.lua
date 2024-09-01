@@ -96,6 +96,8 @@ local config = {
             "#fdf6e3", -- white (base3)
         },
     },
+
+    enable_scroll_bar = true,
 }
 
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
