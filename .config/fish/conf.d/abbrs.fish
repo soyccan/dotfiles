@@ -177,7 +177,7 @@ end
 if command -q lazydocker
     abbr lzd lazydocker
     abbr lzp 'DOCKER_HOST=unix:///run/user/1000/podman/podman.sock lazydocker'
-    abbr lzP 'DOCKER_HOST=unix:///run/podman/podman.sock sudo lazydocker'
+    abbr lzP 'sudo env DOCKER_HOST=unix:///run/podman/podman.sock lazydocker'
 end
 
 if command -q lazygit
