@@ -185,18 +185,19 @@ init-submods() {
 add_apt_sources() {
     distro=$(to_lower $(lsb_release --id --short))
     codename=$(lsb_release --codename --short)
+    arch=$(dpkg --print-architecture)
 
-    if ! curl -fsSL -o /dev/null "https://download.docker.com/linux/$distro/dists/$codename"; then
+    if ! curl -fsSL "https://download.docker.com/linux/$distro/dists/$codename/stable/binary-$arch/" &>/dev/null; then
         # fallback
         distro=debian
         codename=bookworm
     fi
 
-    echo "Types: deb
+    printf %s "Types: deb
 URIs: https://download.docker.com/linux/$distro
 Suites: $codename
 Components: stable
-Architectures: amd64
+Architectures: $arch
 Signed-By: -----BEGIN PGP PUBLIC KEY BLOCK-----
     .
     mQINBFit2ioBEADhWpZ8/wvZ6hUTiXOwQHXMAlaFHcPH9hAtr4F1y2+OYdbtMuth
@@ -263,6 +264,7 @@ Signed-By: -----BEGIN PGP PUBLIC KEY BLOCK-----
 
 install_packages() {
     add_apt_sources
+    sudo apt update
 
     pkgs=(
         bat
@@ -282,13 +284,16 @@ install_packages() {
     done
 
     sudo mkdir -p /usr/local/bin
-    ! has bat && has batcat && sudo ln -f $(command -v batcat) /usr/local/bin/bat
-    ! has fd && has fdfind && sudo ln -sf $(command -v fdfind) /usr/local/bin/fd
+    ! has bat && has batcat && sudo ln -sf $(command -v batcat) /usr/local/bin/bat
 
-    curl -fsSL 'https://github.com/jesseduffield/lazygit/releases/download/v0.42.0/lazygit_0.42.0_Linux_x86_64.tar.gz' \
+    curl -fsSL https://github.com/jesseduffield/lazygit/releases/download/v0.43.1/lazygit_0.43.1_Linux_x86_64.tar.gz \
         | sudo tar -C /usr/local/bin -xzf - lazygit
-    curl -fsSL 'https://github.com/jesseduffield/lazydocker/releases/download/v0.23.1/lazydocker_0.23.1_Linux_x86_64.tar.gz' \
+    curl -fsSL https://github.com/jesseduffield/lazydocker/releases/download/v0.23.3/lazydocker_0.23.3_Linux_x86_64.tar.gz \
         | sudo tar -C /usr/local/bin -xzf - lazydocker
+
+    curl -fsSL https://github.com/helix-editor/helix/releases/download/24.07/helix-24.07-x86_64-linux.tar.xz \
+        | sudo tar -C /opt -xJf -
+    sudo ln -s /opt/helix-24.07-x86_64-linux/hx /usr/local/bin/hx
 }
 
 setup_docker() {

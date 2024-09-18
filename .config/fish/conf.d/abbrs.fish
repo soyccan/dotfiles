@@ -3,7 +3,7 @@ if not status is-interactive
 end
 
 # fish builtins
-abbr cmd 'command'
+abbr cmd command
 abbr which 'command -s'
 abbr where 'type -a'
 
@@ -88,7 +88,7 @@ end
 
 # Edit
 function edit --description 'edit files in vsplit windows'
-    argparse 'sudo' -- $argv
+    argparse sudo -- $argv
 
     set editor_path (string split '/' $EDITOR)
     switch $editor_path[-1]
@@ -106,7 +106,7 @@ function edit --description 'edit files in vsplit windows'
             end
     end
 end
-abbr e 'edit'
+abbr e edit
 abbr se 'edit --sudo'
 
 # View
@@ -118,20 +118,23 @@ abbr T 'tail -n 100 -F'
 
 abbr df 'df -h'
 abbr du 'du -h'
-abbr ip 'ip -color=auto'
+# abbr ip 'ip -color=auto'
+abbr nmp 'sudo nmap -v -T4 -A -oA hostname'
 abbr ping 'ping -c 5'
+abbr pgrep 'pgrep -fa'
+abbr pkill 'pkill -fe'
 
 if command -q ss
-    # listening
+    # show listening ports
     function ssl
-        sudo ss --numeric --processes --tcp --listening | begin
+        sudo ss --listening --tcp --udp --numeric --processes | begin
             sed --unbuffered 1q
-            awk '{ split($4, arr, ":"); print arr[length(arr)] "\t" $0 }' | sort --key 1n
+            awk '{ split($5, arr, ":"); print arr[length(arr)] "\t" $0 }' | sort --key 1n
         end
     end
 else
-    # listening
-    abbr ssl 'netstat -nptl'
+    # show listening ports
+    abbr ssl 'netstat -ltunp'
 end
 
 
@@ -139,9 +142,7 @@ end
 
 if command -q apt
     function apt-show
-        apt show -a $argv | \
-            bat -l yaml --color=always | \
-            rg --passthru --colors 'match:bg:yellow' APT-Sources
+        apt show -a $argv | bat -l yaml --color=always | rg --passthru --colors 'match:bg:yellow' APT-Sources
     end
 end
 
@@ -150,24 +151,50 @@ if command -q bat
 end
 
 if command -q base64
-    abbr e64 'base64'
-    abbr d64 'base64 -d'
+    function e64
+        printf %s $argv[1] | base64 --wrap=0
+    end
+    function d64
+        printf %s $argv[1] | base64 --decode --wrap=0
+    end
+end
+
+if command -q crackmapexec
+    abbr cme 'crackmapexec smb'
+end
+if command -q netexec
+    abbr nxc 'netexec smb'
+end
+
+if command -q fdfind
+    abbr fd 'fdfind -gu'
 end
 
 if command -q journalctl
     abbr jc 'journalctl -xeu'
 end
 
+if command -q lazydocker
+    abbr lzd lazydocker
+    abbr lzp 'DOCKER_HOST=unix:///run/user/1000/podman/podman.sock lazydocker'
+    abbr lzP 'DOCKER_HOST=unix:///run/podman/podman.sock sudo lazydocker'
+end
+
 if command -q lazygit
-    abbr lg 'lazygit'
+    abbr lzg lazygit
 end
 
 if command -q nft
     abbr nftl 'sudo nft --handle list ruleset'
 end
 
+if command -q podman
+    abbr pm podman
+end
+
 if command -q python3
-    abbr py 'python3'
+    abbr py python3
+    abbr pyhttp 'python3 -m http.server 80'
     abbr ipy 'python3 -m IPython'
     abbr pt 'python3 -m poetry'
     abbr ve 'python3 -m venv .venv'
@@ -182,7 +209,7 @@ if command -q rsync
 end
 
 if command -q systemctl
-    abbr sc 'systemctl'
+    abbr sc systemctl
     abbr scc 'systemctl cat'
     abbr scd 'sudo systemctl disable --now'
     abbr scdr 'sudo systemctl daemon-reload'
@@ -190,6 +217,7 @@ if command -q systemctl
     abbr scf 'systemctl --failed'
     abbr scr 'sudo systemctl restart'
     abbr scs 'systemctl status'
+    abbr scu 'systemctl --user'
     abbr scx 'sudo systemctl stop'
 end
 
@@ -203,10 +231,10 @@ end
 
 if command -q zellij
     abbr za 'zellij attach'
-    abbr zj 'zellij'
-    abbr zjc 'zellij-config'
+    abbr zj zellij
+    abbr zjc zellij-config
     abbr zjl 'zellij list-sessions'
-    abbr zjy 'zellij-layout'
+    abbr zjy zellij-layout
 
     function zellij-config --description 'edit zellij config (with the default config aside)'
         edit (get-default XDG_CONFIG_HOME $HOME/.config)/zellij/config.kdl (zellij setup --dump-config | psub)

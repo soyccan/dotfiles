@@ -15,7 +15,7 @@ abbr di 'docker inspect'
 abbr dim 'docker image'
 abbr diml 'docker image ls'
 abbr dimt 'docker image tag'
-abbr dk 'docker'
+abbr dk docker
 abbr dl 'docker logs --tail 100'
 abbr dlf 'docker logs --tail 0 --follow'
 abbr dn 'docker network'
@@ -48,7 +48,7 @@ begin # Docker Compose
         set dccmd 'docker compose'
     else if command -q docker-compose
         # Docker Compose V1
-        set dccmd 'docker-compose'
+        set dccmd docker-compose
     else
         exit
     end
@@ -73,4 +73,3 @@ begin # Docker Compose
     abbr dcup "$dccmd up --detach"
     abbr dcup! "$dccmd up --detach --build --force-recreate --remove-orphans"
 end
-
