@@ -38,8 +38,8 @@ abbr gds 'git diff -w --word-diff=color --staged'
 abbr gdt 'git difftool'
 abbr gf 'git fetch --all'
 
-abbr glg 'git log --stat'
-abbr glgp 'git log --stat --patch'
+abbr gl 'git log --stat'
+abbr glp 'git log --stat --patch'
 abbr glo 'git log --oneline --graph'
 abbr gloa 'git log --oneline --graph --all'
 
