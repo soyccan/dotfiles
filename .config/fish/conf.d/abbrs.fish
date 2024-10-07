@@ -2,6 +2,32 @@ if not status is-interactive
     exit
 end
 
+function semver_cmp
+    set vers1 $argv[1]
+    set vers2 $argv[2]
+    set parts1 (string split '.' $vers1)
+    set parts2 (string split '.' $vers2)
+    for i in (seq 1 3)
+        set -q parts1[$i] || set parts1[$i] 0
+        set -q parts2[$i] || set parts2[$i] 0
+        if [ $parts1[$i] -lt $parts2[$i] ]
+            echo -1
+            return
+        else if [ $parts1[$i] -gt $parts2[$i] ]
+            echo 1
+            return
+        end
+    end
+    echo 0
+    return
+end
+function semver_lt
+    [ (semver_cmp $argv) -lt 0 ]
+end
+function semver_le
+    [ (semver_cmp $argv) -le 0 ]
+end
+
 # fish builtins
 abbr cmd command
 abbr which 'command -s'
@@ -116,15 +142,18 @@ abbr T 'tail -n 100 -F'
 
 # --- System Administration ---
 
+abbr chown! 'sudo chown -R (id -u):(id -g) .'
 abbr df 'df -h'
 abbr du 'du -h'
-# abbr ip 'ip -color=auto'
+semver_lt (ip -V | perl -pe 's/.*iproute2-(\d+\.\d+\.\d+).*/\1/') '6.7.0' && abbr ip 'ip -c' # color
 abbr iost 'iostat -Nxz --human --pretty --compact 2'
 abbr lsb 'lsblk -o NAME,TYPE,FSTYPE,LABEL,SIZE,FSUSED,FSAVAIL,FSUSE%,MOUNTPOINTS | grep -v loop'
-abbr nmp 'sudo nmap -v -T4 -A -oA hostname'
+abbr nmp 'sudo nmap -v -T4 -sC -sV -oA hostname'
 abbr ping 'ping -c 5'
 abbr pgrep 'pgrep -fa'
 abbr pkill 'pkill -fe'
+abbr ssh! 'ssh -o StrictHostKeychecking=no'
+abbr scp! 'scp -o StrictHostKeychecking=no'
 
 if command -q ss
     # show listening ports
@@ -174,6 +203,9 @@ end
 
 if command -q journalctl
     abbr jc 'journalctl -xeu'
+    abbr jcf 'journalctl -xfu'
+    abbr jcu 'journalctl --user -xeu'
+    abbr jcuf 'journalctl --user -xfu'
 end
 
 if command -q lazydocker
@@ -184,6 +216,7 @@ end
 
 if command -q lazygit
     abbr lzg lazygit
+    abbr lzy 'lazygit --work-tree ~ --git-dir ~/.local/share/yadm/repo.git/'
 end
 
 if command -q nft
@@ -216,11 +249,22 @@ if command -q systemctl
     abbr scd 'sudo systemctl disable --now'
     abbr scdr 'sudo systemctl daemon-reload'
     abbr sce 'sudo systemctl enable --now'
+    abbr sced 'sudo systemctl edit'
     abbr scf 'systemctl --failed'
     abbr scr 'sudo systemctl restart'
     abbr scs 'systemctl status'
-    abbr scu 'systemctl --user'
     abbr scx 'sudo systemctl stop'
+
+    abbr scu 'systemctl --user'
+    abbr scuc 'systemctl --user cat'
+    abbr scud 'systemctl --user disable --now'
+    abbr scudr 'systemctl --user daemon-reload'
+    abbr scue 'systemctl --user enable --now'
+    abbr scued 'systemctl --user edit'
+    abbr scuf 'systemctl --user --failed'
+    abbr scur 'systemctl --user restart'
+    abbr scus 'systemctl --user status'
+    abbr scux 'systemctl --user stop'
 end
 
 if command -q tig

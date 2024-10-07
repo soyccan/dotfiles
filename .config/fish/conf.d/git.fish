@@ -20,7 +20,7 @@ abbr gbD 'git branch --delete --force'
 # end
 abbr gbm 'git branch --move'
 
-abbr gbk 'git-backup'
+abbr gbk git-backup
 
 abbr gc 'git commit --verbose'
 abbr gc! 'git commit --amend --verbose'
@@ -32,7 +32,7 @@ abbr gca!! 'git commit --all --amend --no-edit'
 abbr gcam 'git commit --all --message'
 
 abbr gcl 'git clone --recurse-submodules'
-abbr gcl1 'git clone --recurse-submodules --depth 1'
+abbr gcl1 'git clone --depth 1'
 abbr gd 'git diff -w --word-diff=color'
 abbr gds 'git diff -w --word-diff=color --staged'
 abbr gdt 'git difftool'
@@ -141,8 +141,8 @@ end
 
 function git-sync-upstream --description 'sync the main/master branch with the upstream repo, \
 without switching branch'
-    set origin_repo 'origin'
-    set upstream_repo 'upstream'
+    set origin_repo origin
+    set upstream_repo upstream
 
     # get the main branch ref of upstream repo
     set main_branch_remote (git symbolic-ref "refs/remotes/$upstream_repo/HEAD")

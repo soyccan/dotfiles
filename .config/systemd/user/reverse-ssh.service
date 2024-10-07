@@ -1,0 +1,10 @@
+[Unit]
+Description=Fahrj/reverse-ssh: Statically-linked ssh server with reverse shell functionality for CTFs and such
+After=network.target
+
+[Service]
+ExecStart=/home/kali/.local/bin/reverse-sshx64 -l -v -p 31337
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

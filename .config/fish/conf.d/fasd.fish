@@ -3,7 +3,7 @@ if not status is-interactive || not command -q fasd
 end
 
 function __fasd_preexec --on-event fish_preexec
-    eval "fasd --proc "(fasd --sanitize $argv[1])
+    fasd --proc (fasd --sanitize $argv[1])
 end
 
 function __fasd_split_cmdline --description "Split a command line string into tokens"
