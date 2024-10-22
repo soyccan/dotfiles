@@ -50,8 +50,8 @@ abbr ..5 'cd ../../../../..'
 # ls
 if command -q eza
     alias l 'eza --all --all --long --time-style=iso --binary --git'
-    abbr tree 'eza --tree --git-ignore'
-    abbr tree! 'eza --tree --all'
+    abbr tree 'eza --tree --long --time-style=iso --git-ignore'
+    abbr tree! 'eza --tree --long --time-style=iso --all'
 else
     abbr l 'ls -ahl'
 end
