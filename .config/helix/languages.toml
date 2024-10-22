@@ -12,6 +12,7 @@ auto-format = true
 [language-server.pylsp.config.pylsp.plugins.ruff]
 fix = true
 lineLength = 100
+# Rules that are marked as fixable by ruff that should be fixed when running textDocument/formatting
 format = ["I"]
 
 [[language]]
