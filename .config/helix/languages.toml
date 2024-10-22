@@ -7,7 +7,6 @@
 [[language]]
 name = "python"
 auto-format = true
-# language-servers = ["pylsp", "pyright"]
 
 # Requires: pipx install python-lsp-ruff
 [language-server.pylsp.config.pylsp.plugins.ruff]
@@ -15,7 +14,7 @@ fix = true
 lineLength = 100
 select = ["I"]
 
-# Requires: pip install pyright
-# [language-server.pyright]
-# command = "pyright-langserver"
-# args = ["--stdio"]
+[[language]]
+name = "nix"
+auto-format = true
+formatter = { command = "alejandra" }

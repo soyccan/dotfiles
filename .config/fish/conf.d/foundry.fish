@@ -2,10 +2,8 @@ if not status is-interactive
     exit
 end
 
-if test -d $HOME/.local/share/foundry/bin
-    fish_add_path $HOME/.local/share/foundry/bin
-end
+fish_add_path $HOME/.foundry/bin
 
-if test -d $HOME/.foundry/bin
-    fish_add_path $HOME/.foundry/bin
+if [ -e $HOME/.foundry/bin ] && [ -e $HOME/.config/foundry.toml ]
+    set -x FOUNDRY_CONFIG $HOME/.config/foundry.toml
 end

@@ -2,74 +2,83 @@
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/docker/docker.plugin.zsh
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/docker-compose/docker-compose.plugin.zsh
 
-if not status is-interactive || not command -q docker
+if not status is-interactive
     exit
 end
 
-abbr da 'docker attach'
-abbr db 'docker build --progress plain'
-abbr dbr 'docker run --rm --interactive --tty (docker build --quiet .)'
-abbr de 'docker exec'
-abbr de! 'docker exec --interactive --tty'
-abbr di 'docker inspect'
-abbr dim 'docker image'
-abbr diml 'docker image ls'
-abbr dimt 'docker image tag'
-abbr dk docker
-abbr dl 'docker logs --tail 100'
-abbr dlf 'docker logs --tail 0 --follow'
-abbr dn 'docker network'
-abbr dnl 'docker network ls'
-abbr dp 'docker push'
-abbr dpl 'docker pull'
-abbr dprt 'docker port'
-abbr dps 'docker ps --all'
-abbr dr 'docker run --rm --network=host'
-abbr dr! 'docker run --rm --network=host --interactive --tty'
-abbr drm 'docker rm'
-abbr drmi 'docker image rm'
-abbr drst 'docker restart'
-abbr dst 'docker start'
-abbr dst! 'docker start --attach --interactive'
-abbr dstp 'docker stop'
-abbr dtop 'docker top'
-abbr dv 'docker volume'
-abbr dvl 'docker volume ls'
-abbr dvp 'docker volume prune'
-
-function dip --description "Get container IP address"
-    docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $argv[1]
-end
-
-begin # Docker Compose
-    set -l dccmd
-    if docker compose &>/dev/null
-        # Docker Compose V2
-        set dccmd 'docker compose'
-    else if command -q docker-compose
-        # Docker Compose V1
-        set dccmd docker-compose
+begin
+    set -l docker
+    if command -q podman
+        set docker podman
+    else if command -q docker
+        set docker docker
     else
         exit
     end
 
-    abbr dcb "$dccmd build"
-    abbr dcdn "$dccmd down"
-    abbr dce "$dccmd exec"
-    abbr dce! "$dccmd exec --interactive --tty"
-    abbr dck "$dccmd kill"
-    abbr dcl "$dccmd logs --tail 100"
-    abbr dclf "$dccmd logs --tail 100 --follow"
-    abbr dco "$dccmd"
-    abbr dcp "$dccmd pull"
-    abbr dcprt "$dccmd port"
-    abbr dcps "$dccmd ps --all"
-    abbr dcr "$dccmd run --rm"
-    abbr dcr! "$dccmd run --rm --interactive --tty"
-    abbr dcrst "$dccmd restart"
-    abbr dcrm "$dccmd rm"
-    abbr dcst "$dccmd start"
-    abbr dcstp "$dccmd stop"
-    abbr dcup "$dccmd up --detach"
-    abbr dcup! "$dccmd up --detach --build --force-recreate --remove-orphans"
+    abbr da "$docker attach"
+    abbr db "$docker build --progress plain"
+    abbr dbr "$docker run --rm --interactive --tty ($docker build --quiet .)"
+    abbr de "$docker exec"
+    abbr de! "$docker exec --interactive --tty"
+    abbr di "$docker inspect"
+    abbr dim "$docker image"
+    abbr diml "$docker image ls"
+    abbr dimt "$docker image tag"
+    abbr dk $docker
+    abbr dl "$docker logs --tail 100"
+    abbr dlf "$docker logs --tail 100 --follow"
+    abbr dn "$docker network"
+    abbr dnl "$docker network ls"
+    abbr dp "$docker pull"
+    abbr dP "$docker push"
+    abbr dprt "$docker port"
+    abbr dps "$docker ps --all"
+    abbr dr "$docker run --rm"
+    abbr dr! "$docker run --rm --interactive --tty"
+    abbr drm "$docker rm"
+    abbr drmi "$docker image rm"
+    abbr drst "$docker restart"
+    abbr drst! "$docker restart --attach --interactive"
+    abbr dx "$docker stop"
+    abbr dtop "$docker top"
+    abbr dv "$docker volume"
+    abbr dvl "$docker volume ls"
+    abbr dvp "$docker volume prune"
+
+    # Get container IP address
+    alias dip "$docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'"
+
+    set -l dc
+    if podman compose &>/dev/null
+        set dc 'podman compose'
+    else if docker compose &>/dev/null
+        # Docker Compose V2
+        set dc 'docker compose'
+    else if command -q docker-compose
+        # Docker Compose V1
+        set dc docker-compose
+    else
+        exit
+    end
+
+    abbr dcb "$dc build"
+    abbr dcdn "$dc down"
+    abbr dcdn! "$dc down --volumes"
+    abbr dce "$dc exec"
+    abbr dce! "$dc exec --interactive --tty"
+    abbr dck "$dc kill"
+    abbr dcl "$dc logs --tail 100"
+    abbr dclf "$dc logs --tail 100 --follow"
+    abbr dc "$dc"
+    abbr dcp "$dc pull"
+    abbr dcprt "$dc port"
+    abbr dcps "$dc ps"
+    abbr dcr "$dc run --rm"
+    abbr dcr! "$dc run --rm --interactive --tty"
+    abbr dcrst "$dc restart"
+    abbr dcrm "$dc rm"
+    abbr dcx "$dc stop"
+    abbr dcup "$dc up --detach"
+    abbr dcup! "$dc up --detach --force-recreate --remove-orphans --build"
 end
