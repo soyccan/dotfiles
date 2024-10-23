@@ -16,7 +16,9 @@ fish_add_path $HOME/.local/bin
 
 # Locales
 # let Nix use the system locale archive
-set -x LOCALE_ARCHIVE /usr/lib/locale/locale-archive
+if [ -e /usr/lib/locale/locale-archive ]
+    set -x LOCALE_ARCHIVE /usr/lib/locale/locale-archive
+end
 
 # Default editor
 for editor in nvim hx vim vi nano

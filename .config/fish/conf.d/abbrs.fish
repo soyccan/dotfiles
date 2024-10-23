@@ -49,7 +49,9 @@ abbr ..5 'cd ../../../../..'
 
 # ls
 if command -q eza
-    alias l 'eza --all --all --long --time-style=iso --binary --git'
+    function __override_alias_l --on-event fish_prompt --description "override system-wide alias at fish prompt since user config is sourced prior to system config"
+        alias l 'eza --all --all --long --time-style=iso --binary --git'
+    end
     abbr tree 'eza --tree --long --time-style=iso --git-ignore'
     abbr tree! 'eza --tree --long --time-style=iso --all'
 else
@@ -134,6 +136,7 @@ function edit --description 'edit files in vsplit windows'
 end
 abbr e edit
 abbr se 'edit --sudo'
+abbr lzv 'NVIM_APPNAME=lazyvim nvim'
 
 # View
 abbr t 'tail -n 100'

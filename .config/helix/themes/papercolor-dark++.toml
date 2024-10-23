@@ -22,6 +22,10 @@ inherits = "papercolor-dark"
 # separator still has limited configurability (no per-mode options)
 # "ui.statusline.separator" = { bg = "statusline_active_bg", fg = "green" }
 
+"constructor" = { fg = "bright2", modifiers = ["bold"] }  # same as "type"
+"function" = "cyan"
+"function.method" = "cyan"
+
 # [palette]
 # statusline_active_bg = "#5faf00"
 # statusline_active_fg = "#bcbcbc"
