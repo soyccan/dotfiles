@@ -217,6 +217,7 @@ install_packages() {
         pipx
         python3-venv
         ripgrep
+        wezterm
     )
     for pkg in "${pkgs[@]}"; do
         sudo apt install -y "$pkg"
