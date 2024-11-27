@@ -50,9 +50,9 @@ begin
     alias dip "$docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'"
 
     set -l dc
-    if podman compose &>/dev/null
+    if command -q podman && podman compose &>/dev/null
         set dc 'podman compose'
-    else if docker compose &>/dev/null
+    else if command -q docker && docker compose &>/dev/null
         # Docker Compose V2
         set dc 'docker compose'
     else if command -q docker-compose

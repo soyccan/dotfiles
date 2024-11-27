@@ -145,7 +145,9 @@ abbr T 'tail -n 100 -F'
 abbr chown! 'sudo chown -R (id -u):(id -g) .'
 abbr df 'df -h'
 abbr du 'du -h'
-semver_lt (ip -V | perl -pe 's/.*iproute2-(\d+\.\d+\.\d+).*/\1/') '6.7.0' && abbr ip 'ip -c' # color
+if command -q ip && semver_lt (ip -V | perl -pe 's/.*iproute2-(\d+\.\d+\.\d+).*/\1/') '6.7.0'
+    abbr ip 'ip -c' # color
+end
 abbr iost 'iostat -Nxz --human --pretty --compact 2'
 abbr lsb 'lsblk -o NAME,TYPE,FSTYPE,LABEL,SIZE,FSUSED,FSAVAIL,FSUSE%,MOUNTPOINTS | grep -v loop'
 abbr nmp 'sudo nmap -v -T4 -sC -sV -oA hostname'

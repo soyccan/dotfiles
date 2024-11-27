@@ -118,8 +118,12 @@ if wezterm.target_triple == "x86_64-pc-windows-msvc" then
         end
     end)()
 
-elseif wezterm.target_triple == "x86_64-apple-darwin" then
+elseif (
+    wezterm.target_triple == "x86_64-apple-darwin"
+    or wezterm.target_triple == "aarch64-apple-darwin"
+) then
     -- macOS-specific settings
+    config.default_prog = { "/opt/homebrew/bin/fish" }
 
 elseif wezterm.target_triple == "x86_64-unknown-linux-gnu" then
     -- Linux-specific settings
