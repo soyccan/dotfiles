@@ -5,5 +5,8 @@
 -- Editor
 vim.opt.colorcolumn = "100"
 
+-- Disable animation
+vim.g.snacks_animate = false
+
 -- Python
 vim.g.lazyvim_python_lsp = "ruff"
