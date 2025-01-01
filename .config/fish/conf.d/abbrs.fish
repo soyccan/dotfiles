@@ -142,6 +142,13 @@ abbr lzv 'NVIM_APPNAME=lazyvim nvim'
 abbr t 'tail -n 100'
 abbr T 'tail -n 100 -F'
 
+function watchex --description "Watch & execute when a Python file changes"
+    while true
+        inotifywait $argv[1] || break
+        python3 $argv[1]
+    end
+end
+
 
 # --- System Administration ---
 
@@ -203,7 +210,9 @@ if command -q netexec
 end
 
 if command -q fdfind
-    abbr fd 'fdfind -gu'
+    abbr fd 'fdfind -u'
+else if command -q fd
+    abbr fd 'fd -u'
 end
 
 if command -q journalctl
