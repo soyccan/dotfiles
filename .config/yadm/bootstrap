@@ -1,189 +1,69 @@
 #!/bin/bash
+set -euxo pipefail
+IFS=
 
-dotfiles="$(dirname "$(readlink -f "$0")")"
+install_packages() {
+    echo Installing Packages
 
+    add_apt_sources
+    sudo apt update
 
-has() {
-    command -v "$1" >/dev/null 2>&1
-}
-
-log() {
-    echo "$0: $@"
-}
-
-to_lower() {
-    echo ${1,,}
-}
-
-remove_with_backup() {
-    if [[ ! -e "$1" ]]; then
-        return
-    fi
-
-    name="$1"~
-    while [[ -e "$name" ]]; do
-        name="$name"~
+    pkgs=(
+        bat
+        build-essential
+        #docker-ce
+        eza
+        fasd
+        fd-find
+        fish
+        fzf
+        git
+        git-delta
+        htop
+        jq
+        nmap
+        neovim
+        pipx
+        python3-ipython
+        python3-venv
+        ranger
+        ripgrep
+        shfmt
+        tealdeer
+        unzip
+        wezterm
+        yadm
+    )
+    for pkg in ${pkgs[@]}; do
+        # install or update
+        sudo apt install -y $pkg
     done
-    mv -iv "$1" "$name"
-}
 
-ln_safe() {
-    target="$1"
-    link="$2"
-    mkdir -p "$(dirname "$link")"
-    if [[ -L "$link" ]]; then
-        # if $link is a symbolic link, replace it
-        ln -svnf "$target" "$link"
-    else
-        # otherwise, make a backup before overwriting
-        remove_with_backup "$link"
-        ln -svni "$target" "$link"
-    fi
-}
+    sudo mkdir -p /usr/local/bin
 
-install_pkg() {
-    if has "$1"; then
-        return
+    if ! has bat && has batcat; then
+        sudo ln -sf $(command -v batcat) /usr/local/bin/bat
     fi
 
-    sudo=
-    if has sudo; then
-        sudo=sudo
-    fi
+    version=$(get_latest_release_version jesseduffield/lazygit)
+    curl -fsSL https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_Linux_x86_64.tar.gz \
+        | sudo tar -C /usr/local/bin -xzf - lazygit
 
-    log Installing package "$1"
+    version=$(get_latest_release_version jesseduffield/lazydocker)
+    curl -fsSL https://github.com/jesseduffield/lazydocker/releases/download/v${version}/lazydocker_${version}_Linux_x86_64.tar.gz \
+        | sudo tar -C /usr/local/bin -xzf - lazydocker
 
-    if has apt; then
-        "$sudo" apt install -y "$1"
-    elif has yum; then
-        "$sudo" yum install -y "$1"
-    elif has brew; then
-        brew install "$1"
-    fi
-}
+    version=$(get_latest_release_version helix-editor/helix)
+    curl -fsSL https://github.com/helix-editor/helix/releases/download/${version}/helix-${version}-x86_64-linux.tar.xz \
+        | sudo tar -C /opt -xJf -
+    sudo ln -sf /opt/helix-${version}-x86_64-linux/hx /usr/local/bin/hx
 
-
-setup_zsh() {
-    log Configuring ZSH
-
-    if ! has zsh; then
-        log You can installing standalone version of ZSH by:
-        log 'sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh-bin/master/install)"'
-    fi
-
-    if sudo -l && [[ -x /bin/zsh ]]; then
-        log Setting default shell to ZSH
-        sudo usermod "$USER" -s /bin/zsh
-    fi
-
-    log Linking ZSH config files
-
-    # config files
-    ln_safe "$dotfiles/zsh/zshrc" "$HOME/.zshrc"
-    ln_safe "$dotfiles/zsh/zshenv" "$HOME/.zshenv"
-
-    # powerlevel10k
-    ln_safe "$dotfiles/zsh/p10k.zsh" "$HOME/.p10k.zsh"
-}
-
-
-setup_fish() {
-    echo Configuring FISH
-
-    if [[ "$(awk -F':' "/^$USER/ { print \$7 }" /etc/passwd)" != '/bin/fish' ]]; then
-        sudo usermod "$USER" -s /bin/fish
-    fi
-
-    # oh-my-fish
-    # curl -L https://get.oh-my.fish | fish
-
-    # fisher
-    curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.fish
-}
-
-
-setup_tmux() {
-    log Configuring TMUX
-
-    # oh-my-tmux
-    log Installing Oh My TMUX
-    ln_safe "$dotfiles/tmux/oh-my-tmux" "$HOME/.tmux"
-    ln_safe "$dotfiles/tmux/oh-my-tmux/.tmux.conf" "$HOME/.tmux.conf"
-    ln_safe "$dotfiles/tmux/tmux.conf.local" "$HOME/.tmux.conf.local"
-}
-
-
-
-setup-vimplug() {
-    curl -fL --create-dirs \
-         -o "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim \
-         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-}
-
-
-setup_vim() {
-    log Configuring Vim
-
-    # neovim configurations
-    ln_safe "$dotfiles/vim" "$HOME/.config/nvim"
-
-    setup-vimplug
-
-    # compatible with vim
-    ln_safe "$dotfiles/vim" "$HOME/.vim"
-    ln_safe "$dotfiles/vim/init.vim" "$HOME/.vimrc"
-}
-
-
-setup_gdb() {
-    log Configuring GDB
-
-    ln_safe "$dotfiles/gdb" "$HOME/.gdb"
-    ln_safe "$dotfiles/gdb/gdbinit" "$HOME/.gdbinit"
-    ln_safe "$dotfiles/gdb/lldbinit" "$HOME/.lldbinit"
-}
-
-
-setup_git() {
-    log Configuring Git
-    ln_safe "$dotfiles/git/gitconfig" "$HOME/.gitconfig"
-    ln_safe "$dotfiles/git/template" "$HOME/.git_template"
-}
-
-_check_dep() {
-    if has "$1"; then
-        log "Checking if $1 exists... YES"
-        return 0
-    else
-        log "Checking if $1 exists... NO"
-        return 1
-    fi
-}
-
-check_deps() {
-    ok=1
-    deps=(tmux zsh nvim git unzip)
-    for d in $deps; do
-        if ! _check_dep $d; then
-            ok=0
-        fi
-    done
-    if [[ $ok == 0 ]]; then
-    	exit 1
-    fi
-}
-
-setup_pam() {
-    ln_safe "$dotfiles/pam_environment" "$HOME/.pam_environment"
-}
-
-init-submods() {
-    return
-    yadm submodule update --init
+    sh <(curl -fsSL https://starship.rs/install.sh) -y
+    sh <(curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh)
 }
 
 add_apt_sources() {
-    distro=$(to_lower $(lsb_release --id --short))
+    distro=$(to_lower $(lsb_release --id --short 2>/dev/null))
     codename=$(lsb_release --codename --short)
     arch=$(dpkg --print-architecture)
 
@@ -203,64 +83,46 @@ add_apt_sources() {
     fi
 }
 
-install_packages() {
-    add_apt_sources
-    sudo apt update
+is_package_installed() {
+    dpkg-query --show --showformat='${Status}' $1 2>/dev/null | grep -q "ok installed"
+}
 
-    pkgs=(
-        bat
-        build-essential
-        #docker-ce
-        fasd
-        fd-find
-        fish
-        fzf
-        git-delta
-        htop
-        nmap
-        neovim
-        pipx
-        python3-ipython
-        python3-venv
-        ripgrep
-        tealdeer
-        wezterm
-    )
-    for pkg in "${pkgs[@]}"; do
-        sudo apt install -y "$pkg"
-    done
-
-    sudo mkdir -p /usr/local/bin
-    ! has bat && has batcat && sudo ln -sf $(command -v batcat) /usr/local/bin/bat
-
-    curl -fsSL https://github.com/jesseduffield/lazygit/releases/download/v0.43.1/lazygit_0.43.1_Linux_x86_64.tar.gz \
-        | sudo tar -C /usr/local/bin -xzf - lazygit
-    curl -fsSL https://github.com/jesseduffield/lazydocker/releases/download/v0.23.3/lazydocker_0.23.3_Linux_x86_64.tar.gz \
-        | sudo tar -C /usr/local/bin -xzf - lazydocker
-
-    curl -fsSL https://github.com/helix-editor/helix/releases/download/24.07/helix-24.07-x86_64-linux.tar.xz \
-        | sudo tar -C /opt -xJf -
-    sudo ln -s /opt/helix-24.07-x86_64-linux/hx /usr/local/bin/hx
-
-    sh <(curl -fsSL https://starship.rs/install.sh) -y
-    sh <(curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh)
+get_latest_release_version() {
+    curl -fsSL "https://api.github.com/repos/$1/releases/latest" \
+        | perl -ne 'print $1 if /"tag_name":\s*"v?(.*?)"/'
 }
 
 setup_docker() {
+    echo Configuring Docker
+
     if ! has docker || ! getent group docker >/dev/null; then
         return
     fi
 
-    sudo usermod --append --groups docker $(whoami)
+    sudo usermod --append --groups docker $USER
+}
+
+setup_fish() {
+    echo Configuring Fish Shell
+
+    if [[ ! -e /usr/bin/fish ]]; then
+        return
+    fi
+
+    sudo chsh --shell /usr/bin/fish $USER
 }
 
 setup_ufw() {
+    echo Configuring UFW
+
     if ! has ufw; then
         return
     fi
 
-    git clone https://github.com/ageis/ufw-application-profiles /tmp/ufw-application-profiles
-    sudo cp -nrv /tmp/ufw-application-profiles/applications.d/* /etc/ufw/applications.d
+    tmpdir=$(mktemp --directory)
+    mkdir -p $tmpdir
+    git clone https://github.com/ageis/ufw-application-profiles $tmpdir
+    sudo cp -nrv $tmpdir/applications.d/* /etc/ufw/applications.d
 
     echo '
 
@@ -294,20 +156,36 @@ COMMIT
 # END UFW AND DOCKER' | sudo tee -a /etc/ufw/after.rules >/dev/null
 }
 
-main() {
-    install_packages
-    setup_ufw
-    setup_docker
-
-    sudo chsh -s /usr/bin/fish $(whoami)
-
-    check_deps
-    init-submods
-    setup-vimplug
-    log Voila! Setup Finished!
+setup_vim() {
+    # vim-plug
+    # curl -fsSL --create-dirs \
+    #     -o "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim \
+    #     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    :
 }
 
-if [[ "${BASH_SOURCE[0]}" = "$0" ]]; then
-    # if this script is being executed, not sourced
+# Utility functions
+
+has() {
+    command -v $1 &>/dev/null
+}
+
+to_lower() {
+    echo ${1,,}
+}
+
+# Main function
+
+main() {
+    install_packages
+    setup_docker
+    setup_fish
+    setup_ufw
+    setup_vim
+    echo Voila! Setup Finished!
+}
+
+if [[ ${BASH_SOURCE[0]} = $0 ]]; then
+    # if this script is being executed instead of being sourced
     main
 fi
