@@ -1,9 +1,25 @@
 local wezterm = require "wezterm"
-local act = wezterm.action
 
-function exist_executable(program)
-    local success, _, _ = wezterm.run_child_process { "where.exe", program }
-    return success
+local function find_executable_win(program)
+    local success, stdout, _ = wezterm.run_child_process { "where.exe", program }
+    if success then
+        return stdout
+    else
+        return nil
+    end
+end
+
+local function find_executable_unix(program)
+    local success, stdout, _ = wezterm.run_child_process { "/usr/bin/which", program }
+    if success then
+        return stdout
+    else
+        return nil
+    end
+end
+
+local function exists(path)
+    return #wezterm.glob(path) > 0
 end
 
 local config = {
@@ -13,9 +29,22 @@ local config = {
         {
             key = 'F',
             mods = 'CTRL|SHIFT',
-            action = act.Search {
+            action = wezterm.action.Search {
                 CaseInSensitiveString = ""
             },
+        },
+    },
+
+    --- Domains ---
+
+    unix_domains = {
+        {
+            name = "drivefarm24",
+            proxy_command = { "ssh", "drivefarm24", "wezterm", "cli", "proxy" },
+        },
+        {
+            name = "drivefarm22",
+            proxy_command = { "ssh", "drivefarm22", "wezterm", "cli", "proxy" },
         },
     },
 
@@ -70,14 +99,14 @@ local config = {
     -- base03: background
 
     colors = {
-        foreground = "#839496", -- base0
-        background = "#002b36", -- base03
+        foreground = "#839496",    -- base0
+        background = "#002b36",    -- base03
 
-        cursor_fg = "#002b36", -- base03
-        cursor_bg = "#839496", -- base0
+        cursor_fg = "#002b36",     -- base03
+        cursor_bg = "#839496",     -- base0
         cursor_border = "#839496", -- base0
 
-        selection_bg = "#586e75", -- base01
+        selection_bg = "#586e75",  -- base01
 
         ansi = {
             "#002b36", -- black (base03)
@@ -109,9 +138,9 @@ if wezterm.target_triple == "x86_64-pc-windows-msvc" then
     -- Windows-specific settings
 
     config.default_prog = (function()
-        if exist_executable "pwsh.exe" then
+        if find_executable_win "pwsh.exe" ~= nil then
             return { "pwsh.exe" }
-        elseif exist_executable "powershell.exe" then
+        elseif find_executable_win "powershell.exe" ~= nil then
             return { "powershell.exe" }
         else
             return { "cmd.exe" }
@@ -123,11 +152,23 @@ elseif (
     or wezterm.target_triple == "aarch64-apple-darwin"
 ) then
     -- macOS-specific settings
-    config.default_prog = { "/opt/homebrew/bin/fish" }
+
+    local shell = nil
+
+    if shell == nil and find_executable_unix("fish") then
+        shell = find_executable_unix("fish")
+    end
+
+    if shell == nil and exists("/opt/homebrew/bin/fish") then
+        shell = "/opt/homebrew/bin/fish"
+    end
+
+    if shell ~= nil then
+        config.default_prog = { shell }
+    end
 
 elseif wezterm.target_triple == "x86_64-unknown-linux-gnu" then
     -- Linux-specific settings
-
 end
 
 return config

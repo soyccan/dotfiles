@@ -2,16 +2,35 @@
 set -euxo pipefail
 IFS=
 
+main() {
+    install_packages
+    setup_docker
+    setup_fish
+    setup_ufw
+    setup_vim
+    echo Voila! Setup Finished!
+}
+
 install_packages() {
+    if is_ubuntu; then
+        install_packages_ubuntu
+        install_packages_common
+    elif is_macos; then
+        install_packages_macos
+        install_packages_common
+    fi
+}
+
+install_packages_ubuntu() {
     echo Installing Packages
 
     add_apt_sources
     sudo apt update
 
     pkgs=(
+        # docker-ce
         bat
         build-essential
-        #docker-ce
         eza
         fasd
         fd-find
@@ -21,8 +40,8 @@ install_packages() {
         git-delta
         htop
         jq
-        nmap
         neovim
+        nmap
         pipx
         python3-ipython
         python3-poetry
@@ -37,32 +56,33 @@ install_packages() {
     )
     for pkg in ${pkgs[@]}; do
         # install or update
-        sudo apt install -y $pkg
+        sudo apt install -y $pkg || true
     done
 
-    sudo mkdir -p /usr/local/bin
+    prefix=/usr/local/bin
+    sudo mkdir -p $prefix
 
     if ! has bat && has batcat; then
-        sudo ln -sf $(command -v batcat) /usr/local/bin/bat
+        sudo ln -sf $(command -v batcat) $prefix/bat
     fi
 
     version=$(get_latest_release_version jesseduffield/lazygit)
     if ! has lazygit || [[ $(lazygit --version) != *$version* ]]; then
         curl -fsSL https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_Linux_x86_64.tar.gz \
-            | sudo tar -C /usr/local/bin -xzf - lazygit
+            | sudo tar -C $prefix -xzf - lazygit
     fi
 
     version=$(get_latest_release_version jesseduffield/lazydocker)
     if ! has lazydocker || [[ $(lazydocker --version) != *$version* ]]; then
         curl -fsSL https://github.com/jesseduffield/lazydocker/releases/download/v${version}/lazydocker_${version}_Linux_x86_64.tar.gz \
-            | sudo tar -C /usr/local/bin -xzf - lazydocker
+            | sudo tar -C $prefix -xzf - lazydocker
     fi
 
     version=$(get_latest_release_version helix-editor/helix)
     if ! has hx || [[ $(hx --version) != *$version* ]]; then
         curl -fsSL https://github.com/helix-editor/helix/releases/download/${version}/helix-${version}-x86_64-linux.tar.xz \
             | sudo tar -C /opt -xJf -
-        sudo ln -sf /opt/helix-${version}-x86_64-linux/hx /usr/local/bin/hx
+        sudo ln -sf /opt/helix-${version}-x86_64-linux/hx $prefix/hx
     fi
 
     sh <(curl -fsSL https://starship.rs/install.sh) -y
@@ -90,13 +110,52 @@ add_apt_sources() {
     fi
 }
 
-is_package_installed() {
-    dpkg-query --show --showformat='${Status}' $1 2>/dev/null | grep -q "ok installed"
-}
-
 get_latest_release_version() {
     curl -fsSL "https://api.github.com/repos/$1/releases/latest" \
         | perl -ne 'print $1 if /"tag_name":\s*"v?(.*?)"/'
+}
+
+install_packages_macos() {
+    echo Installing Packages
+
+    pkgs=(
+        # docker
+        # fasd
+        # wezterm
+        bat
+        coreutils
+        eza
+        fd
+        fish
+        fzf
+        git
+        git-delta
+        helix
+        htop
+        jq
+        lazydocker
+        lazygit
+        neovim
+        nmap
+        pipx
+        poetry
+        python3
+        ranger
+        ripgrep
+        shfmt
+        starship
+        tealdeer
+        unzip
+        yadm
+        zoxide
+    )
+    for pkg in ${pkgs[@]}; do
+        brew install $pkg || true
+    done
+}
+
+install_packages_common() {
+    return
 }
 
 setup_docker() {
@@ -112,11 +171,19 @@ setup_docker() {
 setup_fish() {
     echo Configuring Fish Shell
 
-    if [[ ! -e /usr/bin/fish ]]; then
+    if is_macos; then
+        # Changing shell requires sudo and can modify system files.
+        # On macOS, we prefer to do it manually.
         return
     fi
 
-    sudo chsh --shell /usr/bin/fish $USER
+    shell=/usr/bin/fish
+
+    if [[ ! -e $shell ]]; then
+        return
+    fi
+
+    sudo chsh -s $shell $USER
 }
 
 setup_ufw() {
@@ -168,7 +235,7 @@ setup_vim() {
     # curl -fsSL --create-dirs \
     #     -o "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim \
     #     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    :
+    return
 }
 
 # Utility functions
@@ -181,16 +248,19 @@ to_lower() {
     echo ${1,,}
 }
 
-# Main function
-
-main() {
-    install_packages
-    setup_docker
-    setup_fish
-    setup_ufw
-    setup_vim
-    echo Voila! Setup Finished!
+is_package_installed_ubuntu() {
+    dpkg-query --show --showformat='${Status}' $1 2>/dev/null | grep -q "ok installed"
 }
+
+is_ubuntu() {
+    [[ $(uname -s) = Linux && $(lsb_release --id --short 2>/dev/null) = Ubuntu ]]
+}
+
+is_macos() {
+    [[ $(uname -s) = Darwin ]]
+}
+
+# Entry point
 
 if [[ ${BASH_SOURCE[0]} = $0 ]]; then
     # if this script is being executed instead of being sourced
