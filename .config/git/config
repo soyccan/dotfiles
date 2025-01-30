@@ -13,6 +13,17 @@ autocrlf = input
 safecrlf = warn
 
 # pager = less -R
+#pager = delta
+
+[interactive]
+#diffFilter = delta --color-only
+
+[delta]
+navigate = true  # use n and N to move between diff sections
+dark = true      # or light = true, or omit for auto-detection
+
+[merge]
+conflictstyle = zdiff3
 
 [user]
 email = soyccan@gmail.com
@@ -20,6 +31,9 @@ name = Zac Chengkang Chen
 
 [diff]
 tool = nvimdiff
+
+[format]
+signOff = true
 
 [fetch]
 parallel = 10
@@ -39,4 +53,5 @@ autoSetupRemote = true
 
 [rebase]
 autoStash = true
+autoSquash = true
 rebaseMerges = true

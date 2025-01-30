@@ -22,26 +22,43 @@ abbr gbm 'git branch --move'
 
 abbr gbk git-backup
 
-abbr gc 'git commit --verbose'
+abbr gc 'git commit --signoff --verbose'
 abbr gc! 'git commit --amend --verbose'
 abbr gc!! 'git commit --amend --no-edit'
-abbr gcm 'git commit --message'
-abbr gca 'git commit --all --verbose'
+abbr gcm 'git commit --signoff --message'
+abbr gca 'git commit --all --signoff --verbose'
 abbr gca! 'git commit --all --amend --verbose'
 abbr gca!! 'git commit --all --amend --no-edit'
-abbr gcam 'git commit --all --message'
+abbr gcam 'git commit --all --signoff --message'
+abbr gcf 'git commit --fixup'
 
 abbr gcl 'git clone --recurse-submodules'
 abbr gcl1 'git clone --depth 1'
-abbr gd 'git diff -w --word-diff=color'
-abbr gds 'git diff -w --word-diff=color --staged'
+
+abbr gcp 'git cherry-pick'
+abbr gcpa 'git cherry-pick --abort'
+abbr gcpc 'git cherry-pick --continue'
+abbr gcp! 'git cherry-pick -x --signoff'
+
+if command -q delta
+    abbr gd 'git diff | delta'
+    abbr gds 'git diff --staged | delta'
+else
+    abbr gd 'git diff --word-diff=color'
+    abbr gds 'git diff --word-diff=color --staged'
+end
+
 abbr gdt 'git difftool'
-abbr gf 'git fetch --all'
+abbr gf 'git fetch'
+abbr gfa 'git fetch --all'
+abbr gfdm 'git fetch origin dev-main'
 
 abbr gl 'git log --stat'
+abbr gl1 'git log --stat -1'
+abbr gl2 'git log --stat -2'
 abbr glp 'git log --stat --patch'
-abbr glo 'git log --oneline --graph'
-abbr gloa 'git log --oneline --graph --all'
+abbr glo 'git log --oneline --graph -20'
+abbr gloa 'git log --oneline --graph --all -20'
 
 abbr gm 'git merge'
 abbr gma 'git merge --abort'
@@ -50,6 +67,7 @@ abbr gms 'git merge --squash'
 abbr gmt 'git mergetool'
 
 abbr gP 'git push'
+abbr gpp 'git push origin HEAD:refs/for/dev-main'
 abbr gp 'git pull'
 
 abbr gr 'git remote -v'
@@ -74,10 +92,16 @@ abbr gsm 'git submodule'
 abbr gsma 'git submodule add'
 
 abbr gsh 'git stash'
+abbr gsha 'git stash apply'
 abbr gshl 'git stash list'
 abbr gshp 'git stash pop'
-abbr gshs 'git stash show --patch --word-diff=color'
 abbr gshx 'git stash drop'
+
+if command -q delta
+    abbr gshs 'git stash show --patch | delta'
+else
+    abbr gshs 'git stash show --patch --word-diff=color'
+end
 
 abbr gst 'git status'
 abbr gsti 'git status --ignored'
@@ -85,6 +109,7 @@ abbr gsti 'git status --ignored'
 abbr gsw 'git switch'
 abbr gswc 'git switch --create'
 abbr gswd 'git switch --detach'
+abbr gdm 'git switch --detach origin/dev-main'
 
 function git --description 'a safer git hook to prevent dangerous commands'
     if test "$argv[1]" = reset; and test "$argv[2]" = --hard;

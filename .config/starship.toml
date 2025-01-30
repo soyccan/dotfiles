@@ -14,23 +14,16 @@ $nix_shell\
 $python\
 $character"""
 
-[character]
-success_symbol = "[❯](blue)"
-error_symbol = "[❯](red)"
-vimcmd_symbol = "[❮](green)"
-
-[cmd_duration]
-format = "[$duration]($style) "
-style = "yellow"
+[hostname]
+ssh_only = false
 
 [directory]
 style = "blue"
 
-[nix_shell]
-impure_msg = '[impure shell](bold red)'
-pure_msg = '[pure shell](bold green)'
-unknown_msg = '[unknown shell](bold yellow)'
-format = 'via [☃️ $state( \($name\))](bold blue) '
+[character]
+success_symbol = "[❯](blue)"
+error_symbol = "[❯](red)"
+vimcmd_symbol = "[❮](green)"
 
 [git_branch]
 format = "[$branch]($style)"
@@ -51,6 +44,16 @@ stashed = "≡"
 format = '\([$state( $progress_current/$progress_total)]($style)\) '
 style = "bright-black"
 
+[cmd_duration]
+format = "[$duration]($style) "
+style = "yellow"
+
 [python]
 format = "[$virtualenv]($style) "
 style = "bright-black"
+
+[nix_shell]
+impure_msg = '[impure shell](bold red)'
+pure_msg = '[pure shell](bold green)'
+unknown_msg = '[unknown shell](bold yellow)'
+format = 'via [☃️ $state( \($name\))](bold blue) '

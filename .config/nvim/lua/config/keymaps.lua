@@ -10,6 +10,7 @@ vim.keymap.set({ "n", "v", "o" }, "gs", "^", { desc = "Goto First Non-Whitespace
 
 -- editing
 vim.keymap.set("n", "<cr>", "o<esc>", { desc = "Insert Blank Line" })
+vim.keymap.set({ "i", "v" }, "`", "<esc>", { desc = "Return to Normal Mode" })
 
 -- quit
 vim.keymap.set({ "n", "v" }, "q", "<cmd>q<cr>", { desc = "Quit" })

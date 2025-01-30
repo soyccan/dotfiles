@@ -193,12 +193,14 @@ add_apt_sources() {
         codename=bookworm
     fi
 
-    for sources in $HOME/.config/apt/*.sources; do
-        (
-            export distro codename arch
-            envsubst < $sources | sudo tee /etc/apt/sources.list.d/${sources##*/} >/dev/null
-        )
-    done
+    if [[ $(apt --version | grep -oP '(?<=apt )\d+') -ge 2 ]]; then
+        for sources in $HOME/.config/apt/*.sources; do
+            (
+                export distro codename arch
+                envsubst < $sources | sudo tee /etc/apt/sources.list.d/${sources##*/} >/dev/null
+            )
+        done
+    fi
 }
 
 install_packages() {
@@ -209,15 +211,19 @@ install_packages() {
         bat
         build-essential
         #docker-ce
+        fasd
         fd-find
         fish
+        fzf
         git-delta
         htop
         nmap
         neovim
         pipx
+        python3-ipython
         python3-venv
         ripgrep
+        tealdeer
         wezterm
     )
     for pkg in "${pkgs[@]}"; do
@@ -236,7 +242,8 @@ install_packages() {
         | sudo tar -C /opt -xJf -
     sudo ln -s /opt/helix-24.07-x86_64-linux/hx /usr/local/bin/hx
 
-    sh <(curl -sS https://starship.rs/install.sh) -y
+    sh <(curl -fsSL https://starship.rs/install.sh) -y
+    sh <(curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh)
 }
 
 setup_docker() {

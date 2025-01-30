@@ -6,7 +6,12 @@
 vim.opt.colorcolumn = "100"
 
 -- Disable animation
-vim.g.snacks_animate = false
+-- vim.g.snacks_animate = false
+
+-- Disable smooth scrolling for all versions
+-- if vim.fn.has("nvim-0.10") == 1 then
+--   vim.opt.smoothscroll = false
+-- end
 
 -- Python
 vim.g.lazyvim_python_lsp = "ruff"
