@@ -100,7 +100,7 @@ add_apt_sources() {
         codename=bookworm
     fi
 
-    if [[ $(apt --version | grep -oP '(?<=apt )\d+') -ge 2 ]]; then
+    if semver_le 2.4 $(apt --version | grep -oP '(?<=apt )\d+\.\d+'); then
         for sources in $HOME/.config/apt/*.sources; do
             (
                 export distro codename arch
@@ -258,6 +258,42 @@ is_ubuntu() {
 
 is_macos() {
     [[ $(uname -s) = Darwin ]]
+}
+
+# Compare two semantic version strings
+semver_cmp() {
+    local vers1=$1
+    local vers2=$2
+
+    # Split the versions into parts (major, minor, patch)
+    IFS='.' read -r -a parts1 <<< "$vers1"
+    IFS='.' read -r -a parts2 <<< "$vers2"
+
+    # Compare each part of the semantic version
+    for i in {0..2}; do
+        # Default missing parts to 0
+        local part1=${parts1[i]:-0}
+        local part2=${parts2[i]:-0}
+
+        if (( part1 < part2 )); then
+            echo -1
+            return
+        elif (( part1 > part2 )); then
+            echo 1
+            return
+        fi
+    done
+
+    # If all parts are equal, return 0
+    echo 0
+}
+
+semver_lt() {
+    (( $(semver_cmp $1 $2) < 0 ))
+}
+
+semver_le() {
+    (( $(semver_cmp $1 $2) <= 0 ))
 }
 
 # Entry point
