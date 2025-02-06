@@ -35,19 +35,6 @@ local config = {
         },
     },
 
-    --- Domains ---
-
-    unix_domains = {
-        {
-            name = "drivefarm24",
-            proxy_command = { "ssh", "drivefarm24", "wezterm", "cli", "proxy" },
-        },
-        {
-            name = "drivefarm22",
-            proxy_command = { "ssh", "drivefarm22", "wezterm", "cli", "proxy" },
-        },
-    },
-
     --- Appearance ---
 
     font = wezterm.font_with_fallback {
