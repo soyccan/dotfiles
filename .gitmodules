@@ -1,12 +1,12 @@
 # ---
 # gdb
+[submodule "gef"]
+	path = .local/share/gdb/plugged/gef
+	url = https://github.com/hugsy/gef
+  shallow = true
 [submodule "libheap"]
 	path = .local/share/gdb/plugged/libheap
 	url = https://github.com/cloudburst/libheap
-	shallow = true
-[submodule "peda"]
-	path = .local/share/gdb/plugged/peda
-	url = https://github.com/longld/peda
 	shallow = true
 [submodule "Pwngdb"]
 	path = .local/share/gdb/plugged/Pwngdb
