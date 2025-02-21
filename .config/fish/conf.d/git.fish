@@ -22,14 +22,14 @@ abbr gbm 'git branch --move'
 
 abbr gbk git-backup
 
-abbr gc 'git commit --signoff --verbose'
+abbr gc 'git commit --verbose'
 abbr gc! 'git commit --amend --verbose'
 abbr gc!! 'git commit --amend --no-edit'
-abbr gcm 'git commit --signoff --message'
-abbr gca 'git commit --all --signoff --verbose'
+abbr gcm 'git commit --message'
+abbr gca 'git commit --all --verbose'
 abbr gca! 'git commit --all --amend --verbose'
 abbr gca!! 'git commit --all --amend --no-edit'
-abbr gcam 'git commit --all --signoff --message'
+abbr gcam 'git commit --all --message'
 abbr gcf 'git commit --fixup'
 
 abbr gcl 'git clone --recurse-submodules'
@@ -38,7 +38,7 @@ abbr gcl1 'git clone --depth 1'
 abbr gcp 'git cherry-pick'
 abbr gcpa 'git cherry-pick --abort'
 abbr gcpc 'git cherry-pick --continue'
-abbr gcp! 'git cherry-pick -x --signoff'
+abbr gcp! 'git cherry-pick -x'
 
 if command -q delta
     abbr gd 'git diff | delta'
