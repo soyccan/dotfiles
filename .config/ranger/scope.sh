@@ -95,13 +95,13 @@ handle_extension() {
             exit 1;;
 
         ## HTML
-        htm|html|xhtml)
-            ## Preview as text conversion
-            w3m -dump "${FILE_PATH}" && exit 5
-            lynx -dump -- "${FILE_PATH}" && exit 5
-            elinks -dump "${FILE_PATH}" && exit 5
-            pandoc -s -t markdown -- "${FILE_PATH}" && exit 5
-            ;;
+        # htm|html|xhtml)
+        #     ## Preview as text conversion
+        #     w3m -dump "${FILE_PATH}" && exit 5
+        #     lynx -dump -- "${FILE_PATH}" && exit 5
+        #     elinks -dump "${FILE_PATH}" && exit 5
+        #     pandoc -s -t markdown -- "${FILE_PATH}" && exit 5
+        #     ;;
 
         ## JSON
         json)
@@ -334,7 +334,17 @@ handle_mime() {
 }
 
 handle_fallback() {
-    echo '----- File Type Classification -----' && file --dereference --brief -- "${FILE_PATH}" && exit 5
+    file_type=$(file --dereference --brief -- "${FILE_PATH}")
+    if [[
+        "$file_type" == *"ASCII"* ||
+        "$file_type" == *"text"*
+    ]]; then
+        cat "$FILE_PATH"
+    else
+        echo '----- File Type Classification -----'
+        echo "$file_type"
+    fi
+    exit 5
 }
 
 
