@@ -5,6 +5,13 @@
 -- Editor
 vim.opt.colorcolumn = "100"
 
+-- Disable autoformat
+-- to manually format:
+--   :lua vim.lsp.buf.format()
+--   :lua require("conform").format()
+--   :ConformFormat
+vim.g.autoformat = false
+
 -- Disable animation
 -- vim.g.snacks_animate = false
 
