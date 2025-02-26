@@ -29,8 +29,8 @@ install_packages_ubuntu() {
 
     pkgs=(
         # docker-ce
+        # ubuntu-standard
         bat
-        build-essential
         eza
         fasd
         fd-find
@@ -39,10 +39,15 @@ install_packages_ubuntu() {
         git
         git-delta
         htop
+        httpie
         jq
+        neofetch
         neovim
         nmap
+        p7zip-full
+        pigz
         pipx
+        pixz
         python3-ipython
         python3-poetry
         python3-venv
@@ -50,14 +55,17 @@ install_packages_ubuntu() {
         ripgrep
         shfmt
         tealdeer
+        tig
         unzip
         wezterm
         yadm
+        zsh
     )
-    for pkg in ${pkgs[@]}; do
-        # install or update
-        sudo apt install -y $pkg || true
-    done
+    # some packages may not be available on all systems
+    pkgs_as_regex=$(IFS="|"; echo "${pkgs[*]}")
+    readarray -t pkgs_avail < <(apt-cache --generate pkgnames | grep -E "^(${pkgs_as_regex})$")
+    # install or update
+    sudo apt install -y --ignore-missing ${pkgs_avail[@]}
 
     prefix=/usr/local/bin
     sudo mkdir -p $prefix
