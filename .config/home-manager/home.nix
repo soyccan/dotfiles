@@ -1,6 +1,11 @@
-{ config, pkgs, system, username, homeDirectory, ... }:
-
-let
+{
+  config,
+  pkgs,
+  system,
+  username,
+  homeDirectory,
+  ...
+}: let
   isDarwin = builtins.match ".*-darwin$" system != null;
 in {
   # Home Manager needs a bit of information about you and the paths it should
@@ -19,112 +24,116 @@ in {
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = with pkgs; [
-    # shell utils
-    bat
-    bottom
-    delta
-    du-dust
-    eza
-    fasd
-    fd
-    fzf
-    glow
-    graphviz
-    htop
-    hyperfine
-    jq
-    just
-    lsd
-    most
-    neofetch
-    nushell
-    p7zip
-    procs
-    # pyenv
-    rename
-    ripgrep
-    sd
-    starship
-    tealdeer
-    tmux
-    tokei
-    unzip
-    xz
-    yadm
-    zellij
-    zip
-    zoxide
+  home.packages = with pkgs;
+    [
+      # shell utils
+      bat
+      bottom
+      delta
+      du-dust
+      eza
+      fasd
+      fd
+      fzf
+      glow
+      graphviz
+      htop
+      hyperfine
+      jq
+      just
+      lsd
+      most
+      neofetch
+      nushell
+      p7zip
+      procs
+      # pyenv
+      rename
+      ripgrep
+      sd
+      starship
+      tealdeer
+      tmux
+      tokei
+      unzip
+      xz
+      yadm
+      zellij
+      zip
+      zoxide
 
-    # develop
-    # bear
-    # clang # Caveat: this hijacks system ld
-    # foundryup
-    # ghcup
-    git
-    # TODO: diff-highlight from git pkg
-    git-filter-repo
-    gh
-    helix
-    lazygit
-    lldb
-    ninja
-    pre-commit
-    # rustup
-    shellcheck
-    tig
-    tree-sitter
+      # develop
+      # bear
+      # clang # Caveat: this hijacks system ld
+      # foundryup
+      # ghcup
+      git
+      # TODO: diff-highlight from git pkg
+      git-filter-repo
+      gh
+      helix
+      lazygit
+      lldb
+      ninja
+      pre-commit
+      # rustup
+      shellcheck
+      tig
+      tree-sitter
 
-    # container
-    ctop
+      # container
+      ctop
 
-    # system tools
-    # fail2ban
-    # easy-rsa
+      # system tools
+      # fail2ban
+      # easy-rsa
 
-    # networking tools
-    aria2 # A lightweight multi-protocol & multi-source command-line download utility
-    bandwhich # Terminal bandwidth utilization tool
-    dnsutils  # `dig` + `nslookup`
-    dogdns  # dig
-    ipcalc  # it is a calculator for the IPv4/v6 addresses
-    iperf3
-    ldns # replacement of `dig`, it provide the command `drill`
-    mtr # A network diagnostic tool
-    nmap # A utility for network discovery and security auditing
-    socat # replacement of openbsd-netcat
-    xh # http client
+      # networking tools
+      aria2 # A lightweight multi-protocol & multi-source command-line download utility
+      bandwhich # Terminal bandwidth utilization tool
+      dnsutils # `dig` + `nslookup`
+      dogdns # dig
+      ipcalc # it is a calculator for the IPv4/v6 addresses
+      iperf3
+      ldns # replacement of `dig`, it provide the command `drill`
+      mtr # A network diagnostic tool
+      nmap # A utility for network discovery and security auditing
+      socat # replacement of openbsd-netcat
+      xh # http client
 
-    # forensics tools
-    binwalk
-    # gdbserver
-    # qemu-user
+      # forensics tools
+      binwalk
+      # gdbserver
+      # qemu-user
 
-    # productivity
-    hugo # static site generator
+      # productivity
+      hugo # static site generator
 
-    # # Adds the 'hello' command to your environment. It prints a friendly
-    # # "Hello, world!" when run.
-    # pkgs.hello
+      # # Adds the 'hello' command to your environment. It prints a friendly
+      # # "Hello, world!" when run.
+      # pkgs.hello
 
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
+      # # It is sometimes useful to fine-tune packages, for example, by applying
+      # # overrides. You can do that directly here, just don't forget the
+      # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
+      # # fonts?
+      # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
 
-    # # You can also create simple shell scripts directly inside your
-    # # configuration. For example, this adds a command 'my-hello' to your
-    # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
-  ] ++ (
-    if !isDarwin then [
-      sysstat  # iostat & mpstat
-      ethtool
-    ] else []
-  );
+      # # You can also create simple shell scripts directly inside your
+      # # configuration. For example, this adds a command 'my-hello' to your
+      # # environment:
+      # (pkgs.writeShellScriptBin "my-hello" ''
+      #   echo "Hello, ${config.home.username}!"
+      # '')
+    ]
+    ++ (
+      if !isDarwin
+      then [
+        sysstat # iostat & mpstat
+        ethtool
+      ]
+      else []
+    );
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.

@@ -1,20 +1,29 @@
 #!/bin/sh
-set -e
+set -eux
+IFS=
+
 if [ $EUID -ne 0 ]; then
     echo "Error: Require privilege"
-    false
+    exit 1
 fi
-cd /etc/nixos
-${EDITOR:-vim} configuration.nix flake.nix
-alejandra .
-if [ -z "$(git --no-pager diff -U0 *.nix)" ]; then
+
+${EDITOR:-vim} /etc/nixos/configuration.nix /etc/nixos/flake.nix
+alejandra /etc/nixos/configuration.nix /etc/nixos/flake.nix
+if [ -z "$(git -C /etc/nixos --no-pager diff --unified=0 *.nix)" ]; then
     echo "No change. Quitting..."
-    false
+    exit 1
 fi
+
+echo "Updating flake.lock"
+nix flake update --flake /etc/nixos
+
 echo "NixOS rebuilding..."
-if ! nixos-rebuild switch &> /var/log/nixos-rebuild.log; then
+git -C /etc/nixos add --update configuration.nix flake.nix flake.lock
+if ! nixos-rebuild switch --flake /etc/nixos &> /var/log/nixos-rebuild.log; then
+    echo "Build failed. See /var/log/nixos-rebuild.log"
     grep --color error /var/log/nixos-rebuild.log
-    false
+    exit 1
 fi
+
 gen=$(nixos-rebuild list-generations | grep current)
-git commit -am "$gen"
+git -C /etc/nixos commit --message "$gen"

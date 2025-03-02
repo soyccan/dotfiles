@@ -10,8 +10,11 @@
     };
   };
 
-  outputs = { nixpkgs, home-manager, ... }:
-  let
+  outputs = {
+    nixpkgs,
+    home-manager,
+    ...
+  }: let
     myHomeConfigurations = {
       "soyccan@soyccan.nslab.csie.ntu.edu.tw" = {
         system = "x86_64-linux";
@@ -25,9 +28,13 @@
       };
     };
 
-    makeHomeConfiguration = config@{ system, username, homeDirectory }: (
+    makeHomeConfiguration = config @ {
+      system,
+      username,
+      homeDirectory,
+    }: (
       home-manager.lib.homeManagerConfiguration {
-        modules = [ ./home.nix ];
+        modules = [./home.nix];
         pkgs = nixpkgs.legacyPackages.${system};
         extraSpecialArgs = {
           # these args are passed to home.nix

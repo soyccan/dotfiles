@@ -237,6 +237,10 @@ if command -q nft
     abbr nftl 'sudo nft --handle list ruleset'
 end
 
+if command -q nix
+    abbr nxr 'nix run nixpkgs#'
+end
+
 if command -q podman
     abbr pm podman
 end
