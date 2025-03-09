@@ -7,7 +7,6 @@ main() {
     setup_docker
     setup_fish
     setup_ufw
-    setup_vim
     echo Voila! Setup Finished!
 }
 
@@ -41,12 +40,12 @@ install_packages_ubuntu() {
         htop
         httpie
         jq
+        mypy
         neofetch
         neovim
         nmap
         p7zip-full
         pigz
-        pipx
         pixz
         python3-ipython
         python3-poetry
@@ -93,6 +92,7 @@ install_packages_ubuntu() {
         sudo ln -sf /opt/helix-${version}-x86_64-linux/hx $prefix/hx
     fi
 
+    sh <(curl -fsSL https://astral.sh/uv/install.sh)
     sh <(curl -fsSL https://starship.rs/install.sh) -y
     sh <(curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh)
 }
@@ -145,7 +145,6 @@ install_packages_macos() {
         lazygit
         neovim
         nmap
-        pipx
         poetry
         python3
         ranger
@@ -154,6 +153,7 @@ install_packages_macos() {
         starship
         tealdeer
         unzip
+        uv
         yadm
         zoxide
     )
@@ -163,7 +163,10 @@ install_packages_macos() {
 }
 
 install_packages_common() {
-    return
+    pip_pkgs=(ruff shell-gpt)
+    for pkg in ${pip_pkgs[@]}; do
+        uv tool install $pkg
+    done
 }
 
 setup_docker() {
@@ -238,13 +241,6 @@ COMMIT
 # END UFW AND DOCKER' | sudo tee -a /etc/ufw/after.rules >/dev/null
 }
 
-setup_vim() {
-    # vim-plug
-    # curl -fsSL --create-dirs \
-    #     -o "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim \
-    #     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    return
-}
 
 # Utility functions
 

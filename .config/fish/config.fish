@@ -9,6 +9,11 @@ end
 # Paths
 fish_add_path $HOME/.local/bin
 
+# Theme
+set fish_color_command blue
+set fish_color_option green
+set fish_color_param cyan
+
 # Nix Home Manager
 # if test -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 #     fenv source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" > /dev/null

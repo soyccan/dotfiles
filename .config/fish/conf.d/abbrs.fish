@@ -50,6 +50,8 @@ abbr ..5 'cd ../../../../..'
 # ls
 if command -q eza
     function __override_alias_l --on-event fish_prompt --description "override system-wide alias at fish prompt since user config is sourced prior to system config"
+        abbr -e l
+        functions -e l
         alias l 'eza --all --all --long --time-style=iso --binary --git'
     end
     abbr tree 'eza --tree --long --time-style=iso --git-ignore'
@@ -155,8 +157,11 @@ end
 abbr chown! 'sudo chown -R (id -u):(id -g) .'
 abbr df 'df -h'
 abbr du 'du -h'
-if command -q ip && semver_lt (ip -V | perl -pe 's/.*iproute2-(\d+\.\d+\.\d+).*/\1/') '6.7.0'
-    abbr ip 'ip -c' # color
+if command -q ip
+    set iproute_version (dpkg -l iproute2 | perl -ne 'print $1 if /iproute2\s*(\d+\.\d+\.\d+)/')
+    if semver_lt $iproute_version '6.7.0'
+        abbr ip 'ip -c' # color
+    end
 end
 abbr iost 'iostat -Nxz --human --pretty --compact 2'
 abbr lsb 'lsblk -o NAME,TYPE,FSTYPE,LABEL,SIZE,FSUSED,FSAVAIL,FSUSE%,MOUNTPOINTS | grep -v loop'
