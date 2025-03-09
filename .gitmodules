@@ -21,7 +21,8 @@
 # tmux
 [submodule "oh-my-tmux"]
 	path = .config/tmux/oh-my-tmux
-	url = https://github.com/gpakosz/.tmux
+	url = https://github.com/soyccan/.tmux
+	branch = soyccan
 	shallow = true
 
 # ---
