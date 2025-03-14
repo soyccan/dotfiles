@@ -198,6 +198,11 @@ if command -q bat
     abbr batp 'bat --paging auto'
 end
 
+if command -q batcat
+    abbr bat 'batcat'
+    abbr batp 'batcat --paging auto'
+end
+
 if command -q base64
     function e64
         printf %s $argv[1] | base64 --wrap=0
