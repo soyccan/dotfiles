@@ -17,7 +17,7 @@ begin
     end
 
     abbr da "$docker attach"
-    abbr db "$docker build --progress plain"
+    abbr db "$docker build --progress plain ."
     abbr dbr "$docker run --rm --interactive --tty ($docker build --quiet .)"
     abbr de "$docker exec"
     abbr de! "$docker exec --interactive --tty"

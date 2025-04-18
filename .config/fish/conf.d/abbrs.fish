@@ -169,8 +169,8 @@ abbr nmp 'sudo nmap -v -T4 -sC -sV -oA hostname'
 abbr ping 'ping -c 5'
 abbr pgrep 'pgrep -fa'
 abbr pkill 'pkill -fe'
-abbr ssh! 'ssh -o StrictHostKeychecking=no'
-abbr scp! 'scp -o StrictHostKeychecking=no'
+abbr ssh! 'ssh -o StrictHostKeychecking=no -o UserKnownHostsFile=/dev/null'
+abbr scp! 'scp -o StrictHostKeychecking=no -o UserKnownHostsFile=/dev/null'
 
 if command -q ss
     # show listening ports
