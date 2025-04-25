@@ -9,4 +9,4 @@ set -x HOMEBREW_REPOSITORY '/opt/homebrew'
 set -x MANPATH '/opt/homebrew/share/man' $MANPATH
 set -x INFOPATH '/opt/homebrew/share/info' $INFOPATH
 
-fish_add_path '/opt/homebrew/bin' '/opt/homebrew/sbin'
+fish_add_path --global '/opt/homebrew/bin' '/opt/homebrew/sbin'

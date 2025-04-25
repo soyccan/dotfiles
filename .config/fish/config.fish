@@ -7,7 +7,7 @@ end
 # --- Below are for interactive shells ---
 
 # Paths
-fish_add_path $HOME/.local/bin
+fish_add_path --global $HOME/.local/bin
 
 # Theme
 set fish_color_command blue
