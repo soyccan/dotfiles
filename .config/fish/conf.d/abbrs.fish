@@ -199,7 +199,7 @@ if command -q bat
 end
 
 if command -q batcat
-    abbr bat 'batcat'
+    abbr bat batcat
     abbr batp 'batcat --paging auto'
 end
 
@@ -241,6 +241,10 @@ end
 if command -q lazygit
     abbr lzg lazygit
     abbr lzy 'lazygit --work-tree ~ --git-dir ~/.local/share/yadm/repo.git/'
+end
+
+if command -q minicom
+    abbr mc "minicom -D"
 end
 
 if command -q nft
