@@ -64,7 +64,7 @@ install_packages_ubuntu() {
     pkgs_as_regex=$(IFS="|"; echo "${pkgs[*]}")
     readarray -t pkgs_avail < <(apt-cache --generate pkgnames | grep -E "^(${pkgs_as_regex})$")
     # install or update
-    sudo apt install -y --ignore-missing ${pkgs_avail[@]}
+    sudo apt install -y --ignore-missing "${pkgs_avail[@]}"
 
     prefix=/usr/local/bin
     sudo mkdir -p $prefix
@@ -91,10 +91,6 @@ install_packages_ubuntu() {
             | sudo tar -C /opt -xJf -
         sudo ln -sf /opt/helix-${version}-x86_64-linux/hx $prefix/hx
     fi
-
-    sh <(curl -fsSL https://astral.sh/uv/install.sh)
-    sh <(curl -fsSL https://starship.rs/install.sh) -y
-    sh <(curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh)
 }
 
 add_apt_sources() {
@@ -157,14 +153,22 @@ install_packages_macos() {
         yadm
         zoxide
     )
-    for pkg in ${pkgs[@]}; do
+    for pkg in "${pkgs[@]}"; do
         brew install $pkg || true
     done
 }
 
 install_packages_common() {
-    pip_pkgs=(ruff shell-gpt)
-    for pkg in ${pip_pkgs[@]}; do
+    sh <(curl -fsSL https://astral.sh/uv/install.sh)
+    sh <(curl -fsSL https://starship.rs/install.sh) -y
+    sh <(curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh)
+
+    pip_pkgs=(
+        pre-commit
+        ruff
+        shell-gpt
+    )
+    for pkg in "${pip_pkgs[@]}"; do
         uv tool install $pkg
     done
 }
