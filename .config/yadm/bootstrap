@@ -51,6 +51,7 @@ install_packages_ubuntu() {
         python3-poetry
         python3-venv
         ranger
+        remake
         ripgrep
         shfmt
         tealdeer
@@ -144,6 +145,7 @@ install_packages_macos() {
         poetry
         python3
         ranger
+        remake
         ripgrep
         shfmt
         starship
