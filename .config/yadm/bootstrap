@@ -30,6 +30,7 @@ install_packages_ubuntu() {
         # docker-ce
         # ubuntu-standard
         bat
+        bear
         eza
         fasd
         fd-find
@@ -39,11 +40,13 @@ install_packages_ubuntu() {
         git-delta
         htop
         httpie
+        iftop
         jq
         mypy
         neofetch
         neovim
         nmap
+        nushell
         p7zip-full
         pigz
         pixz
@@ -128,6 +131,7 @@ install_packages_macos() {
         # fasd
         # wezterm
         bat
+        bear
         coreutils
         eza
         fd
@@ -137,11 +141,13 @@ install_packages_macos() {
         git-delta
         helix
         htop
+        iftop
         jq
         lazydocker
         lazygit
         neovim
         nmap
+        nushell
         poetry
         python3
         ranger

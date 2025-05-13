@@ -175,10 +175,10 @@ abbr scp! 'scp -o StrictHostKeychecking=no -o UserKnownHostsFile=/dev/null'
 if command -q ss
     # show listening ports
     function ssl
-        sudo ss --listening --tcp --udp --numeric --processes | begin
-            sed --unbuffered 1q
-            awk '{ split($5, arr, ":"); print arr[length(arr)] "\t" $0 }' | sort --key 1n
-        end
+        sudo ss --listening --tcp --udp --numeric --processes \
+            | awk 'NR==1 {print; next} {split($5, arr, ":"); print arr[length(arr)] "\t" $0}' \
+            | sort --key 1n \
+            | if set -q argv[1]; grep $argv[1]; else; cat; end
     end
 else
     # show listening ports
