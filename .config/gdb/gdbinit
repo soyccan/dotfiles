@@ -7,6 +7,3 @@ set pagination off
 set startup-with-shell off
 set stop-on-solib-events 0
 
-break __pthread_start
-break sigaction
-break JNI_OnLoad

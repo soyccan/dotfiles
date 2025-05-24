@@ -269,7 +269,13 @@ is_package_installed_ubuntu() {
 }
 
 is_ubuntu() {
-    [[ $(uname -s) = Linux && $(lsb_release --id --short 2>/dev/null) = Ubuntu ]]
+    [[ 
+        $(uname -s) = Linux &&
+        (
+            $(lsb_release --id --short 2>/dev/null) = Ubuntu ||
+            $(lsb_release --id --short 2>/dev/null) = Kali
+        )
+    ]]
 }
 
 is_macos() {
