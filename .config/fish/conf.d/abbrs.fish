@@ -160,7 +160,12 @@ abbr du 'du -h'
 if command -q ip
     set iproute_version (dpkg -l iproute2 | perl -ne 'print $1 if /iproute2\s*(\d+\.\d+\.\d+)/')
     if semver_lt $iproute_version '6.7.0'
-        abbr ip 'ip -c' # color
+        # IPv4, color
+        abbr ip 'ip -4 -c'
+    else
+        # IPv4
+        # color is auto by default after v6.7
+        abbr ip 'ip -4'
     end
 end
 abbr iost 'iostat -Nxz --human --pretty --compact 2'
