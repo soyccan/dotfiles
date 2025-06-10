@@ -58,4 +58,3 @@ autoSetupRemote = true
 autoStash = true
 autoSquash = true
 rebaseMerges = true
-updateRefs = true
