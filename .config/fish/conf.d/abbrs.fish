@@ -172,7 +172,12 @@ abbr iost 'iostat -Nxz --human --pretty --compact 2'
 abbr lsb 'lsblk -o NAME,TYPE,FSTYPE,LABEL,SIZE,FSUSED,FSAVAIL,FSUSE%,MOUNTPOINTS | grep -v loop'
 abbr nmp 'sudo nmap -v -T4 -sC -sV -oA hostname'
 abbr ping 'ping -c 5'
-abbr pgrep 'pgrep -fa'
+switch (uname)
+    case Darwin
+        abbr pgrep 'pgrep -fl'
+    case "*"
+        abbr pgrep 'pgrep -fa'
+end
 abbr pkill 'pkill -fe'
 abbr ssh! 'ssh -o StrictHostKeychecking=no -o UserKnownHostsFile=/dev/null'
 abbr scp! 'scp -o StrictHostKeychecking=no -o UserKnownHostsFile=/dev/null'
