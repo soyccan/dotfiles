@@ -3,7 +3,7 @@
 -- Add any additional options here
 
 -- Editor
-vim.opt.colorcolumn = "100"
+vim.opt.colorcolumn = "101"
 
 -- Disable autoformat
 -- to manually format:

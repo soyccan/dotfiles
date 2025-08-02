@@ -186,8 +186,8 @@ if command -q ss
     # show listening ports
     function ssl
         sudo ss --listening --tcp --udp --numeric --processes \
-            | awk 'NR==1 {print; next} {split($5, arr, ":"); print arr[length(arr)] "\t" $0}' \
-            | sort --key 1n \
+            | awk 'NR==1 {print; next} {split($5, arr, ":"); printf "%s-%05d\t%s\n", $1, arr[length(arr)], $0}' \
+            | sort --key 1 \
             | if set -q argv[1]; grep $argv[1]; else; cat; end
     end
 else

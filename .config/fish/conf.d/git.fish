@@ -42,9 +42,11 @@ abbr gcp! 'git cherry-pick -x'
 
 if command -q delta
     abbr gd 'git diff | delta'
+    abbr gddm 'git diff origin/dev-main | delta'
     abbr gds 'git diff --staged | delta'
 else
     abbr gd 'git diff --word-diff=color'
+    abbr gddm 'git diff --word-diff=color origin/dev-main'
     abbr gds 'git diff --word-diff=color --staged'
 end
 
@@ -76,8 +78,10 @@ abbr grms 'git remote set-url origin'
 abbr grb 'git rebase'
 abbr grba 'git rebase --abort'
 abbr grbc 'git rebase --continue'
+abbr grbdm 'git rebase origin/dev-main'
 abbr grbi 'git rebase --interactive'
-abbr grbi! 'git rebase --interactive --root'
+abbr grbidm 'git rebase --interactive origin/dev-main'
+abbr grbir 'git rebase --interactive --root'
 
 abbr grm 'git rm'
 abbr grmc 'git rm --cached'
@@ -85,8 +89,6 @@ abbr grmc 'git rm --cached'
 abbr grs 'git restore'
 abbr grss 'git restore --source'
 abbr grst 'git restore --staged'
-
-abbr grh 'git reset'
 
 abbr gsm 'git submodule'
 abbr gsma 'git submodule add'
@@ -108,7 +110,10 @@ abbr gsti 'git status --ignored'
 
 abbr gsw 'git switch'
 abbr gswc 'git switch --create'
-abbr gswd 'git switch --detach'
+abbr gsd 'git switch --detach'
+abbr gsd1 'git switch --detach HEAD^'
+abbr gsd2 'git switch --detach HEAD~2'
+abbr gsd3 'git switch --detach HEAD~3'
 abbr gdm 'git switch --detach origin/dev-main'
 
 function git --description 'a safer git hook to prevent dangerous commands'

@@ -35,9 +35,6 @@ name = Zac Chengkang Chen
 [diff]
 tool = nvimdiff
 
-[format]
-signOff = true
-
 [fetch]
 parallel = 10
 prune = true
