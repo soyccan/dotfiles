@@ -30,6 +30,7 @@ abbr gca 'git commit --all --verbose'
 abbr gca! 'git commit --all --amend --verbose'
 abbr gca!! 'git commit --all --amend --no-edit'
 abbr gcam 'git commit --all --message'
+abbr gcaf 'git commit --all --fixup'
 abbr gcf 'git commit --fixup'
 
 abbr gcl 'git clone --recurse-submodules'
