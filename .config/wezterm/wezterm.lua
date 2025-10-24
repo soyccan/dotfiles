@@ -33,6 +33,13 @@ local config = {
                 CaseInSensitiveString = ""
             },
         },
+        {
+            key = 'F',
+            mods = 'CMD',
+            action = wezterm.action.Search {
+                CaseInSensitiveString = ""
+            },
+        },
     },
 
     --- Appearance ---
