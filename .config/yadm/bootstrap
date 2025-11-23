@@ -1,6 +1,11 @@
 #!/bin/bash
-set -euxo pipefail
-IFS=
+set -o errexit
+set -o nounset
+set -o pipefail
+if (( BASH_VERSINFO[0] > 4 || (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 4) )); then
+    shopt -s inherit_errexit
+fi
+PS4='+${BASH_SOURCE##*/}:${LINENO}> '
 
 main() {
     install_packages
@@ -77,18 +82,28 @@ install_packages_ubuntu() {
         sudo ln -sf $(command -v batcat) $prefix/bat
     fi
 
+    install_package_lazygit
+    install_package_lazydocker
+    #install_package_helix
+}
+
+install_package_lazygit() {
     version=$(get_latest_release_version jesseduffield/lazygit)
     if ! has lazygit || [[ $(lazygit --version) != *$version* ]]; then
         curl -fsSL https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_Linux_x86_64.tar.gz \
             | sudo tar -C $prefix -xzf - lazygit
     fi
+}
 
+install_package_lazydocker() {
     version=$(get_latest_release_version jesseduffield/lazydocker)
     if ! has lazydocker || [[ $(lazydocker --version) != *$version* ]]; then
         curl -fsSL https://github.com/jesseduffield/lazydocker/releases/download/v${version}/lazydocker_${version}_Linux_x86_64.tar.gz \
             | sudo tar -C $prefix -xzf - lazydocker
     fi
+}
 
+install_package_helix() {
     version=$(get_latest_release_version helix-editor/helix)
     if ! has hx || [[ $(hx --version) != *$version* ]]; then
         curl -fsSL https://github.com/helix-editor/helix/releases/download/${version}/helix-${version}-x86_64-linux.tar.xz \
@@ -109,12 +124,15 @@ add_apt_sources() {
     fi
 
     if semver_le 2.4 $(apt --version | grep -oP '(?<=apt )\d+\.\d+'); then
+        sudo perl -i -pe "s#http://archive\.ubuntu\.com/ubuntu/#http://tw.archive.ubuntu.com/ubuntu/#g" /etc/apt/sources.list.d/ubuntu.sources
         for sources in $HOME/.config/apt/*.sources; do
             (
                 export distro codename arch
                 envsubst < $sources | sudo tee /etc/apt/sources.list.d/${sources##*/} >/dev/null
             )
         done
+    else
+        sudo perl -i -pe "s#http://archive\.ubuntu\.com/ubuntu/#http://tw.archive.ubuntu.com/ubuntu/#g" /etc/apt/sources.list
     fi
 }
 
