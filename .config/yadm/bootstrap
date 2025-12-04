@@ -1,11 +1,14 @@
-#!/bin/bash
+#!/bin/bash -x
 set -o errexit
 set -o nounset
 set -o pipefail
-if (( BASH_VERSINFO[0] > 4 || (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 4) )); then
+if (( BASH_VERSINFO[0] > 4 || \
+      (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 4) ))
+then
     shopt -s inherit_errexit
 fi
 PS4='+${BASH_SOURCE##*/}:${LINENO}> '
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 main() {
     install_packages
@@ -18,11 +21,10 @@ main() {
 install_packages() {
     if is_ubuntu; then
         install_packages_ubuntu
-        install_packages_common
     elif is_macos; then
         install_packages_macos
-        install_packages_common
     fi
+    install_packages_common
 }
 
 install_packages_ubuntu() {
@@ -82,31 +84,31 @@ install_packages_ubuntu() {
         sudo ln -sf $(command -v batcat) $prefix/bat
     fi
 
-    install_package_lazygit
-    install_package_lazydocker
-    #install_package_helix
+    install_lazygit
+    install_lazydocker
+    #install_helix
 }
 
-install_package_lazygit() {
+install_lazygit() {
     version=$(get_latest_release_version jesseduffield/lazygit)
     if ! has lazygit || [[ $(lazygit --version) != *$version* ]]; then
-        curl -fsSL https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_Linux_x86_64.tar.gz \
+        curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_$(get_os)_$(get_arch).tar.gz" \
             | sudo tar -C $prefix -xzf - lazygit
     fi
 }
 
-install_package_lazydocker() {
+install_lazydocker() {
     version=$(get_latest_release_version jesseduffield/lazydocker)
     if ! has lazydocker || [[ $(lazydocker --version) != *$version* ]]; then
-        curl -fsSL https://github.com/jesseduffield/lazydocker/releases/download/v${version}/lazydocker_${version}_Linux_x86_64.tar.gz \
+        curl -fsSL "https://github.com/jesseduffield/lazydocker/releases/download/v${version}/lazydocker_${version}_$(get_os)_$(get_arch).tar.gz" \
             | sudo tar -C $prefix -xzf - lazydocker
     fi
 }
 
-install_package_helix() {
+install_helix() {
     version=$(get_latest_release_version helix-editor/helix)
     if ! has hx || [[ $(hx --version) != *$version* ]]; then
-        curl -fsSL https://github.com/helix-editor/helix/releases/download/${version}/helix-${version}-x86_64-linux.tar.xz \
+        curl -fsSL "https://github.com/helix-editor/helix/releases/download/${version}/helix-${version}-$(get_arch)_$(to_lower "$(get_os)").tar.xz" \
             | sudo tar -C /opt -xJf -
         sudo ln -sf /opt/helix-${version}-x86_64-linux/hx $prefix/hx
     fi
@@ -115,7 +117,7 @@ install_package_helix() {
 add_apt_sources() {
     distro=$(to_lower $(lsb_release --id --short 2>/dev/null))
     codename=$(lsb_release --codename --short)
-    arch=$(dpkg --print-architecture)
+    arch=$(get_arch)
 
     if ! curl -fsSL "https://download.docker.com/linux/$distro/dists/$codename/stable/binary-$arch/" &>/dev/null; then
         # fallback
@@ -124,15 +126,19 @@ add_apt_sources() {
     fi
 
     if semver_le 2.4 $(apt --version | grep -oP '(?<=apt )\d+\.\d+'); then
-        sudo perl -i -pe "s#http://archive\.ubuntu\.com/ubuntu/#http://tw.archive.ubuntu.com/ubuntu/#g" /etc/apt/sources.list.d/ubuntu.sources
-        for sources in $HOME/.config/apt/*.sources; do
+        sudo perl -i -pe "s#http://archive\.ubuntu\.com/ubuntu#http://tw.archive.ubuntu.com/ubuntu#g; \
+            s#http://ports\.ubuntu\.com/ubuntu-ports#https://mirror.twds.com.tw/ubuntu-ports#g" \
+            /etc/apt/sources.list.d/ubuntu.sources
+        for sources in "${SCRIPT_DIR}"/../apt/*.sources; do
             (
                 export distro codename arch
                 envsubst < $sources | sudo tee /etc/apt/sources.list.d/${sources##*/} >/dev/null
             )
         done
     else
-        sudo perl -i -pe "s#http://archive\.ubuntu\.com/ubuntu/#http://tw.archive.ubuntu.com/ubuntu/#g" /etc/apt/sources.list
+        sudo perl -i -pe "s#http://archive\.ubuntu\.com/ubuntu#http://tw.archive.ubuntu.com/ubuntu#g; \
+            s#http://ports\.ubuntu\.com/ubuntu-ports#https://mirror.twds.com.tw/ubuntu-ports#g" \
+            /etc/apt/sources.list
     fi
 }
 
@@ -195,7 +201,7 @@ install_packages_common() {
         shell-gpt
     )
     for pkg in "${pip_pkgs[@]}"; do
-        uv tool install $pkg
+        "${HOME}/.local/bin/uv" tool install "${pkg}"
     done
 }
 
@@ -271,6 +277,16 @@ COMMIT
 # END UFW AND DOCKER' | sudo tee -a /etc/ufw/after.rules >/dev/null
 }
 
+passwdless_sudo() {
+    cat <<EOF | sudo tee /etc/sudoers.d/ubuntu >/dev/null
+# User rules for ubuntu
+ubuntu ALL=(ALL) NOPASSWD:ALL
+
+# avoid password for sudo -v
+Defaults:ubuntu !authenticate
+EOF
+}
+
 
 # Utility functions
 
@@ -287,8 +303,8 @@ is_package_installed_ubuntu() {
 }
 
 is_ubuntu() {
-    [[ 
-        $(uname -s) = Linux &&
+    [[
+        $(get_os) = Linux &&
         (
             $(lsb_release --id --short 2>/dev/null) = Ubuntu ||
             $(lsb_release --id --short 2>/dev/null) = Kali
@@ -297,7 +313,15 @@ is_ubuntu() {
 }
 
 is_macos() {
-    [[ $(uname -s) = Darwin ]]
+    [[ $(get_os) = Darwin ]]
+}
+
+get_os() {
+    uname -s
+}
+
+get_arch() {
+    dpkg --print-architecture
 }
 
 # Compare two semantic version strings
