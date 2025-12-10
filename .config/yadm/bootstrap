@@ -33,6 +33,7 @@ install_packages_ubuntu() {
     add_apt_sources
     sudo apt update
 
+    local pkgs pkgs_avail pkgs_as_regex
     pkgs=(
         # docker-ce
         # ubuntu-standard
@@ -77,62 +78,33 @@ install_packages_ubuntu() {
     # install or update
     sudo apt install -y --ignore-missing "${pkgs_avail[@]}"
 
-    prefix=/usr/local/bin
-    sudo mkdir -p $prefix
-
+    # On Ubuntu bat is installed as batcat. Link the original name to it.
     if ! has bat && has batcat; then
-        sudo ln -sf $(command -v batcat) $prefix/bat
-    fi
-
-    install_lazygit
-    install_lazydocker
-    #install_helix
-}
-
-install_lazygit() {
-    version=$(get_latest_release_version jesseduffield/lazygit)
-    if ! has lazygit || [[ $(lazygit --version) != *$version* ]]; then
-        curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_$(get_os)_$(get_arch).tar.gz" \
-            | sudo tar -C $prefix -xzf - lazygit
-    fi
-}
-
-install_lazydocker() {
-    version=$(get_latest_release_version jesseduffield/lazydocker)
-    if ! has lazydocker || [[ $(lazydocker --version) != *$version* ]]; then
-        curl -fsSL "https://github.com/jesseduffield/lazydocker/releases/download/v${version}/lazydocker_${version}_$(get_os)_$(get_arch).tar.gz" \
-            | sudo tar -C $prefix -xzf - lazydocker
-    fi
-}
-
-install_helix() {
-    version=$(get_latest_release_version helix-editor/helix)
-    if ! has hx || [[ $(hx --version) != *$version* ]]; then
-        curl -fsSL "https://github.com/helix-editor/helix/releases/download/${version}/helix-${version}-$(get_arch)_$(to_lower "$(get_os)").tar.xz" \
-            | sudo tar -C /opt -xJf -
-        sudo ln -sf /opt/helix-${version}-x86_64-linux/hx $prefix/hx
+        ln -sf "$(command -v batcat)" "${HOME}/.local/bin/bat"
     fi
 }
 
 add_apt_sources() {
-    distro=$(to_lower $(lsb_release --id --short 2>/dev/null))
+    local distro codename arch
+    distro=$(to_lower "$(lsb_release --id --short 2>/dev/null)")
     codename=$(lsb_release --codename --short)
     arch=$(get_arch)
 
-    if ! curl -fsSL "https://download.docker.com/linux/$distro/dists/$codename/stable/binary-$arch/" &>/dev/null; then
+    if ! curl -fsSL "https://download.docker.com/linux/${distro}/dists/${codename}/stable/binary-${arch}/" &>/dev/null; then
         # fallback
         distro=debian
         codename=bookworm
     fi
 
-    if semver_le 2.4 $(apt --version | grep -oP '(?<=apt )\d+\.\d+'); then
+    if [[ -e /etc/apt/sources.list.d/ubuntu.sources ]]; then
+        # Ubuntu 24.04 and later uses DEB822 format
         sudo perl -i -pe "s#http://archive\.ubuntu\.com/ubuntu#http://tw.archive.ubuntu.com/ubuntu#g; \
             s#http://ports\.ubuntu\.com/ubuntu-ports#https://mirror.twds.com.tw/ubuntu-ports#g" \
             /etc/apt/sources.list.d/ubuntu.sources
         for sources in "${SCRIPT_DIR}"/../apt/*.sources; do
             (
                 export distro codename arch
-                envsubst < $sources | sudo tee /etc/apt/sources.list.d/${sources##*/} >/dev/null
+                envsubst < "${sources}" | sudo tee "/etc/apt/sources.list.d/${sources##*/}" >/dev/null
             )
         done
     else
@@ -142,14 +114,10 @@ add_apt_sources() {
     fi
 }
 
-get_latest_release_version() {
-    curl -fsSL "https://api.github.com/repos/$1/releases/latest" \
-        | perl -ne 'print $1 if /"tag_name":\s*"v?(.*?)"/'
-}
-
 install_packages_macos() {
-    echo Installing Packages
+    echo Installing packages for macOS
 
+    local pkgs pkg
     pkgs=(
         # docker
         # fasd
@@ -186,15 +154,20 @@ install_packages_macos() {
         zoxide
     )
     for pkg in "${pkgs[@]}"; do
-        brew install $pkg || true
+        brew install "${pkg}" || true
     done
 }
 
 install_packages_common() {
-    sh <(curl -fsSL https://astral.sh/uv/install.sh)
-    sh <(curl -fsSL https://starship.rs/install.sh) -y
-    sh <(curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh)
+    # install_helix
+    install_just
+    install_lazydocker
+    install_lazygit
+    install_starship
+    install_uv
+    install_zoxide
 
+    local pip_pkgs pkg
     pip_pkgs=(
         pre-commit
         ruff
@@ -203,6 +176,110 @@ install_packages_common() {
     for pkg in "${pip_pkgs[@]}"; do
         "${HOME}/.local/bin/uv" tool install "${pkg}"
     done
+}
+
+get_latest_release_version() {
+    curl -fsSL "https://api.github.com/repos/${1}/releases/latest" \
+        | perl -ne 'print $1 if /"tag_name":\s*"v?(.*?)"/'
+}
+
+install_helix() {
+    local version
+    version=$(get_latest_release_version helix-editor/helix)
+
+    if has hx && [[ $(hx --version) == *${version}* ]]; then
+        return
+    fi
+
+    curl -fsSL "https://github.com/helix-editor/helix/releases/download/${version}/helix-${version}-$(get_arch)_$(to_lower "$(get_os)").tar.xz" \
+        | tar -C "${HOME}/opt" -xJf -
+    ln -sf "${HOME}/opt/helix-${version}-$(get_arch)-$(to_lower "$(get_os)")/hx" "${HOME}/.local/bin/hx"
+}
+
+install_lazydocker() {
+    local version
+    version=$(get_latest_release_version jesseduffield/lazydocker)
+
+    if has lazydocker && [[ $(lazydocker --version) == *${version}* ]]; then
+        return
+    fi
+
+    curl -fsSL "https://github.com/jesseduffield/lazydocker/releases/download/v${version}/lazydocker_${version}_$(get_os)_$(get_arch).tar.gz" \
+        | tar -C "${HOME}/.local/bin" -xzf - lazydocker
+}
+
+install_lazygit() {
+    local version
+    version=$(get_latest_release_version jesseduffield/lazygit)
+
+    if has lazygit && [[ $(lazygit --version) == *${version}* ]]; then
+        return
+    fi
+
+    curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_$(get_os)_$(get_arch).tar.gz" \
+        | tar -C "${HOME}/.local/bin" -xzf - lazygit
+}
+
+install_just() {
+    local version
+    version=$(get_latest_release_version casey/just)
+    if has just && [[ $(just --version 2>/dev/null) == *${version}* ]]; then
+        return
+    fi
+
+    local os arch
+    os=$(get_os)
+    arch=$(get_arch)
+
+    # Map architecture names to just's naming convention
+    case "${arch}" in
+        arm64|aarch64) arch="aarch64" ;;
+    esac
+
+    # Map OS to just's naming convention
+    local platform
+    case "${os}" in
+        Darwin) platform="apple-darwin" ;;
+        Linux) platform="unknown-linux-musl" ;;
+        *) echo "Unsupported OS: ${os}"; return 1 ;;
+    esac
+
+    local url="https://github.com/casey/just/releases/download/${version}/just-${version}-${arch}-${platform}.tar.gz"
+    echo "Downloading just from: ${url}"
+    curl -fsSL "${url}" | tar -C "${HOME}/.local/bin" -xzf - just
+}
+
+install_starship() {
+    local version
+    version=$(get_latest_release_version starship/starship)
+
+    if has starship && [[ $(starship --version) == *${version}* ]]; then
+        return
+    fi
+
+    sh <(curl -fsSL https://starship.rs/install.sh) --yes --bin-dir "${HOME}/.local/bin"
+}
+
+install_uv() {
+    local version
+    version=$(get_latest_release_version astral-sh/uv)
+
+    if has uv && [[ $(uv --version) == *${version}* ]]; then
+        return
+    fi
+
+    sh <(curl -fsSL https://astral.sh/uv/install.sh)
+}
+
+install_zoxide() {
+    local version
+    version=$(get_latest_release_version ajeetdsouza/zoxide)
+
+    if has zoxide && [[ $(zoxide --version) == *${version}* ]]; then
+        return
+    fi
+
+    sh <(curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh)
 }
 
 setup_docker() {
@@ -291,29 +368,25 @@ EOF
 # Utility functions
 
 has() {
-    command -v $1 &>/dev/null
+    command -v "${1}" &>/dev/null
 }
 
 to_lower() {
-    echo ${1,,}
+    echo "${1,,}"
 }
 
 is_package_installed_ubuntu() {
-    dpkg-query --show --showformat='${Status}' $1 2>/dev/null | grep -q "ok installed"
+    dpkg-query --show --showformat='${Status}' "${1}" 2>/dev/null | grep -q "ok installed"
 }
 
 is_ubuntu() {
-    [[
-        $(get_os) = Linux &&
-        (
-            $(lsb_release --id --short 2>/dev/null) = Ubuntu ||
-            $(lsb_release --id --short 2>/dev/null) = Kali
-        )
-    ]]
+    [[ $(get_os) == Linux &&
+        ( $(lsb_release --id --short 2>/dev/null) == Ubuntu ||
+          $(lsb_release --id --short 2>/dev/null) == Kali ) ]]
 }
 
 is_macos() {
-    [[ $(get_os) = Darwin ]]
+    [[ $(get_os) == Darwin ]]
 }
 
 get_os() {
@@ -321,7 +394,11 @@ get_os() {
 }
 
 get_arch() {
-    dpkg --print-architecture
+    if has dpkg; then
+        dpkg --print-architecture
+    else
+        uname -m
+    fi
 }
 
 # Compare two semantic version strings
