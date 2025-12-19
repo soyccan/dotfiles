@@ -151,6 +151,16 @@ function watchex --description "Watch & execute when a Python file changes"
     end
 end
 
+# Console mode
+# Reset the mouse mode enabled by tmux, which does not get reset when
+# SSH session is disconenected ungracefully
+# 1000: X11 mouse reporting
+# 1002: Button-event tracking
+# 1003: Any-event tracking
+# 1006: SGR extended mouse mode
+# Details on `man console_codes`
+alias reset-mouse "printf '\e[?1000l\e[?1002l\e[?1003l\e[?1006l'"
+
 
 # --- System Administration ---
 
