@@ -289,10 +289,18 @@ if command -q python3
 end
 
 if command -q rsync
-    abbr rsync-copy 'rsync -ah --info=progress2'
-    abbr rsync-move 'rsync -ah --info=progress2 --remove-source-files'
-    abbr rsync-update 'rsync -ahu --info=progress2'
-    abbr rsync-synchronize 'rsync -ahu --info=progress2 --delete'
+    switch (uname)
+        case Darwin
+            abbr rsync-copy 'rsync -ahP'
+            abbr rsync-move 'rsync -ahP --remove-source-files'
+            abbr rsync-update 'rsync -ahuP'
+            abbr rsync-synchronize 'rsync -ahuP --delete'
+        case "*"
+            abbr rsync-copy 'rsync -ah --info=progress2'
+            abbr rsync-move 'rsync -ah --info=progress2 --remove-source-files'
+            abbr rsync-update 'rsync -ahu --info=progress2'
+            abbr rsync-synchronize 'rsync -ahu --info=progress2 --delete'
+    end
 end
 
 if command -q systemctl
