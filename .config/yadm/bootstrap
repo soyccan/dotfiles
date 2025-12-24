@@ -79,6 +79,7 @@ install_packages_ubuntu() {
     sudo apt install -y --ignore-missing "${pkgs_avail[@]}"
 
     # On Ubuntu bat is installed as batcat. Link the original name to it.
+    mkdir -p "${HOME}/.local/bin"
     if ! has bat && has batcat; then
         ln -sf "$(command -v batcat)" "${HOME}/.local/bin/bat"
     fi
@@ -98,16 +99,18 @@ add_apt_sources() {
 
     if [[ -e /etc/apt/sources.list.d/ubuntu.sources ]]; then
         # Ubuntu 24.04 and later uses DEB822 format
-        sudo perl -i -pe "s#http://archive\.ubuntu\.com/ubuntu#http://tw.archive.ubuntu.com/ubuntu#g; \
-            s#http://ports\.ubuntu\.com/ubuntu-ports#https://mirror.twds.com.tw/ubuntu-ports#g" \
-            /etc/apt/sources.list.d/ubuntu.sources
+	if [[ "$(get_country)" == TW ]]; then
+            sudo perl -i -pe "s#http://archive\.ubuntu\.com/ubuntu#http://tw.archive.ubuntu.com/ubuntu#g; \
+                s#http://ports\.ubuntu\.com/ubuntu-ports#https://mirror.twds.com.tw/ubuntu-ports#g" \
+                /etc/apt/sources.list.d/ubuntu.sources
+	fi
         for sources in "${SCRIPT_DIR}"/../apt/*.sources; do
             (
                 export distro codename arch
                 envsubst < "${sources}" | sudo tee "/etc/apt/sources.list.d/${sources##*/}" >/dev/null
             )
         done
-    else
+    elif [[ "$(get_country)" == TW ]]; then
         sudo perl -i -pe "s#http://archive\.ubuntu\.com/ubuntu#http://tw.archive.ubuntu.com/ubuntu#g; \
             s#http://ports\.ubuntu\.com/ubuntu-ports#https://mirror.twds.com.tw/ubuntu-ports#g" \
             /etc/apt/sources.list
@@ -159,13 +162,13 @@ install_packages_macos() {
 }
 
 install_packages_common() {
-    # install_helix
-    install_just
-    install_lazydocker
-    install_lazygit
-    install_starship
-    install_uv
-    install_zoxide
+    # install_helix || true
+    install_just || true
+    install_lazydocker || true
+    install_lazygit || true
+    install_starship || true
+    install_uv || true
+    install_zoxide || true
 
     local pip_pkgs pkg
     pip_pkgs=(
@@ -174,18 +177,23 @@ install_packages_common() {
         shell-gpt
     )
     for pkg in "${pip_pkgs[@]}"; do
-        "${HOME}/.local/bin/uv" tool install "${pkg}"
+        "${HOME}/.local/bin/uv" tool install "${pkg}" || true
     done
 }
 
 get_latest_release_version() {
-    curl -fsSL "https://api.github.com/repos/${1}/releases/latest" \
+    local repo=$1
+    local default_version=$2
+    if ! curl -fsSL "https://api.github.com/repos/${repo}/releases/latest" \
         | perl -ne 'print $1 if /"tag_name":\s*"v?(.*?)"/'
+    then
+        echo "${default_version}"
+    fi
 }
 
 install_helix() {
     local version
-    version=$(get_latest_release_version helix-editor/helix)
+    version=$(get_latest_release_version helix-editor/helix 25.07.1)
 
     if has hx && [[ $(hx --version) == *${version}* ]]; then
         return
@@ -198,7 +206,7 @@ install_helix() {
 
 install_lazydocker() {
     local version
-    version=$(get_latest_release_version jesseduffield/lazydocker)
+    version=$(get_latest_release_version jesseduffield/lazydocker 0.24.2)
 
     if has lazydocker && [[ $(lazydocker --version) == *${version}* ]]; then
         return
@@ -210,7 +218,7 @@ install_lazydocker() {
 
 install_lazygit() {
     local version
-    version=$(get_latest_release_version jesseduffield/lazygit)
+    version=$(get_latest_release_version jesseduffield/lazygit 0.57.0)
 
     if has lazygit && [[ $(lazygit --version) == *${version}* ]]; then
         return
@@ -222,7 +230,8 @@ install_lazygit() {
 
 install_just() {
     local version
-    version=$(get_latest_release_version casey/just)
+    version=$(get_latest_release_version casey/just 1.45.0)
+
     if has just && [[ $(just --version 2>/dev/null) == *${version}* ]]; then
         return
     fi
@@ -251,7 +260,7 @@ install_just() {
 
 install_starship() {
     local version
-    version=$(get_latest_release_version starship/starship)
+    version=$(get_latest_release_version starship/starship 1.24.1)
 
     if has starship && [[ $(starship --version) == *${version}* ]]; then
         return
@@ -262,7 +271,7 @@ install_starship() {
 
 install_uv() {
     local version
-    version=$(get_latest_release_version astral-sh/uv)
+    version=$(get_latest_release_version astral-sh/uv 0.9.18)
 
     if has uv && [[ $(uv --version) == *${version}* ]]; then
         return
@@ -273,7 +282,7 @@ install_uv() {
 
 install_zoxide() {
     local version
-    version=$(get_latest_release_version ajeetdsouza/zoxide)
+    version=$(get_latest_release_version ajeetdsouza/zoxide 0.9.8)
 
     if has zoxide && [[ $(zoxide --version) == *${version}* ]]; then
         return
@@ -399,6 +408,10 @@ get_arch() {
     else
         uname -m
     fi
+}
+
+get_country() {
+    curl -s "https://ipinfo.io/$(curl -s ifconfig.me)/country"
 }
 
 # Compare two semantic version strings
