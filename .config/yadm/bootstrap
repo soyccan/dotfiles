@@ -99,11 +99,11 @@ add_apt_sources() {
 
     if [[ -e /etc/apt/sources.list.d/ubuntu.sources ]]; then
         # Ubuntu 24.04 and later uses DEB822 format
-	if [[ "$(get_country)" == TW ]]; then
-            sudo perl -i -pe "s#http://archive\.ubuntu\.com/ubuntu#http://tw.archive.ubuntu.com/ubuntu#g; \
-                s#http://ports\.ubuntu\.com/ubuntu-ports#https://mirror.twds.com.tw/ubuntu-ports#g" \
+        if [[ "$(get_country)" == TW ]]; then
+            sudo perl -i -pe "s#http://archive\.ubuntu\.com#http://tw.archive.ubuntu.com#g; \
+                s#http://ports\.ubuntu\.com#https://mirror.twds.com.tw#g" \
                 /etc/apt/sources.list.d/ubuntu.sources
-	fi
+        fi
         for sources in "${SCRIPT_DIR}"/../apt/*.sources; do
             (
                 export distro codename arch
@@ -111,8 +111,8 @@ add_apt_sources() {
             )
         done
     elif [[ "$(get_country)" == TW ]]; then
-        sudo perl -i -pe "s#http://archive\.ubuntu\.com/ubuntu#http://tw.archive.ubuntu.com/ubuntu#g; \
-            s#http://ports\.ubuntu\.com/ubuntu-ports#https://mirror.twds.com.tw/ubuntu-ports#g" \
+        sudo perl -i -pe "s#http://archive\.ubuntu\.com#http://tw.archive.ubuntu.com#g; \
+            s#http://ports\.ubuntu\.com#https://mirror.twds.com.tw#g" \
             /etc/apt/sources.list
     fi
 }
@@ -238,7 +238,7 @@ install_just() {
 
     local os arch
     os=$(get_os)
-    arch=$(get_arch)
+    arch=$(get_arch2)
 
     # Map architecture names to just's naming convention
     case "${arch}" in
@@ -408,6 +408,10 @@ get_arch() {
     else
         uname -m
     fi
+}
+
+get_arch2() {
+    uname -m
 }
 
 get_country() {
