@@ -224,7 +224,7 @@ install_lazygit() {
         return
     fi
 
-    curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_$(get_os)_$(get_arch).tar.gz" \
+    curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_$(get_os)_$(get_arch2).tar.gz" \
         | tar -C "${HOME}/.local/bin" -xzf - lazygit
 }
 
@@ -410,6 +410,8 @@ get_arch() {
     fi
 }
 
+# Issue with dpkg --print-architecture is x86_64 is printed as amd64
+# so we use uname -m instead
 get_arch2() {
     uname -m
 }
