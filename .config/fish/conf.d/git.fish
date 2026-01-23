@@ -79,10 +79,13 @@ abbr grms 'git remote set-url origin'
 abbr grb 'git rebase'
 abbr grba 'git rebase --abort'
 abbr grbc 'git rebase --continue'
-abbr grbdm 'git rebase origin/dev-main'
 abbr grbi 'git rebase --interactive'
-abbr grbidm 'git rebase --interactive origin/dev-main'
 abbr grbir 'git rebase --interactive --root'
+
+# rebase without interaction
+# "git rebase" does not work when autosquash is present
+abbr grbdm 'GIT_SEQUENCE_EDITOR=: git rebase --interactive origin/dev-main'
+abbr grbdmi 'git rebase --interactive origin/dev-main'
 
 abbr grm 'git rm'
 abbr grmc 'git rm --cached'
