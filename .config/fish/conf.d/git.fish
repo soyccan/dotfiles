@@ -84,7 +84,7 @@ abbr grbir 'git rebase --interactive --root'
 
 # rebase without interaction
 # "git rebase" does not work when autosquash is present
-abbr grbdm 'GIT_SEQUENCE_EDITOR=: git rebase --interactive origin/dev-main'
+abbr grbdm 'git -c sequence.editor=: rebase -i origin/dev-main'
 abbr grbdmi 'git rebase --interactive origin/dev-main'
 
 abbr grm 'git rm'
