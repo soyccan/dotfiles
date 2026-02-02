@@ -26,7 +26,9 @@ navigate = true  # use n and N to move between diff sections
 dark = true      # or light = true, or omit for auto-detection
 
 [merge]
+autoStash = true
 conflictstyle = zdiff3
+tool = nvimdiff
 
 [user]
 email = soyccan@gmail.com
@@ -38,10 +40,6 @@ tool = nvimdiff
 [fetch]
 parallel = 10
 prune = true
-
-[merge]
-autoStash = true
-tool = nvimdiff
 
 [pull]
 rebase = true

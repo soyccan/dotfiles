@@ -141,6 +141,19 @@ install_packages_ubuntu() {
         yadm
         zsh
     )
+
+    # tmake dependencies
+    pkgs+=(
+        binfmt-support
+        debhelper
+        lbzip2
+        libssl-dev
+        python3-dev
+        qemu-user-static
+        swig
+        zstd
+    )
+
     # some packages may not be available on all systems
     pkgs_as_regex=$(IFS="|"; echo "${pkgs[*]}")
     readarray -t pkgs_avail < <(apt-cache --generate pkgnames | grep -E "^(${pkgs_as_regex})$")
