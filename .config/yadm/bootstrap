@@ -10,12 +10,80 @@ fi
 PS4='+${BASH_SOURCE##*/}:${LINENO}> '
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
+# Configuration
+DOTFILES_REPO="${DOTFILES_REPO:-https://github.com/soyccan/dotfiles.git}"
+DOTFILES_BRANCH="${DOTFILES_BRANCH:-yadm}"
+
 main() {
+    # Bootstrap phase: ensure yadm and dotfiles are set up
+    bootstrap_yadm
+
+    # Main setup phase
     install_packages
     setup_docker
     setup_fish
     setup_ufw
     echo Voila! Setup Finished!
+}
+
+bootstrap_yadm() {
+    echo "=== Bootstrapping YADM and Dotfiles ==="
+
+    # Check if yadm is installed, if not install it
+    if ! has yadm; then
+        echo "YADM not found, installing..."
+        install_yadm_bootstrap
+    fi
+
+    # Check if dotfiles repo is already cloned
+    if yadm rev-parse --git-dir &>/dev/null; then
+        echo "YADM repo already initialized"
+        # Update existing repo
+        yadm pull || echo "Warning: Failed to update dotfiles repo"
+    else
+        echo "Cloning dotfiles repository..."
+        clone_dotfiles
+    fi
+
+    # Update SCRIPT_DIR to point to the actual yadm directory
+    SCRIPT_DIR="${HOME}/.config/yadm"
+}
+
+install_yadm_bootstrap() {
+    echo "Installing YADM..."
+
+    if is_ubuntu && apt show yadm &>/dev/null; then
+        sudo apt update
+        sudo apt install -y yadm
+    elif is_macos && has brew; then
+        brew install yadm
+    else
+        install_yadm_from_github
+    fi
+}
+
+install_yadm_from_github() {
+    echo "Installing YADM from GitHub..."
+    mkdir -p "${HOME}/.local/bin"
+    curl -fsSL https://github.com/TheLocehiliosan/yadm/raw/master/yadm -o "${HOME}/.local/bin/yadm"
+    chmod +x "${HOME}/.local/bin/yadm"
+
+    # Add to PATH if not already there
+    if [[ ":${PATH}:" != *":${HOME}/.local/bin:"* ]]; then
+        export PATH="${HOME}/.local/bin:${PATH}"
+    fi
+}
+
+clone_dotfiles() {
+    echo "Cloning dotfiles from ${DOTFILES_REPO} (branch: ${DOTFILES_BRANCH})..."
+
+    # Initialize yadm and clone the repo
+    yadm clone "${DOTFILES_REPO}" --branch "${DOTFILES_BRANCH}" --no-bootstrap
+
+    # Checkout the files (this will overwrite conflicts)
+    yadm checkout -- .
+
+    echo "Dotfiles cloned successfully"
 }
 
 install_packages() {
@@ -105,12 +173,21 @@ add_apt_sources() {
                 s#http://ports\.ubuntu\.com#https://mirror.twds.com.tw#g" \
                 /etc/apt/sources.list.d/ubuntu.sources
         fi
-        for sources in "${SCRIPT_DIR}"/../apt/*.sources; do
-            (
-                export distro codename arch
-                envsubst < "${sources}" | sudo tee "/etc/apt/sources.list.d/${sources##*/}" >/dev/null
-            )
-        done
+
+        # Process apt sources from dotfiles repo if they exist
+        local apt_sources_dir="${HOME}/.config/yadm/apt"
+        if [[ -d "${apt_sources_dir}" ]]; then
+            for sources in "${apt_sources_dir}"/*.sources; do
+                if [[ -f "${sources}" ]]; then
+                    (
+                        export distro codename arch
+                        envsubst < "${sources}" | sudo tee "/etc/apt/sources.list.d/${sources##*/}" >/dev/null
+                    )
+                fi
+            done
+        else
+            echo "Note: apt sources directory not found at ${apt_sources_dir}, skipping custom sources"
+        fi
     elif [[ "$(get_country)" == TW ]]; then
         sudo perl -i -pe "s#http://archive\.ubuntu\.com#http://tw.archive.ubuntu.com#g; \
             s#http://ports\.ubuntu\.com#https://mirror.twds.com.tw#g" \
