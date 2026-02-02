@@ -185,10 +185,11 @@ abbr ping 'ping -c 5'
 switch (uname)
     case Darwin
         abbr pgrep 'pgrep -fl'
+        abbr pkill 'pkill -f'
     case "*"
         abbr pgrep 'pgrep -fa'
+        abbr pkill 'pkill -fe'
 end
-abbr pkill 'pkill -fe'
 abbr ssh! 'ssh -o StrictHostKeychecking=no -o UserKnownHostsFile=/dev/null'
 abbr scp! 'scp -o StrictHostKeychecking=no -o UserKnownHostsFile=/dev/null'
 
