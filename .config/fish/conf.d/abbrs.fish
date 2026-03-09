@@ -52,7 +52,7 @@ if command -q eza
     function __override_alias_l --on-event fish_prompt --description "override system-wide alias at fish prompt since user config is sourced prior to system config"
         abbr -e l
         functions -e l
-        alias l 'eza --all --all --long --time-style=iso --binary --git'
+        alias l 'eza --all --all --long --time-style=iso'
     end
     abbr tree 'eza --tree --long --time-style=iso --git-ignore'
     abbr tree! 'eza --tree --long --time-style=iso --all'
