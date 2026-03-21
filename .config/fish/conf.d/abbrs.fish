@@ -193,17 +193,22 @@ end
 abbr ssh! 'ssh -o StrictHostKeychecking=no -o UserKnownHostsFile=/dev/null'
 abbr scp! 'scp -o StrictHostKeychecking=no -o UserKnownHostsFile=/dev/null'
 
-if command -q ss
-    # show listening ports
-    function ssl
-        sudo ss --listening --tcp --udp --numeric --processes \
-            | awk 'NR==1 {print; next} {split($5, arr, ":"); printf "%s-%05d\t%s\n", $1, arr[length(arr)], $0}' \
-            | sort --key 1 \
-            | if set -q argv[1]; grep $argv[1]; else; cat; end
+switch (uname)
+case Darwin
+    abbr ssl 'lsof -iTCP -sTCP:LISTEN -P -n'
+case "*"
+    if command -q ss
+        # show listening ports
+        function ssl
+            sudo ss --listening --tcp --udp --numeric --processes \
+                | awk 'NR==1 {print; next} {split($5, arr, ":"); printf "%s-%05d\t%s\n", $1, arr[length(arr)], $0}' \
+                | sort --key 1 \
+                | if set -q argv[1]; grep $argv[1]; else; cat; end
+        end
+    else
+        # show listening ports
+        abbr ssl 'netstat -ltunp'
     end
-else
-    # show listening ports
-    abbr ssl 'netstat -ltunp'
 end
 
 
