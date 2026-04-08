@@ -19,10 +19,10 @@ main() {
     bootstrap_yadm
 
     # Main setup phase
-    install_packages
-    setup_docker
-    setup_fish
-    setup_ufw
+    install_packages || true
+    setup_docker || true
+    setup_fish || true
+    setup_ufw || true
     echo Voila! Setup Finished!
 }
 
