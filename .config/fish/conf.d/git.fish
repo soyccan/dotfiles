@@ -33,8 +33,8 @@ abbr gcam 'git commit --all --message'
 abbr gcaf 'git commit --all --fixup'
 abbr gcf 'git commit --fixup'
 
-abbr gcl 'git clone --recurse-submodules'
-abbr gcl1 'git clone --depth 1'
+abbr gcl 'git clone'
+abbr gcl1 'git clone --depth=1'
 
 abbr gcp 'git cherry-pick'
 abbr gcpa 'git cherry-pick --abort'
