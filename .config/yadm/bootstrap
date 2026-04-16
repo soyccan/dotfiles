@@ -81,7 +81,7 @@ clone_dotfiles() {
     yadm clone "${DOTFILES_REPO}" --branch "${DOTFILES_BRANCH}" --no-bootstrap
 
     # Checkout the files (this will overwrite conflicts)
-    yadm checkout -- .
+    # yadm checkout -- .
 
     echo "Dotfiles cloned successfully"
 }
@@ -188,7 +188,7 @@ add_apt_sources() {
         fi
 
         # Process apt sources from dotfiles repo if they exist
-        local apt_sources_dir="${HOME}/.config/yadm/apt"
+        local apt_sources_dir="${HOME}/.config/apt"
         if [[ -d "${apt_sources_dir}" ]]; then
             for sources in "${apt_sources_dir}"/*.sources; do
                 if [[ -f "${sources}" ]]; then
