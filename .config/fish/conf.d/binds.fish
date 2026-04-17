@@ -2,8 +2,11 @@ if not status is-interactive
     exit
 end
 
-# Alt-Delete
-bind \e\[3\;3~ kill-word
+# Make all systems behave the same as fish 4.1.0+ on macOS
+bind alt-backspace backward-kill-word
+bind ctrl-backspace backward-kill-token
+bind alt-delete kill-word
+bind ctrl-delete kill-token
 
 if command -q zoxide
     # Ctrl-g: goto recent dir
