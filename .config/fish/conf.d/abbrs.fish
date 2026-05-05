@@ -190,8 +190,8 @@ switch (uname)
         abbr pgrep 'pgrep -fa'
         abbr pkill 'pkill -fe'
 end
-abbr ssh! 'ssh -o StrictHostKeychecking=no -o UserKnownHostsFile=/dev/null'
-abbr scp! 'scp -o StrictHostKeychecking=no -o UserKnownHostsFile=/dev/null'
+abbr ssh! 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+abbr scp! 'scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
 
 switch (uname)
 case Darwin
