@@ -2,7 +2,7 @@
 set -o errexit
 set -o nounset
 set -o pipefail
-if (( BASH_VERSINFO[0] > 4 || \
+if (( BASH_VERSINFO[0] > 4 ||
       (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 4) ))
 then
     shopt -s inherit_errexit
@@ -265,9 +265,9 @@ install_packages_common() {
 
     local pip_pkgs pkg
     pip_pkgs=(
-        pre-commit
-        ruff
-        shell-gpt
+        #pre-commit
+        #ruff
+        #shell-gpt
     )
     for pkg in "${pip_pkgs[@]}"; do
         "${HOME}/.local/bin/uv" tool install "${pkg}" || true
