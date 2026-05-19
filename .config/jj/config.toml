@@ -1,7 +1,7 @@
 #:schema https://docs.jj-vcs.dev/latest/config-schema.json
 
 [templates]
-log = "builtin_log_detailed"
+log = "builtin_log_oneline"
 
 [ui]
 editor = "cursor --wait"
