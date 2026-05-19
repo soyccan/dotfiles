@@ -1,0 +1,11 @@
+#:schema https://docs.jj-vcs.dev/latest/config-schema.json
+
+[templates]
+log = "builtin_log_detailed"
+
+[ui]
+editor = "cursor --wait"
+
+[user]
+name = "soyccan"
+email = "soyccan@gmail.com"
