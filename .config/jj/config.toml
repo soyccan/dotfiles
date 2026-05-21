@@ -1,9 +1,11 @@
 #:schema https://docs.jj-vcs.dev/latest/config-schema.json
 
 [templates]
+commit_trailers = 'if(!trailers.contains_key("Change-Id"), format_gerrit_change_id_trailer(self)) ++ if(!trailers.contains_key("Signed-off-by"), format_signed_off_by_trailer(self))'
 log = "builtin_log_oneline"
 
 [ui]
+default-command = "log"
 editor = "cursor --wait"
 
 [user]
