@@ -61,6 +61,7 @@ else
 end
 
 abbr ln 'ln -s'
+abbr mkdir 'mkdir -p'
 
 # prompt before action
 abbr mv 'mv -iv'

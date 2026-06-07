@@ -7,7 +7,9 @@ if (( BASH_VERSINFO[0] > 4 ||
 then
     shopt -s inherit_errexit
 fi
-PS4='+${BASH_SOURCE##*/}:${LINENO}> '
+_PS4_FILE=${BASH_SOURCE[0]:-$(hostname)}
+_PS4_FILE=${_PS4_FILE##*/}
+PS4='+${_PS4_FILE}:${LINENO}> '
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 # Configuration
@@ -171,7 +173,7 @@ add_apt_sources() {
     local distro codename arch
     distro=$(to_lower "$(lsb_release --id --short 2>/dev/null)")
     codename=$(lsb_release --codename --short)
-    arch=$(get_arch)
+    arch=$(get_arch_deb)
 
     if ! curl -fsSL "https://download.docker.com/linux/${distro}/dists/${codename}/stable/binary-${arch}/" &>/dev/null; then
         # fallback
@@ -292,9 +294,9 @@ install_helix() {
         return
     fi
 
-    curl -fsSL "https://github.com/helix-editor/helix/releases/download/${version}/helix-${version}-$(get_arch)_$(to_lower "$(get_os)").tar.xz" \
+    curl -fsSL "https://github.com/helix-editor/helix/releases/download/${version}/helix-${version}-$(get_arch_uname)_$(to_lower "$(get_os)").tar.xz" \
         | tar -C "${HOME}/opt" -xJf -
-    ln -sf "${HOME}/opt/helix-${version}-$(get_arch)-$(to_lower "$(get_os)")/hx" "${HOME}/.local/bin/hx"
+    ln -sf "${HOME}/opt/helix-${version}-$(get_arch_uname)-$(to_lower "$(get_os)")/hx" "${HOME}/.local/bin/hx"
 }
 
 install_lazydocker() {
@@ -305,7 +307,7 @@ install_lazydocker() {
         return
     fi
 
-    curl -fsSL "https://github.com/jesseduffield/lazydocker/releases/download/v${version}/lazydocker_${version}_$(get_os)_$(get_arch).tar.gz" \
+    curl -fsSL "https://github.com/jesseduffield/lazydocker/releases/download/v${version}/lazydocker_${version}_$(get_os)_$(get_arch_deb).tar.gz" \
         | tar -C "${HOME}/.local/bin" -xzf - lazydocker
 }
 
@@ -317,7 +319,7 @@ install_lazygit() {
         return
     fi
 
-    curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_$(get_os)_$(get_arch2).tar.gz" \
+    curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_$(get_os)_$(get_arch_deb).tar.gz" \
         | tar -C "${HOME}/.local/bin" -xzf - lazygit
 }
 
@@ -331,7 +333,7 @@ install_just() {
 
     local os arch
     os=$(get_os)
-    arch=$(get_arch2)
+    arch=$(get_arch_uname)
 
     # Map architecture names to just's naming convention
     case "${arch}" in
@@ -495,18 +497,25 @@ get_os() {
     uname -s
 }
 
-get_arch() {
-    if has dpkg; then
-        dpkg --print-architecture
-    else
-        uname -m
-    fi
+# Returns uname-style arch (x86_64, aarch64, armv7l).
+# Use for GitHub release URLs that follow kernel naming conventions.
+get_arch_uname() {
+    uname -m
 }
 
-# Issue with dpkg --print-architecture is x86_64 is printed as amd64
-# so we use uname -m instead
-get_arch2() {
-    uname -m
+# Returns Debian/dpkg-style arch (amd64, arm64, armhf, armel).
+# Use for apt sources and any tooling that follows Debian naming conventions.
+get_arch_deb() {
+    local arch
+    arch=$(get_arch_uname)
+    case "${arch}" in
+        x86_64)        echo "amd64" ;;
+        aarch64|arm64) echo "arm64" ;;
+        armv7l|armv6l) echo "armhf" ;;
+        armv5*)        echo "armel" ;;
+        i386|i686)     echo "i386" ;;
+        *)             echo "${arch}" ;;
+    esac
 }
 
 get_country() {
