@@ -25,8 +25,8 @@ end
 
 fish_add_path --global --move --path $homebrew_prefix/bin $homebrew_prefix/sbin
 
-set --path fish_complete_path $homebrew_prefix/share/fish/completions
-set --path fish_complete_path $homebrew_prefix/share/fish/vendor_completions.d
+set --prepend fish_complete_path $homebrew_prefix/share/fish/completions
+set --prepend fish_complete_path $homebrew_prefix/share/fish/vendor_completions.d
 
 # if not contains "$HOMEBREW_PREFIX/share/man" $MANPATH
 #     set --global --export MANPATH "$HOMEBREW_PREFIX/share/man" $MANPATH
