@@ -121,34 +121,29 @@ install_packages_ubuntu() {
         httpie
         iftop
         jq
+        lbzip2
         mypy
         neovim
         nmap
-        nushell
         p7zip-full
         pigz
         pixz
         python3-ipython
-        python3-poetry
         python3-venv
         ranger
-        remake
         repo
         ripgrep
         shfmt
         tealdeer
         tig
         unzip
-        wezterm
         yadm
-        zsh
     )
 
     # tmake dependencies
     pkgs+=(
         binfmt-support
         debhelper
-        lbzip2
         libssl-dev
         python3-dev
         qemu-user-static
@@ -170,44 +165,56 @@ install_packages_ubuntu() {
 }
 
 add_apt_sources() {
-    local distro codename arch
+    local distro codename arch aptsrc_file aptsrc_x64 aptsrc_arm64
+
     distro=$(to_lower "$(lsb_release --id --short 2>/dev/null)")
     codename=$(lsb_release --codename --short)
     arch=$(get_arch_deb)
 
-    if ! curl -fsSL "https://download.docker.com/linux/${distro}/dists/${codename}/stable/binary-${arch}/" &>/dev/null; then
-        # fallback
-        distro=debian
-        codename=bookworm
-    fi
+    # if ! curl -fsSL "https://download.docker.com/linux/${distro}/dists/${codename}/stable/binary-${arch}/" &>/dev/null; then
+    #     # fallback
+    #     distro=debian
+    #     codename=bookworm
+    # fi
 
-    if [[ -e /etc/apt/sources.list.d/ubuntu.sources ]]; then
+    aptsrc_x64=
+    aptsrc_arm64=
+
+    if [[ -e "/etc/apt/sources.list.d/ubuntu.sources" ]]; then
         # Ubuntu 24.04 and later uses DEB822 format
-        if [[ "$(get_country)" == TW ]]; then
-            sudo perl -i -pe "s#http://archive\.ubuntu\.com#http://tw.archive.ubuntu.com#g; \
-                s#http://ports\.ubuntu\.com#https://mirror.twds.com.tw#g" \
-                /etc/apt/sources.list.d/ubuntu.sources
-        fi
-
-        # Process apt sources from dotfiles repo if they exist
-        local apt_sources_dir="${HOME}/.config/apt"
-        if [[ -d "${apt_sources_dir}" ]]; then
-            for sources in "${apt_sources_dir}"/*.sources; do
-                if [[ -f "${sources}" ]]; then
-                    (
-                        export distro codename arch
-                        envsubst < "${sources}" | sudo tee "/etc/apt/sources.list.d/${sources##*/}" >/dev/null
-                    )
-                fi
-            done
-        else
-            echo "Note: apt sources directory not found at ${apt_sources_dir}, skipping custom sources"
-        fi
-    elif [[ "$(get_country)" == TW ]]; then
-        sudo perl -i -pe "s#http://archive\.ubuntu\.com#http://tw.archive.ubuntu.com#g; \
-            s#http://ports\.ubuntu\.com#https://mirror.twds.com.tw#g" \
-            /etc/apt/sources.list
+        aptsrc_file=/etc/apt/sources.list.d/ubuntu.sources
+    else
+        aptsrc_file=/etc/apt/sources.list
     fi
+
+    if [[ "$(resolvectl domain)" == *"nvidia.com"* ]]; then
+        aptsrc_x64=https://urm.nvidia.com/artifactory/ubuntu-remote/
+    elif [[ "$(get_country)" == TW ]]; then
+        aptsrc_x64=http://mirror.twds.com.tw/ubuntu/
+        aptsrc_arm64=https://mirror.twds.com.tw/ubuntu-ports/
+    fi
+
+    if [[ "${arch}" == "amd64" && "${aptsrc_x64}" != "" ]]; then
+        sudo perl -p -i -e \
+            "s#http://(archive|security)\.ubuntu\.com/ubuntu/?#${aptsrc_x64}#g" \
+            "${aptsrc_file}"
+    fi
+
+    if [[ "${arch}" == "arm64" && "${aptsrc_arm64}" != "" ]]; then
+        sudo perl -p -i -e \
+            "s#http://ports\.ubuntu\.com/ubuntu-ports/?#${aptsrc_arm64}#g" \
+            "${aptsrc_file}"
+    fi
+
+    # Process apt sources from dotfiles repo if they exist
+    for sources in "${HOME}/.config/apt"/*.sources; do
+        if [[ -f "${sources}" ]]; then
+            (
+                export distro codename arch
+                envsubst < "${sources}" | sudo tee "/etc/apt/sources.list.d/${sources##*/}" >/dev/null
+            )
+        fi
+    done
 }
 
 install_packages_macos() {
@@ -228,7 +235,6 @@ install_packages_macos() {
         fzf
         git
         git-delta
-        helix
         htop
         iftop
         jq
@@ -236,11 +242,8 @@ install_packages_macos() {
         lazygit
         neovim
         nmap
-        nushell
-        poetry
         python3
         ranger
-        remake
         repo
         ripgrep
         shfmt
@@ -257,7 +260,6 @@ install_packages_macos() {
 }
 
 install_packages_common() {
-    # install_helix || true
     install_just || true
     install_lazydocker || true
     install_lazygit || true
