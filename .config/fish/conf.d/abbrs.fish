@@ -186,7 +186,7 @@ abbr ping 'ping -c 5'
 switch (uname)
     case Darwin
         abbr pgrep 'pgrep -fl'
-        abbr pkill 'pkill -f'
+        abbr pkill 'pkill -fl'
     case "*"
         abbr pgrep 'pgrep -fa'
         abbr pkill 'pkill -fe'
