@@ -110,7 +110,7 @@ do
   vim.o.number = true
   -- You can also add relative line numbers, to help with jumping.
   --  Experiment for yourself to see if you like it!
-  -- vim.o.relativenumber = true
+  vim.o.relativenumber = true
 
   -- Enable mouse mode, can be useful for resizing splits for example!
   vim.o.mouse = 'a'
@@ -233,6 +233,10 @@ do
   -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
   -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
   -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+
+  -- Indent multiple times
+  vim.keymap.set('v', '<', '<gv')
+  vim.keymap.set('v', '>', '>gv')
 
   -- [[ Basic Autocommands ]]
   --  See `:help lua-guide-autocommands`
