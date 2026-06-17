@@ -249,6 +249,63 @@ do
     group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
     callback = function() vim.hl.on_yank() end,
   })
+
+  -- Restore cursor to the last known position when reopening a file.
+  vim.api.nvim_create_autocmd('BufReadPost', {
+    desc = 'Restore last cursor position',
+    group = vim.api.nvim_create_augroup('kickstart-restore-cursor', { clear = true }),
+    callback = function(event)
+      local exclude = { gitcommit = true, gitrebase = true }
+      if exclude[vim.bo[event.buf].filetype] then
+        return
+      end
+
+      local mark = vim.api.nvim_buf_get_mark(event.buf, '"')
+      local line_count = vim.api.nvim_buf_line_count(event.buf)
+      if mark[1] > 0 and mark[1] <= line_count then
+        vim.api.nvim_win_set_cursor(0, mark)
+      end
+    end,
+  })
+
+  -- Highlight trailing whitespace, except while typing.
+  vim.api.nvim_set_hl(0, 'ExtraWhitespace', { fg = '#ffffff', bg = '#ff0000', bold = true })
+  vim.api.nvim_create_autocmd({ 'BufWinEnter', 'InsertLeave', 'TextChanged' }, {
+    desc = 'Highlight trailing whitespace',
+    group = vim.api.nvim_create_augroup('kickstart-highlight-trailing-whitespace', { clear = true }),
+    callback = function()
+      if vim.w.trailing_whitespace_match_id then
+        pcall(vim.fn.matchdelete, vim.w.trailing_whitespace_match_id)
+      end
+      vim.w.trailing_whitespace_match_id = vim.fn.matchadd('ExtraWhitespace', [[\s\+$]])
+    end,
+  })
+
+  vim.api.nvim_create_autocmd('InsertEnter', {
+    desc = 'Hide trailing whitespace highlight while inserting',
+    group = vim.api.nvim_create_augroup('kickstart-hide-trailing-whitespace', { clear = true }),
+    callback = function()
+      if vim.w.trailing_whitespace_match_id then
+        pcall(vim.fn.matchdelete, vim.w.trailing_whitespace_match_id)
+        vim.w.trailing_whitespace_match_id = nil
+      end
+    end,
+  })
+
+  -- Trim trailing whitespace on save without clobbering cursor position or search history.
+  vim.api.nvim_create_autocmd('BufWritePre', {
+    desc = 'Trim trailing whitespace on save',
+    group = vim.api.nvim_create_augroup('kickstart-trim-trailing-whitespace', { clear = true }),
+    callback = function()
+      local cursor = vim.fn.getpos '.'
+      local search = vim.fn.getreg '/'
+
+      vim.cmd [[%s/\s\+$//e]]
+
+      vim.fn.setpos('.', cursor)
+      vim.fn.setreg('/', search)
+    end,
+  })
 end
 
 -- ============================================================
@@ -357,6 +414,12 @@ do
   -- Adds git related signs to the gutter, as well as utilities for managing changes
   vim.pack.add { gh 'lewis6991/gitsigns.nvim' }
   require('gitsigns').setup {
+    worktrees = {
+      {
+        toplevel = vim.env.HOME,
+        gitdir = vim.env.HOME .. '/.local/share/yadm/repo.git',
+      },
+    },
     signs = {
       add = { text = '+' }, ---@diagnostic disable-line: missing-fields
       change = { text = '~' }, ---@diagnostic disable-line: missing-fields
@@ -364,6 +427,28 @@ do
       topdelete = { text = '‾' }, ---@diagnostic disable-line: missing-fields
       changedelete = { text = '~' }, ---@diagnostic disable-line: missing-fields
     },
+    on_attach = function(bufnr)
+      local gitsigns = require('gitsigns')
+
+      -- Navigation
+      -- Next hunk
+      vim.keymap.set('n', ']c', function()
+        if vim.wo.diff then
+          vim.cmd.normal({']c', bang = true})
+        else
+          gitsigns.nav_hunk('next')
+        end
+      end, { buffer = bufnr })
+
+      -- Previous hunk
+      vim.keymap.set('n', '[c', function()
+        if vim.wo.diff then
+          vim.cmd.normal({'[c', bang = true})
+        else
+          gitsigns.nav_hunk('prev')
+        end
+      end, { buffer = bufnr })
+    end
   }
 
   -- Useful plugin to show you pending keybinds.
@@ -449,9 +534,20 @@ end
 
 -- ============================================================
 -- SECTION 4: SEARCH & NAVIGATION
--- Telescope setup, keymaps, LSP picker mappings
+-- Flash jump navigation, Telescope setup, keymaps, LSP picker mappings
 -- ============================================================
 do
+  -- Fast label-based jumping, similar to EasyMotion.
+  vim.pack.add { gh 'folke/flash.nvim' }
+  require('flash').setup {}
+
+  -- default s is occupied by mini-surround, so use f
+  vim.keymap.set({ 'n', 'x', 'o' }, 'f', function() require('flash').jump() end, { desc = 'Flash jump' })
+  vim.keymap.set({ 'n', 'x', 'o' }, 'S', function() require('flash').treesitter() end, { desc = 'Flash Treesitter jump' })
+  vim.keymap.set('o', 'r', function() require('flash').remote() end, { desc = 'Remote Flash' })
+  vim.keymap.set({ 'o', 'x' }, 'R', function() require('flash').treesitter_search() end, { desc = 'Treesitter Flash search' })
+  vim.keymap.set('c', '<C-s>', function() require('flash').toggle() end, { desc = 'Toggle Flash search' })
+
   -- [[ Fuzzy Finder (files, lsp, etc) ]]
   --
   -- Telescope is a fuzzy finder that comes with a lot of different things that
