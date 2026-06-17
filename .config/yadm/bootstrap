@@ -260,6 +260,7 @@ install_packages_macos() {
 }
 
 install_packages_common() {
+    install_jj || true
     install_just || true
     install_lazydocker || true
     install_lazygit || true
@@ -299,6 +300,18 @@ install_helix() {
     curl -fsSL "https://github.com/helix-editor/helix/releases/download/${version}/helix-${version}-$(get_arch_uname)_$(to_lower "$(get_os)").tar.xz" \
         | tar -C "${HOME}/opt" -xJf -
     ln -sf "${HOME}/opt/helix-${version}-$(get_arch_uname)-$(to_lower "$(get_os)")/hx" "${HOME}/.local/bin/hx"
+}
+
+install_jj() {
+    local version
+    version=$(get_latest_release_version jj-vcs/jj 0.42.0)
+
+    if has jj && [[ $(jj --version) == *${version}* ]]; then
+        return
+    fi
+
+    curl -fsSL "https://github.com/jj-vcs/jj/releases/download/v${version}/jj-v${version}-$(get_arch_uname)-unknown-linux-musl.tar.gz" \
+        | tar -C "${HOME}/.local/bin" -xzf - ./jj
 }
 
 install_lazydocker() {
