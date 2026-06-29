@@ -2,6 +2,7 @@
 set -o errexit
 set -o nounset
 set -o pipefail
+shopt -s nullglob
 if (( BASH_VERSINFO[0] > 4 ||
       (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 4) ))
 then
@@ -9,7 +10,7 @@ then
 fi
 _PS4_FILE=${BASH_SOURCE[0]:-$(hostname)}
 _PS4_FILE=${_PS4_FILE##*/}
-PS4='+${_PS4_FILE}:${LINENO}> '
+PS4='\e[32m+${_PS4_FILE}:${LINENO}>\e[0m '  # green
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 # Configuration
@@ -24,7 +25,7 @@ main() {
     install_packages || true
     setup_docker || true
     setup_fish || true
-    setup_ufw || true
+
     echo Voila! Setup Finished!
 }
 
@@ -133,9 +134,11 @@ install_packages_ubuntu() {
         ranger
         repo
         ripgrep
+        shellcheck
         shfmt
         tealdeer
         tig
+        tree-sitter-cli
         unzip
         yadm
     )
@@ -146,6 +149,7 @@ install_packages_ubuntu() {
         debhelper
         libssl-dev
         python3-dev
+        qemu-user-binfmt
         qemu-user-static
         swig
         zstd
@@ -206,14 +210,16 @@ add_apt_sources() {
             "${aptsrc_file}"
     fi
 
-    # Process apt sources from dotfiles repo if they exist
-    for sources in "${HOME}/.config/apt"/*.sources; do
-        if [[ -f "${sources}" ]]; then
-            (
-                export distro codename arch
-                envsubst < "${sources}" | sudo tee "/etc/apt/sources.list.d/${sources##*/}" >/dev/null
-            )
-        fi
+    # Apply apt sources
+    for f in "${HOME}"/.config/apt/sources.list.d/*; do
+        (
+            export distro codename arch
+            envsubst < "${f}" | sudo tee "/etc/apt/sources.list.d/${f##*/}" >/dev/null
+        )
+    done
+
+    for f in "${HOME}"/.config/apt/keyrings/*; do
+        sudo cp -fv "${f}" "/usr/share/keyrings/${f##*/}"
     done
 }
 
@@ -289,6 +295,16 @@ get_latest_release_version() {
     fi
 }
 
+install_fonts() {
+    local version
+    version=$(get_latest_release_version tonsky/FiraCode 6.2)
+
+    curl -fsSL "https://github.com/tonsky/FiraCode/releases/download/${version}/Fira_Code_v${version}.zip" \
+        | unzip -d "${HOME}/.local/share/fonts/FireCode/"
+
+    fc-cache -f -v
+}
+
 install_helix() {
     local version
     version=$(get_latest_release_version helix-editor/helix 25.07.1)
@@ -322,7 +338,7 @@ install_lazydocker() {
         return
     fi
 
-    curl -fsSL "https://github.com/jesseduffield/lazydocker/releases/download/v${version}/lazydocker_${version}_$(get_os)_$(get_arch_deb).tar.gz" \
+    curl -fsSL "https://github.com/jesseduffield/lazydocker/releases/download/v${version}/lazydocker_${version}_$(to_lower "$(get_os)")_$(get_arch_uname).tar.gz" \
         | tar -C "${HOME}/.local/bin" -xzf - lazydocker
 }
 
@@ -334,7 +350,7 @@ install_lazygit() {
         return
     fi
 
-    curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_$(get_os)_$(get_arch_deb).tar.gz" \
+    curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_$(to_lower "$(get_os)")_$(get_arch_uname).tar.gz" \
         | tar -C "${HOME}/.local/bin" -xzf - lazygit
 }
 
@@ -408,7 +424,7 @@ setup_docker() {
         return
     fi
 
-    sudo usermod --append --groups docker $USER
+    sudo usermod --append --groups docker "${USER}"
 }
 
 setup_fish() {
@@ -426,7 +442,7 @@ setup_fish() {
         return
     fi
 
-    sudo chsh -s $shell $USER
+    sudo chsh -s $shell "${USER}"
 }
 
 setup_ufw() {
@@ -437,9 +453,9 @@ setup_ufw() {
     fi
 
     tmpdir=$(mktemp --directory)
-    mkdir -p $tmpdir
-    git clone https://github.com/ageis/ufw-application-profiles $tmpdir
-    sudo cp -nrv $tmpdir/applications.d/* /etc/ufw/applications.d
+    mkdir -p "${tmpdir}"
+    git clone https://github.com/ageis/ufw-application-profiles "${tmpdir}"
+    sudo cp -nrv "${tmpdir}/applications.d/"* /etc/ufw/applications.d
 
     echo '
 
@@ -566,16 +582,16 @@ semver_cmp() {
 }
 
 semver_lt() {
-    (( $(semver_cmp $1 $2) < 0 ))
+    (( $(semver_cmp "${1}" "${2}") < 0 ))
 }
 
 semver_le() {
-    (( $(semver_cmp $1 $2) <= 0 ))
+    (( $(semver_cmp "${1}" "${2}") <= 0 ))
 }
 
 # Entry point
 
-if [[ ${BASH_SOURCE[0]} = $0 ]]; then
+if [[ ${BASH_SOURCE[0]} = "${0}" ]]; then
     # if this script is being executed instead of being sourced
     main
 fi
