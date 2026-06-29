@@ -2,13 +2,19 @@ if not status is-interactive
     exit
 end
 
-if grep -q 'Apple Virtualization Generic Platform' /sys/class/dmi/id/product_name
-    # Lima is actually using macOS keyboard but wrongly recognized as Linux
-    bind alt-backspace backward-kill-word
-    bind ctrl-backspace backward-kill-token
-    bind alt-delete kill-word
-    bind ctrl-delete kill-token
-end
+# Make all systems behave the same as fish 4.1.0+ on macOS, i.e.
+# Alt- / Option- : move around / delete word
+# Ctrl- : move around / delete token
+# E.g. For a token "foo-bar", "foo" and "bar" are words,
+bind alt-delete kill-word
+bind alt-backspace backward-kill-word
+bind alt-right nextd-or-forward-word
+bind alt-left prevd-or-backward-word
+
+bind ctrl-delete kill-token
+bind ctrl-backspace backward-kill-token
+bind ctrl-right forward-token
+bind ctrl-left backward-token
 
 if command -q zoxide
     # Ctrl-g: goto recent dir
