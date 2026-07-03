@@ -1,5 +1,8 @@
 regexp=Passed
 colours=green
 -
-regexp=Failed
+regexp=NOTICE|WARN
+colours=yellow
+-
+regexp=Failed|ERROR
 colours=red

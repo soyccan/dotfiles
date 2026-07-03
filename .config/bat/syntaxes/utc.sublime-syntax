@@ -1,0 +1,15 @@
+%YAML 1.2
+---
+# See http://sublimetext.com
+name: Tegra UART Trace Controller
+file_extensions:
+  - utc
+scope: source.utc
+
+contexts:
+  main:
+    - match: 'ERROR'
+      scope: keyword.control.utc
+
+    - match: 'WARN|NOTICE'
+      scope: constant.numeric.utc
