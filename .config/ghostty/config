@@ -42,10 +42,13 @@
 # # Just for example:
 # resize-overlay-duration = 4s 200ms
 
+# General
+command = fish
+
+# Appearance
+font-size = 13
 term = xterm-256color
 
-command = /opt/homebrew/bin/fish
-
-font-size = 15
-
+# Keyboard
+keybind = ctrl+enter=unbind
 macos-option-as-alt = true
