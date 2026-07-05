@@ -116,6 +116,7 @@ install_packages_ubuntu() {
         fd-find
         fish
         fzf
+        gdu
         git
         git-delta
         htop
@@ -239,6 +240,7 @@ install_packages_macos() {
         fd
         fish
         fzf
+        gdu
         git
         git-delta
         htop
