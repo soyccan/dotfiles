@@ -274,6 +274,7 @@ install_packages_common() {
     install_lazygit || true
     install_starship || true
     install_uv || true
+    install_yq || true
     install_zoxide || true
 
     local pip_pkgs pkg
@@ -406,6 +407,22 @@ install_uv() {
     fi
 
     sh <(curl -fsSL https://astral.sh/uv/install.sh)
+}
+
+install_yq() {
+    local version
+    version=$(get_latest_release_version mikefarah/yq 4.53.3)
+
+    if has yq && [[ $(yq --version) == *${version}* ]]; then
+        return
+    fi
+
+    local os arch
+    os=$(to_lower "$(get_os)")
+    arch=$(to_lower "$(get_arch_deb)")
+
+    curl -fsSL "https://github.com/mikefarah/yq/releases/download/v${version}/yq_${os}_${arch}" -o "${HOME}/.local/bin/yq"
+    chmod +x "${HOME}/.local/bin/yq"
 }
 
 install_zoxide() {
