@@ -246,6 +246,21 @@ if command -q netexec
     abbr nxc 'netexec smb'
 end
 
+if [ $(uname -s) = Darwin ]
+    function csr --description 'open files in Cursor'
+        # Cursor.app's macOS bundle identifier is inherited by its integrated
+        # terminal, allowing it to be distinguished from external terminals.
+        if set -q __CFBundleIdentifier &&
+                [ $__CFBundleIdentifier = com.todesktop.230313mzl4w4u92 ]
+            command cursor --reuse-window $argv
+        else if [ -d /Applications/Cursor.app ]
+            command open -a /Applications/Cursor.app $argv
+        else
+            command cursor $argv
+        end
+    end
+end
+
 if command -q fdfind
     abbr fd 'fdfind -u'
 else if command -q fd
