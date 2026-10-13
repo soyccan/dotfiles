@@ -250,16 +250,7 @@ if [ $(uname -s) = Darwin ]
     # Cursor CLI requires a heavy Node.js runtime that takes a long time to
     # start so this wrapper speeds up the startup time on macOS.
     function csr --description 'open files in Cursor'
-        # Cursor.app's macOS bundle identifier is inherited by its integrated
-        # terminal, allowing it to be distinguished from external terminals.
-        if set -q __CFBundleIdentifier &&
-                [ $__CFBundleIdentifier = com.todesktop.230313mzl4w4u92 ]
-            command cursor --reuse-window $argv
-        else if [ -d /Applications/Cursor.app ]
-            command open -a /Applications/Cursor.app $argv
-        else
-            command cursor $argv
-        end
+        command open -a /Applications/Cursor.app $argv
     end
 end
 
