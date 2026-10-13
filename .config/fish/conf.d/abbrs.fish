@@ -247,6 +247,8 @@ if command -q netexec
 end
 
 if [ $(uname -s) = Darwin ]
+    # Cursor CLI requires a heavy Node.js runtime that takes a long time to
+    # start so this wrapper speeds up the startup time on macOS.
     function csr --description 'open files in Cursor'
         # Cursor.app's macOS bundle identifier is inherited by its integrated
         # terminal, allowing it to be distinguished from external terminals.
