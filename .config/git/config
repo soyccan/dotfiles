@@ -18,7 +18,7 @@ safecrlf = warn
 # pager = less -R
 #pager = delta
 
-editor = cursor --wait
+editor = "sh -c 'if [ \"$__CFBundleIdentifier\" = com.todesktop.230313mzl4w4u92 ] || [ \"$TERM_PROGRAM\" = vscode ]; then exec cursor --reuse-window --wait \"$@\"; else exec vim \"$@\"; fi' -"
 
 [interactive]
 #diffFilter = delta --color-only
