@@ -1,0 +1,71 @@
+#!/opt/homebrew/bin/python3
+"""Local macOS Cursor editor: reuse a window and wait for files to close.
+
+Uses Cursor's internal --waitMarkerFilePath protocol; verified with 3.24.12.
+Remote sessions delegate to the original Cursor CLI. Input is a list of file
+paths, as supplied by Git and jj; this does not implement `cursor -` piping.
+"""
+import os
+import select
+import subprocess
+import sys
+import tempfile
+import time
+
+
+def edit(paths):
+    started = time.monotonic()
+    fd, marker = tempfile.mkstemp(prefix='cursor-wait-')
+    queue = select.kqueue()
+    try:
+        queue.control([select.kevent(fd, filter=select.KQ_FILTER_VNODE,
+                      flags=select.KQ_EV_ADD | select.KQ_EV_ENABLE | select.KQ_EV_CLEAR,
+                      fflags=select.KQ_NOTE_DELETE | select.KQ_NOTE_RENAME)], 0, 0)
+        args = ['/usr/bin/open', '-n', '-g', '-a', '/Applications/Cursor.app',
+                '--args', '--reuse-window', '--wait', '--waitMarkerFilePath',
+                marker, *[os.path.abspath(p) for p in paths]]
+        env = dict(os.environ, ELECTRON_NO_ATTACH_CONSOLE='1')
+        for key in ('ELECTRON_RUN_AS_NODE', 'NODE_OPTIONS', 'NODE_REPL_EXTERNAL_MODULE'):
+            env.pop(key, None)
+        if os.environ.get('CURSOR_WAIT_TRACE'):
+            print(f'cursor-wait marker={marker}', file=sys.stderr, flush=True)
+        launched = subprocess.run(args, env=env, stdin=subprocess.DEVNULL)
+        if launched.returncode:
+            return launched.returncode
+        if os.environ.get('CURSOR_WAIT_TRACE'):
+            print(f'cursor-wait handoff_ms={(time.monotonic()-started)*1000:.2f}',
+                  file=sys.stderr, flush=True)
+        while os.path.exists(marker):
+            queue.control(None, 1, None)
+        return 0
+    finally:
+        queue.close()
+        os.close(fd)
+        try:
+            os.unlink(marker)
+        except FileNotFoundError:
+            pass
+
+
+def main():
+    paths = sys.argv[1:]
+    if paths and paths[0] == '--':
+        paths = paths[1:]
+    if not paths or any(p == '-' or p.startswith('-') for p in paths):
+        print('Usage: cursor-wait FILE [FILE ...] (Git/jj editor; no CLI options)',
+              file=sys.stderr)
+        return 2
+    if sys.platform != 'darwin' or any(os.environ.get(k) for k in
+            ('SSH_CONNECTION', 'SSH_TTY', 'VSCODE_REMOTE_NAME', 'VSCODE_IPC_HOOK_CLI')):
+        os.execvp('cursor', ['cursor', '--reuse-window', '--wait', *paths])
+    return edit(paths)
+
+
+if __name__ == '__main__':
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        sys.exit(130)
+    except (OSError, subprocess.SubprocessError) as error:
+        print(f'cursor-wait: {error}', file=sys.stderr)
+        sys.exit(1)

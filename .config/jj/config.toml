@@ -9,7 +9,7 @@ log = "builtin_log_oneline"
 
 [ui]
 default-command = "log"
-editor = "sh -c 'if [ \"$__CFBundleIdentifier\" = com.todesktop.230313mzl4w4u92 ] || [ \"$TERM_PROGRAM\" = vscode ]; then exec cursor --reuse-window --wait \"$@\"; else exec vim \"$@\"; fi' -"
+editor = "sh -c 'if [ \"$__CFBundleIdentifier\" = com.todesktop.230313mzl4w4u92 ] || [ \"$TERM_PROGRAM\" = vscode ]; then exec /Users/zacc/.local/bin/cursor-wait \"$@\"; else exec vim \"$@\"; fi' -"
 
 [user]
 name = "Zac Chen"
