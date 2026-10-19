@@ -246,14 +246,6 @@ if command -q netexec
     abbr nxc 'netexec smb'
 end
 
-if [ $(uname -s) = Darwin ]
-    # Cursor CLI requires a heavy Node.js runtime that takes a long time to
-    # start so this wrapper speeds up the startup time on macOS.
-    function csr --description 'open files in Cursor'
-        command open -a /Applications/Cursor.app $argv
-    end
-end
-
 if command -q fdfind
     abbr fd 'fdfind -u'
 else if command -q fd

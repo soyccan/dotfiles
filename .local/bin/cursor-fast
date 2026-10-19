@@ -1,0 +1,586 @@
+#!/opt/homebrew/bin/python3
+"""Open local files in an existing Cursor window through its IPC socket.
+
+Usage
+-----
+    cursor-fast FILE [FILE ...]          # Return after the open request succeeds.
+    cursor-fast --wait FILE [FILE ...]   # Wait until the requested tabs close.
+    cursor-fast -rw "path with spaces.txt"
+
+Window reuse is implicit. Supported options are -r/--reuse-window and
+-w/--wait, including combined short forms such as -rw. Local files must
+already exist. Relative paths use the caller's working directory; spaces
+are preserved. Use -- before a file whose name begins with '-'. Other CLI
+options, directories, missing paths, stdin '-', and remote-looking sessions
+are delegated unchanged to the original cursor executable from PATH.
+The helper does not read stdin and does not require an interactive TTY.
+Use -h/--help for the helper's own help. argparse parses supported options
+without abbreviating long names. Unrecognized options or option values
+are delegated using the original argv, including combined short options.
+
+Requirements and installation
+-----------------------------
+Local IPC requires macOS, /Applications/Cursor.app, and Cursor's default
+user data directory at ~/Library/Application Support/Cursor. Waiting uses
+macOS kqueue. The shebang uses /opt/homebrew/bin/python3; adjust it if your
+Python interpreter lives elsewhere. Only the standard library is needed.
+
+    mkdir -p "$HOME/.local/bin"
+    install -m 755 ./cursor-fast "$HOME/.local/bin/cursor-fast"
+
+To always use Cursor as an editor (replaces existing editor selectors):
+
+    jj config set --user ui.editor "$HOME/.local/bin/cursor-fast --wait"
+    git config --global core.editor "$HOME/.local/bin/cursor-fast --wait"
+
+Editors MUST include --wait: otherwise Git/jj can continue before editing
+finishes. Saving alone does not finish a waiting edit; close all requested
+tabs. To retain a shell selector, replace only its Cursor branch with
+`exec /absolute/path/to/cursor-fast --wait "$@"`. This Mac's installed setup
+retains the original vim branch. JJ_EDITOR, GIT_EDITOR, and repository
+settings can override the configured editor; check `jj config get ui.editor`
+in the affected repository.
+
+Interactive shells can define cursor to invoke the helper:
+    fish: function cursor; /absolute/path/to/cursor-fast $argv; end
+    zsh:  cursor() { /absolute/path/to/cursor-fast "$@"; }
+
+Install the fish function in ~/.config/fish/functions/cursor.fish, or load
+the zsh function from ~/.zshrc. `command cursor ...` bypasses the function.
+Git/jj use the executable directly, without loading interactive functions.
+
+How it works
+------------
+The helper negotiates a Unix-socket connection to the running Cursor main
+process and invokes launch.start with file paths and window reuse enabled.
+It avoids both the original CLI's Node initialization and another GUI
+process. A normal open returns after receiving a success reply, not merely
+after writing the request; acceptance does not guarantee finished rendering.
+
+With --wait, create a private temporary marker and register its kqueue watch
+BEFORE dispatch. Cursor deletes that marker when the requested files close.
+A filesystem event wakes the helper immediately, avoiding one-second polling.
+Descriptors and any remaining marker are cleaned up on exit/interruption.
+
+Connection or negotiation failure BEFORE dispatch permits a macOS fallback:
+normal opens use `open -a`; waiting opens use `open -n -g` plus the marker.
+The waiting fallback can start Cursor when it is closed but has extra GUI
+startup cost. Errors after dispatch abort instead of retrying a request
+whose delivery may already have succeeded.
+
+Non-macOS execution, or nonempty SSH_CONNECTION, SSH_TTY, VSCODE_REMOTE_NAME,
+or VSCODE_IPC_HOOK_CLI, delegates to the original cursor command from PATH.
+Inherited stale variables can also trigger this conservative routing. The
+fallback still requires the interpreter at the shebang path to exist.
+
+Diagnostics, exits, and compatibility
+-------------------------------------
+    CURSOR_FAST_TRACE=1 cursor-fast /absolute/path/to/file
+    CURSOR_FAST_TRACE=1 jj describe
+
+Tracing goes to stderr and identifies main-ipc, launch-services, or
+official-cli routing. CURSOR_WAIT_TRACE remains accepted as an older spelling.
+request_ms (normal open) includes waiting for an IPC success reply;
+handoff_ms (--wait) ends after dispatch and does not confirm acceptance.
+Both exclude Python startup and do not measure final rendering. No trace
+appears if an outer editor selector chooses another editor.
+
+Exit 0 means a normal open succeeded or a waiting edit's marker disappeared.
+Exit 1 reports a caught local error, 130 Ctrl-C. Original-CLI and launcher
+statuses propagate. There is no overall editing timeout: remaining tabs or
+markers keep --wait blocked. Ctrl-C aborts the editor command without saving
+or closing Cursor buffers.
+
+IPC and --waitMarkerFilePath are PRIVATE interfaces, verified against Cursor
+3.24.12 using ipc.js, ipc.net.js, and launchMainService.js bundled in
+Resources/app/out/main.js. Socket naming uses the installed version's first
+four characters, matching that build. Custom profiles, user data locations,
+and other installations are not selected automatically. After an upgrade,
+recheck open/close behavior and routing; negotiation alone cannot guarantee
+unchanged launch semantics. Reported IPC errors should abort the operation.
+
+To bypass the helper for one jj operation:
+    jj --config 'ui.editor=["cursor","--reuse-window","--wait"]' describe
+"""
+
+import argparse
+import json
+import os
+import select
+import socket
+import struct
+import subprocess
+import sys
+import tempfile
+import time
+from collections.abc import Mapping, Sequence
+from pathlib import Path
+from typing import Any
+
+_VLQ_DATA_MASK = 0x7F
+_VLQ_CONTINUATION_BIT = 0x80
+_VLQ_DATA_BITS = 7
+
+
+def is_trace_enabled() -> bool:
+    """Accept the canonical trace variable and the earlier spelling."""
+    return bool(
+        os.environ.get("CURSOR_FAST_TRACE") or os.environ.get("CURSOR_WAIT_TRACE")
+    )
+
+
+def encode_varint(value: int) -> bytes:
+    """Encode a nonnegative integer as the IPC protocol's unsigned base-128 VLQ."""
+    data = bytearray()
+    while value > _VLQ_DATA_MASK:
+        data.append((value & _VLQ_DATA_MASK) | _VLQ_CONTINUATION_BIT)
+        value >>= _VLQ_DATA_BITS
+    data.append(value)
+    return bytes(data)
+
+
+def encode_value(value: object) -> bytes:
+    """Encode one IPC value using undefined (0), UTF-8 string (1), or JSON (5).
+
+    Python None represents JavaScript undefined here. JSON also carries our
+    request arrays and objects; Cursor's deserializer accepts that encoding.
+    """
+    if value is None:
+        return b"\x00"
+
+    if isinstance(value, str):
+        data = value.encode("utf-8")
+        return b"\x01" + encode_varint(len(data)) + data
+
+    data = json.dumps(value, separators=(",", ":")).encode("utf-8")
+    return b"\x05" + encode_varint(len(data)) + data
+
+
+def decode_values(data: bytes) -> list[Any]:
+    """Decode concatenated IPC values into a list, including typed responses.
+
+    Besides our outbound types, handle typed arrays (4) and integers (6),
+    which Cursor uses for response headers. Other value types are rejected.
+    """
+    pos = 0
+
+    def read_varint() -> int:
+        nonlocal pos
+        result = shift = 0
+        while shift < 35:
+            byte = data[pos]
+            pos += 1
+            result |= (byte & _VLQ_DATA_MASK) << shift
+            if not byte & _VLQ_CONTINUATION_BIT:
+                return result
+            shift += _VLQ_DATA_BITS
+        raise ValueError("Invalid IPC integer")
+
+    def read_value() -> Any:
+        nonlocal pos
+        kind = data[pos]
+        pos += 1
+        if kind == 0:
+            return None
+        if kind == 6:
+            return read_varint()
+        if kind == 4:
+            return [read_value() for _ in range(read_varint())]
+        if kind in (1, 5):
+            size = read_varint()
+            raw = data[pos : pos + size]
+            if len(raw) != size:
+                raise ValueError("Truncated IPC value")
+            pos += size
+            return raw.decode("utf-8") if kind == 1 else json.loads(raw)
+        raise ValueError("Unsupported IPC value type")
+
+    values = []
+    while pos < len(data):
+        values.append(read_value())
+    return values
+
+
+def pack_frame(data: bytes) -> bytes:
+    """Wrap data in a 13-byte ipc.net Regular-message header.
+
+    Layout: type:u8=1, id:u32be=0, ack:u32be=0, payload_length:u32be.
+    This local protocol uses zero sequence/ack IDs; RPC IDs are in data.
+    """
+    return struct.pack(">BIII", 1, 0, 0, len(data)) + data
+
+
+def receive_message(connection: socket.socket) -> list[Any]:
+    """Read one complete Regular frame, handling fragmented socket reads.
+
+    Reject unknown frame kinds and payloads above 4 MiB. Socket timeout and
+    disconnect errors propagate; an absent response is never treated as OK.
+    """
+
+    def receive_exact(size: int) -> bytes:
+        data = bytearray()
+        while len(data) < size:
+            chunk = connection.recv(size - len(data))
+            if not chunk:
+                raise ConnectionError(
+                    "Cursor IPC disconnected before editing completed"
+                )
+            data.extend(chunk)
+        return bytes(data)
+
+    kind, _, _, size = struct.unpack(">BIII", receive_exact(13))
+    if kind != 1 or size > 4 * 1024 * 1024:
+        raise ValueError("Unsupported Cursor IPC frame")
+
+    return decode_values(receive_exact(size))
+
+
+def send_open_request(
+    paths: Sequence[str], marker: str | None, env: Mapping[str, str]
+) -> socket.socket | None:
+    """Dispatch launch.start and return its owned socket, or None before dispatch.
+
+    Handshake value [200] means the channel server is initialized. Request
+    [100, 0, 'launch', 'start'] uses RPC ID 0 with [arguments, environment].
+    Keep the socket open during editing: launch.start normally completes
+    when the wait marker disappears or the target window closes/reloads.
+
+    A pre-dispatch failure permits the caller's Launch Services fallback.
+    Once dispatch begins, errors propagate to avoid a duplicate launch.
+    The caller must close a returned socket.
+    Pass marker=None for an open that returns after acceptance, without
+    waiting for file closure.
+    """
+    # ipc.js / ipc.net.js / launchMainService.js from the installed Cursor.
+    # Negotiate before dispatch; safely fall back only before sending an open.
+    connection: socket.socket | None = None
+    try:
+        package = Path("/Applications/Cursor.app/Contents/Resources/app/package.json")
+        version = json.loads(package.read_text())["version"]
+        handle = (
+            Path.home()
+            / "Library/Application Support/Cursor"
+            / (version[:4] + "-main.sock")
+        )
+        connection = socket.socket(socket.AF_UNIX)
+        connection.settimeout(0.5)
+        connection.connect(str(handle))
+        connection.sendall(
+            pack_frame(encode_value("cursor-fast"))
+            + pack_frame(encode_value([200]) + encode_value(None))
+        )
+        if receive_message(connection)[0] != [200]:
+            raise ValueError("Unexpected Cursor IPC handshake")
+
+    except (OSError, ValueError, KeyError, IndexError):
+        if connection is not None:
+            connection.close()
+        return None
+
+    args: dict[str, Any] = {
+        "_": [os.path.abspath(p) for p in paths],
+        "reuse-window": True,
+    }
+    if marker is not None:
+        args.update(wait=True, waitMarkerFilePath=marker)
+    try:
+        connection.sendall(
+            pack_frame(
+                encode_value([100, 0, "launch", "start"])
+                + encode_value([args, dict(env, VSCODE_CLI="1")])
+            )
+        )
+    except BaseException:
+        connection.close()
+        raise
+    return connection
+
+
+def open_files(paths: Sequence[str]) -> int:
+    """Open local files through IPC, awaiting acceptance but not tab closure.
+
+    A missing/unusable IPC endpoint falls back to a normal Launch Services
+    file-open event. After dispatch, errors abort without retrying the open.
+    No wait marker, kqueue, or extra GUI process is needed on the IPC route.
+    """
+    started = time.monotonic()
+
+    env = dict(os.environ, ELECTRON_NO_ATTACH_CONSOLE="1")
+    for key in ("ELECTRON_RUN_AS_NODE", "NODE_OPTIONS", "NODE_REPL_EXTERNAL_MODULE"):
+        env.pop(key, None)
+
+    connection = send_open_request(paths, None, env)
+    if connection is None:
+        route = "launch-services"
+        status = subprocess.run(
+            [
+                "/usr/bin/open",
+                "-a",
+                "/Applications/Cursor.app",
+                *[os.path.abspath(p) for p in paths],
+            ],
+            env=env,
+            stdin=subprocess.DEVNULL,
+        ).returncode
+
+    else:
+        route = "main-ipc"
+        try:
+            # Connection/handshake is bounded; a busy editor may take longer
+            # to process a valid request. Do not turn that into a false error.
+            connection.settimeout(None)
+            while True:
+                response = receive_message(connection)
+                if response[0] == [201, 0]:
+                    status = 0
+                    break
+                if response[0] in ([202, 0], [203, 0]):
+                    raise OSError("Cursor rejected the open request")
+        finally:
+            connection.close()
+
+    if is_trace_enabled():
+        print(
+            f"cursor-fast route={route} request_ms={(time.monotonic() - started) * 1000:.2f}",
+            file=sys.stderr,
+            flush=True,
+        )
+
+    return status
+
+
+def requires_cli() -> bool:
+    """Return whether the platform or environment requires the original Cursor CLI."""
+    return sys.platform != "darwin" or any(
+        os.environ.get(k)
+        for k in (
+            "SSH_CONNECTION",
+            "SSH_TTY",
+            "VSCODE_REMOTE_NAME",
+            "VSCODE_IPC_HOOK_CLI",
+        )
+    )
+
+
+def exec_cursor_cli(args: Sequence[str]) -> int:
+    """Replace this helper with the executable cursor from PATH (not a shell function)."""
+    if is_trace_enabled():
+        print("cursor-fast route=official-cli", file=sys.stderr)
+    os.execvp("cursor", ["cursor", *args])
+
+
+def build_parser() -> argparse.ArgumentParser:
+    """Build the supported-option parser without rejecting original CLI options.
+
+    Handle help after checking unknown arguments, so e.g. --profile Work
+    --help still reaches the original CLI. Disable long-option abbreviation
+    and fatal parse errors: unsupported syntax belongs to that CLI as well.
+    """
+    parser = argparse.ArgumentParser(
+        prog="cursor-fast",
+        description="Open existing local files in Cursor through direct IPC.",
+        epilog=(
+            "Other options, directories, new paths, stdin '-' and remote sessions "
+            "are passed unchanged to the original cursor CLI. "
+            "Window reuse is implicit. Git/jj editors must include --wait."
+        ),
+        add_help=False,
+        allow_abbrev=False,
+        exit_on_error=False,
+    )
+    parser.add_argument(
+        "-h", "--help", action="store_true", help="show this help and exit"
+    )
+    parser.add_argument(
+        "-r", "--reuse-window", action="store_true", help="reuse a window (the default)"
+    )
+    parser.add_argument(
+        "-w",
+        "--wait",
+        action="store_true",
+        help="wait until the requested file tabs close",
+    )
+    parser.add_argument("files", nargs="*", metavar="FILE", help="existing local files")
+    return parser
+
+
+def open_and_wait(paths: Sequence[str]) -> int:
+    """Open local files and block on marker deletion, returning an exit status.
+
+    Own the marker, its open descriptor, kqueue, and any IPC connection for
+    the full edit. Watch both marker events and IPC responses/disconnects.
+    A successful RPC response alone does not end the file wait: after a
+    window reload, the marker can still exist. Ignore further socket reads
+    in that case and continue waiting for the marker.
+    """
+    started = time.monotonic()
+    # Cursor deletes this marker when the editor closes the requested files;
+    # kqueue lets us wait for that filesystem event without polling.
+    fd, marker = tempfile.mkstemp(prefix="cursor-fast-")
+    queue = select.kqueue()
+    connection = None
+    try:
+        # Register the marker before launching Cursor so an immediate deletion
+        # cannot race with watcher setup and leave this process waiting forever.
+        queue.control(
+            [
+                select.kevent(
+                    fd,
+                    filter=select.KQ_FILTER_VNODE,
+                    flags=select.KQ_EV_ADD | select.KQ_EV_ENABLE | select.KQ_EV_CLEAR,
+                    fflags=select.KQ_NOTE_DELETE | select.KQ_NOTE_RENAME,
+                )
+            ],
+            0,
+        )
+
+        # Prevent inherited Electron/Node settings from changing how the Cursor
+        # GUI process starts, while keeping its console detached from this CLI.
+        env = dict(os.environ, ELECTRON_NO_ATTACH_CONSOLE="1")
+        for key in (
+            "ELECTRON_RUN_AS_NODE",
+            "NODE_OPTIONS",
+            "NODE_REPL_EXTERNAL_MODULE",
+        ):
+            env.pop(key, None)
+
+        if is_trace_enabled():
+            print(f"cursor-fast marker={marker}", file=sys.stderr, flush=True)
+
+        # Prefer the running instance's IPC channel; fall back to Launch
+        # Services below when no usable Cursor socket is available.
+        connection = send_open_request(paths, marker, env)
+        if connection is not None:
+            # Watch the IPC socket alongside the marker so replies or a server
+            # disconnect wake the same event loop used for file-close events.
+            queue.control(
+                [
+                    select.kevent(
+                        connection.fileno(),
+                        filter=select.KQ_FILTER_READ,
+                        flags=select.KQ_EV_ADD | select.KQ_EV_ENABLE,
+                    )
+                ],
+                0,
+            )
+            route = "main-ipc"
+        else:
+            route = "launch-services"
+            # `open` returns after handing the request to Cursor; the marker
+            # watch below remains responsible for waiting until editing ends.
+            launched = subprocess.run(
+                # -n forwards fresh argv through another GUI instance. It is required
+                # for the fallback: plain `open -a` cannot reliably deliver these CLI
+                # arguments to an already running app. --reuse-window still selects
+                # an existing editor window after that instance forwards the request.
+                [
+                    "/usr/bin/open",
+                    "-n",
+                    "-g",
+                    "-a",
+                    "/Applications/Cursor.app",
+                    "--args",
+                    "--reuse-window",
+                    "--wait",
+                    "--waitMarkerFilePath",
+                    marker,
+                    *[os.path.abspath(p) for p in paths],
+                ],
+                env=env,
+                stdin=subprocess.DEVNULL,
+            )
+            if launched.returncode:
+                print(
+                    f"cursor-fast: open failed: {launched.returncode}", file=sys.stderr
+                )
+                return launched.returncode
+
+        if is_trace_enabled():
+            print(
+                f"cursor-fast route={route} handoff_ms={(time.monotonic() - started) * 1000:.2f}",
+                file=sys.stderr,
+                flush=True,
+            )
+
+        while os.path.exists(marker):
+            # Wait for either a file-close event or an IPC response.
+            events = queue.control(None, 2, None)
+
+            # No IPC connection and we fell back to `open`.
+            # Just wait until marker is removed.
+            if connection is None:
+                continue
+
+            for event in events:
+                if not os.path.exists(marker):
+                    break
+
+                if event.filter != select.KQ_FILTER_READ:
+                    continue
+
+                response = receive_message(connection)
+                if response[0][0] in (202, 203):
+                    # PromiseError (202) / PromiseErrorObj (203).
+                    raise OSError("Cursor rejected the editor request")
+                if response[0][0] == 201:
+                    # The main process also completes on window close/reload.
+                    # Remove the socket watch to avoid further reads.
+                    queue.control(
+                        [
+                            select.kevent(
+                                connection.fileno(),
+                                filter=select.KQ_FILTER_READ,
+                                flags=select.KQ_EV_DELETE,
+                            )
+                        ],
+                        0,
+                    )
+
+        return 0
+
+    finally:
+        if connection is not None:
+            connection.close()
+        queue.close()
+        os.close(fd)
+        try:
+            os.unlink(marker)
+        except FileNotFoundError:
+            pass
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """Parse supported options with argparse; preserve other CLI invocations."""
+    args = sys.argv[1:] if argv is None else argv
+    if not args or requires_cli():
+        return exec_cursor_cli(args)
+
+    parser = build_parser()
+    try:
+        options, unknown = parser.parse_known_intermixed_args(args)
+    except argparse.ArgumentError:
+        return exec_cursor_cli(args)
+
+    if unknown:
+        return exec_cursor_cli(args)
+
+    if options.help:
+        parser.print_help()
+        return 0
+
+    if not options.files or any(
+        p == "-" or not Path(p).is_file() for p in options.files
+    ):
+        return exec_cursor_cli(args)
+
+    return open_and_wait(options.files) if options.wait else open_files(options.files)
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main())
+    except KeyboardInterrupt:
+        sys.exit(130)
+    except (OSError, ValueError, IndexError, subprocess.SubprocessError) as error:
+        print(f"cursor-fast: {error}", file=sys.stderr)
+        sys.exit(1)
