@@ -1,0 +1,4 @@
+interface:
+  display_name: "Video Side By Side"
+  short_description: "Trim and stack two videos with ffmpeg."
+  default_prompt: "Combine two videos side by side, trimming and resizing as needed."
