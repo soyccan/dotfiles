@@ -4,10 +4,7 @@ format = """
 $username\
 $hostname\
 $directory\
-$git_branch\
-$git_commit\
-$git_state\
-$git_status\
+$vcs\
 $cmd_duration\
 $line_break\
 $nix_shell\
@@ -24,6 +21,17 @@ style = "blue"
 success_symbol = "[❯](blue)"
 error_symbol = "[❯](red)"
 vimcmd_symbol = "[❮](green)"
+
+[vcs]
+order = ["jj", "git"]
+git_modules = "$git_branch$git_commit$git_state$git_status"
+jj_modules = "$jj_change$jj_bookmark$jj_status"
+
+[jj_change]
+format = "[$change](cyan) "
+
+[jj_bookmark]
+format = "[$bookmark](cyan) "
 
 [git_branch]
 format = "[$branch]($style)"
