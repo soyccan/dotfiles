@@ -35,3 +35,6 @@ set --prepend fish_complete_path $homebrew_prefix/share/fish/vendor_completions.
 # if not contains "$HOMEBREW_PREFIX/share/info" $INFOPATH
 #     set --global --export INFOPATH "$HOMEBREW_PREFIX/share/info" $INFOPATH
 # end
+
+# Do not upgrade casks managed by their own upgrader
+set --global --export HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS 1
