@@ -169,8 +169,15 @@ abbr chown! 'sudo chown -R (id -u):(id -g) .'
 abbr df 'df -h'
 abbr du 'du -h'
 if command -q ip
-    set iproute_version (dpkg -l iproute2 | perl -ne 'print $1 if /iproute2\s*(\d+\.\d+\.\d+)/')
-    if semver_lt $iproute_version '6.7.0'
+    set iproute_version
+    if command -q dpkg-query
+        set iproute_version (dpkg-query --show --showformat='${Version}' iproute2 2>/dev/null |
+            string match -r '\d+\.\d+\.\d+')
+    else if command -q rpm
+        set iproute_version (rpm --query --queryformat='%{VERSION}' iproute 2>/dev/null)
+    end
+
+    if [ "$iproute_version" != "" ] && semver_lt "$iproute_version" '6.7.0'
         # IPv4, color
         abbr ip 'ip -4 -c'
     else
