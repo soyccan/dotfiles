@@ -32,7 +32,7 @@ dark = true      # or light = true, or omit for auto-detection
 
 [merge]
 autoStash = true
-conflictstyle = zdiff3
+conflictstyle = diff3
 tool = nvimdiff
 
 [user]
