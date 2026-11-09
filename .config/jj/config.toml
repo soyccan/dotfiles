@@ -7,6 +7,9 @@ default-remote-branch = "dev-main"
 commit_trailers = 'if(!trailers.contains_key("Change-Id"), format_gerrit_change_id_trailer(self)) ++ if(!trailers.contains_key("Signed-off-by"), format_signed_off_by_trailer(self))'
 log = "builtin_log_oneline"
 
+[revset-aliases]
+"trunk()" = "dev-main@origin"
+
 [ui]
 default-command = "log"
 editor = "sh -c 'if [ \"$__CFBundleIdentifier\" = com.todesktop.230313mzl4w4u92 ] || [ \"$TERM_PROGRAM\" = vscode ]; then exec /Users/zacc/.local/bin/cursor-fast --wait \"$@\"; else exec vim \"$@\"; fi' -"
