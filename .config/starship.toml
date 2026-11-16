@@ -28,10 +28,7 @@ git_modules = "$git_branch$git_commit$git_state$git_status"
 jj_modules = "$jj_change$jj_bookmark$jj_status"
 
 [jj_change]
-format = "[$change](cyan) "
-
-[jj_bookmark]
-format = "[$bookmark](cyan) "
+format = "$change:$commit "
 
 [git_branch]
 format = "[$branch]($style)"
